@@ -1,0 +1,19 @@
+# 개발 환경에서만 사용합니다.
+version: '3.8'
+
+services:
+  db:
+    # Docker Hub에서 이미지 다운로드
+    image: postgres:15.4
+    # 컨테이너 이름 지정
+    container_name: postgres
+    # <로컬:컨테이너> 포트 바인딩
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    # 환경변수 설정
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    # <로컬:컨테이너> 볼륨 마운팅
+    volumes:
+      - ./database/postgresql:/var/lib/postgresql/data

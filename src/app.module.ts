@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import SnakeNamingStrategy from 'typeorm-naming-strategy';
+import * as path from 'path';
 
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
+import { NodeEnv } from './shared/enum/node-env.enum';
 import { IDbConfig } from './shared/interface/db-config.interface';
+import { IServerConfig } from './shared/interface/server-config.interface';
 
 import { AppController } from './app.controller';
 
@@ -19,6 +23,7 @@ import { AppController } from './app.controller';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
+        const serverConfig = configService.get<IServerConfig>('server');
         const dbConfig = configService.get<IDbConfig>('db');
 
         return {
@@ -29,6 +34,10 @@ import { AppController } from './app.controller';
           password: dbConfig.password,
           database: dbConfig.database,
           synchronize: dbConfig.synchronize,
+          entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
+          logging: serverConfig.nodeEnv === NodeEnv.DEV,
+          namingStrategy: new SnakeNamingStrategy(),
+          timezone: 'Asia/Seoul',
         };
       },
     }),

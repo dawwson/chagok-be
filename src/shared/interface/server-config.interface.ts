@@ -1,10 +1,6 @@
-export interface IServerConfig {
-  nodeEnv: NODE_ENV;
-  port: number;
-}
+import { NodeEnv } from '../enum/node-env.enum';
 
-enum NODE_ENV {
-  DEV = 'development',
-  STAGE = 'stage',
-  PROD = 'production',
+export interface IServerConfig {
+  nodeEnv: NodeEnv;
+  port: number;
 }

@@ -8,18 +8,14 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-
     "start:dev": "npm run prebuild && NODE_ENV=development nest start --watch",
     "start:stage": "NODE_ENV=stage node dist/main",
     "start:prod": "NODE_ENV=production node dist/main",
-
     "start:db": "docker-compose -f docker-compose.db.yml --env-file .development.env up -d",
     "stop:db": "docker-compose -f docker-compose.db.yml --env-file .development.env down",
-
     "seed:dev": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "seed:stage": "NODE_ENV=stage ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "seed:production": "NODE_ENV=production ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
-
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json"
@@ -28,6 +24,7 @@
     "@nestjs/common": "^10.2.8",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.2.8",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.2.8",
     "@nestjs/typeorm": "^10.0.0",
     "class-transformer": "^0.5.1",

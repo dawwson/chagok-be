@@ -37,6 +37,7 @@ import { AppController } from './app.controller';
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),
+          timezone: 'Asia/Seoul',
         };
       },
     }),

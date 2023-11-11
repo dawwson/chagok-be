@@ -5,10 +5,11 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity('users')
 export class User {
-  @PrimaryColumn({ type: 'uuid' })
+  @PrimaryColumn({ type: 'uuid', default: uuid() })
   id: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })

@@ -8,8 +8,17 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/sign-up')
-  signUp(@Body() signInRequest: SignUpRequest) {
-    return;
+  async signUp(@Body() signUpRequest: SignUpRequest) {
+    const createUserDto = signUpRequest.toCreateUserDto();
+    const savedUser = await this.authService.createUser(createUserDto);
+
+    return {
+      message: '회원 가입 성공', // TODO: 메세지 내용 한 군데로 모으기
+      data: {
+        id: savedUser.id,
+        email: savedUser.email,
+      },
+    };
   }
 
   @Post('/sign-in')

@@ -10,8 +10,6 @@ import { NodeEnv } from './shared/enum/node-env.enum';
 import { IDbConfig } from './shared/interface/db-config.interface';
 import { IServerConfig } from './shared/interface/server-config.interface';
 
-import { AppController } from './app.controller';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,6 +40,5 @@ import { AppController } from './app.controller';
       },
     }),
   ],
-  controllers: [AppController], // TODO: 테스트 후 삭제
 })
 export class AppModule {}

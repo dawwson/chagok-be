@@ -8,12 +8,18 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+
     "start:dev": "npm run prebuild && NODE_ENV=development nest start --watch",
     "start:stage": "NODE_ENV=stage node dist/main",
     "start:prod": "NODE_ENV=production node dist/main",
+
     "start:db": "docker-compose -f docker-compose.db.yml --env-file .development.env up -d",
     "stop:db": "docker-compose -f docker-compose.db.yml --env-file .development.env down",
-    "test": "jest",
+
+    "seed:dev": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
+    "seed:stage": "NODE_ENV=stage ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
+    "seed:production": "NODE_ENV=production ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
+
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json"
@@ -26,10 +32,12 @@
     "@nestjs/typeorm": "^10.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "dotenv": "^16.3.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
+    "typeorm-extension": "^3.1.1",
     "typeorm-naming-strategy": "^2.0.4"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate-nestjs-typeorm",
+  "name": "budget-keeper-be",
   "version": "0.0.1",
-  "description": "예산 관리 애플리케이션 <Budget Keeper> RESTful API 서버",
+  "description": "예산 관리 서비스 <Budget Keeper> REST API 서버",
   "author": "",
   "private": true,
   "license": "UNLICENSED",

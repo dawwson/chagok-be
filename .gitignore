@@ -4,7 +4,7 @@
 .production.env
 
 # docker-compose db 볼륨 바인딩 경로
-database
+/database
 
 # compiled output
 /dist

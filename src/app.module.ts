@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import SnakeNamingStrategy from 'typeorm-naming-strategy';
@@ -42,6 +43,15 @@ import { AuthModule } from './api/auth/auth.module';
       },
     }),
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useFactory: () =>
+        new ValidationPipe({
+          transform: true, // DTO 클래스로 자동 형변환
+        }),
+    },
   ],
 })
 export class AppModule {}

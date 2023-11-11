@@ -4,7 +4,7 @@ version: '3.8'
 services:
   db:
     # Docker Hub에서 이미지 다운로드
-    image: postgres:15.4
+    image: postgres:16
     # 컨테이너 이름 지정
     container_name: postgres
     # <로컬:컨테이너> 포트 바인딩

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as path from 'path';
 
 import dbConfig from './config/db.config';
@@ -34,7 +35,8 @@ import { AppController } from './app.controller';
           database: dbConfig.database,
           synchronize: dbConfig.synchronize,
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
-          logging: serverConfig.nodeEnv === NodeEnv.DEV, //
+          logging: serverConfig.nodeEnv === NodeEnv.DEV,
+          namingStrategy: new SnakeNamingStrategy(),
         };
       },
     }),

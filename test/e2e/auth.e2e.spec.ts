@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
 import { DataSource } from 'typeorm';
+import * as request from 'supertest';
 
-describe('AuthController (e2e)', () => {
+import { AppModule } from '../../src/app.module';
+
+describe('/auth', () => {
   let app: INestApplication;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,11 +16,12 @@ describe('AuthController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    dataSource = app.get(DataSource);
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // 데이터베이스 테이블 유지 + 데이터 초기화
-    const dataSource = app.get(DataSource);
     await dataSource.query(
       'TRUNCATE TABLE users, categories, budgets, budget_category, expenses RESTART IDENTITY CASCADE',
     );
@@ -46,6 +49,22 @@ describe('AuthController (e2e)', () => {
           email: testUserInfo.email,
         },
       });
+    });
+
+    test('회원가입 실패 - 이미 존재하는 이메일', async () => {
+      // given
+      const testUserInfo = {
+        // 성공 테스트에서 생성된 회원
+        email: 'success@gmail.com',
+        password: 'test_password',
+      };
+
+      await request(app.getHttpServer())
+        // when
+        .post('/auth/sign-up')
+        .send(testUserInfo)
+        // then
+        .expect(409);
     });
   });
 });

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../entity/user.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
+import { FailMessage } from '../../../shared/enum/fail-message.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -31,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // NOTE: 여기서부터는 JWT가 유효하다고 가정합니다.
     const user = await this.userRepo.findOneBy({ id: payload.id });
     if (!user) {
-      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
+      throw new UnauthorizedException(FailMessage.USER_NOT_FOUND);
     }
 
     // password만 삭제 후 request의 user에 붙여서 전달

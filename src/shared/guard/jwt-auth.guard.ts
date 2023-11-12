@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FailMessage } from '../enum/fail-message.enum';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -9,7 +10,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * - user : req.user | false
      */
     if (err || !user) {
-      throw err || new UnauthorizedException('유효하지 않은 토큰입니다.');
+      throw err || new UnauthorizedException(FailMessage.AUTH_INVALID_TOKEN);
     }
     return user;
   }

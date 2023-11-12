@@ -8,9 +8,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start:dev": "npm run prebuild && NODE_ENV=development nest start --watch",
-    "start:stage": "NODE_ENV=stage node dist/main",
-    "start:prod": "NODE_ENV=production node dist/main",
+    "start:dev": "npm run prebuild && nest start --watch",
+    "start": "node dist/main",
     "start:db": "docker-compose -f docker-compose.db.yml --env-file .development.env up -d",
     "stop:db": "docker-compose -f docker-compose.db.yml --env-file .development.env down",
     "seed:dev": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
@@ -72,7 +71,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "test",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

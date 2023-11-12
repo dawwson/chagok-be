@@ -16,7 +16,7 @@ import { AuthModule } from './api/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: ['.development.env', '.stage.env', '.production.env'],
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),

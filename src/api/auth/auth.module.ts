@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 import { AuthService } from './service/auth.service';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './auth.controller';
 
 import { User } from '../../entity/user.entity';
@@ -13,7 +14,6 @@ import { IServerConfig } from '../../shared/interface/server-config.interface';
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
-      global: true,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
@@ -26,6 +26,6 @@ import { IServerConfig } from '../../shared/interface/server-config.interface';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

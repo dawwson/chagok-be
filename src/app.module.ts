@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import SnakeNamingStrategy from 'typeorm-naming-strategy';
@@ -10,12 +11,12 @@ import { NodeEnv } from './shared/enum/node-env.enum';
 import { IDbConfig } from './shared/interface/db-config.interface';
 import { IServerConfig } from './shared/interface/server-config.interface';
 
-import { AppController } from './app.controller';
+import { AuthModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: ['.development.env', '.stage.env', '.production.env'],
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),
@@ -41,7 +42,16 @@ import { AppController } from './app.controller';
         };
       },
     }),
+    AuthModule,
   ],
-  controllers: [AppController], // TODO: 테스트 후 삭제
+  providers: [
+    {
+      provide: APP_PIPE,
+      useFactory: () =>
+        new ValidationPipe({
+          transform: true, // DTO 클래스로 자동 형변환
+        }),
+    },
+  ],
 })
 export class AppModule {}

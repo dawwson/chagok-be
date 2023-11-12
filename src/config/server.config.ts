@@ -4,5 +4,6 @@ export default registerAs('server', () => {
   return {
     nodeEnv: process.env.NODE_ENV,
     port: parseInt(process.env.SERVER_PORT),
+    jwtSecret: process.env.JWT_SECRET,
   };
 });

@@ -54,6 +54,7 @@ import { BudgetModule } from './api/budget/budget.module';
       useFactory: () =>
         new ValidationPipe({
           transform: true, // DTO 클래스로 자동 형변환
+          whitelist: true, //DTO 클래스에 없는 속성 제거
         }),
     },
   ],

@@ -15,6 +15,7 @@ import { IServerConfig } from '../../shared/interface/server-config.interface';
 import { SignUpRequest } from './dto/sign-up-request.dto';
 import { SignInRequest } from './dto/sign-in-request.dto';
 import { AuthService } from './service/auth.service';
+import { SuccessMessage } from '../../shared/enum/success-message.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
     const savedUser = await this.authService.createUser(createUserDto);
 
     return {
-      message: '회원 가입 성공', // TODO: 메세지 내용 한 군데로 모으기
+      message: SuccessMessage.AUTH_SIGN_UP,
       data: {
         id: savedUser.id,
         email: savedUser.email,
@@ -59,7 +60,7 @@ export class AuthController {
           this.configService.get<IServerConfig>('server').jwtExpiresIn * 1000,
       })
       .json({
-        message: '로그인 성공',
+        message: SuccessMessage.AUTH_SIGN_IN,
         data: payload,
       });
   }

@@ -12,6 +12,11 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
   ) {}
 
+  /**
+   * 사용자를 생성한다.
+   * @param createUserDto
+   * @return 생성된 User 객체
+   */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
       // NOTE: @BeforeInsert()가 create() 통해서 실행됨

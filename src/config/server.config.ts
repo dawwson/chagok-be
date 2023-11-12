@@ -5,5 +5,6 @@ export default registerAs('server', () => {
     nodeEnv: process.env.NODE_ENV,
     port: parseInt(process.env.SERVER_PORT),
     jwtSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN),
   };
 });

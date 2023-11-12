@@ -12,6 +12,7 @@ import { IDbConfig } from './shared/interface/db-config.interface';
 import { IServerConfig } from './shared/interface/server-config.interface';
 
 import { AuthModule } from './api/auth/auth.module';
+import { CategoryModule } from './api/category/category.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AuthModule } from './api/auth/auth.module';
       },
     }),
     AuthModule,
+    CategoryModule,
   ],
   providers: [
     {

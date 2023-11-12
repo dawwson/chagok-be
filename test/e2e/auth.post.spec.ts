@@ -4,10 +4,8 @@ import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
 import { AppModule } from '../../src/app.module';
-import { dtsDtsxOrDtsDtsxMapRegex } from 'ts-loader/dist/constants';
-import DoneCallback = jest.DoneCallback;
 
-describe('/auth', () => {
+describe('/auth (POST)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
 

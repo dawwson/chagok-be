@@ -1,9 +1,14 @@
 import { Body, Controller, Param, Put, Req, UseGuards } from '@nestjs/common';
-import { BudgetService } from './service/budget.service';
-import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
+
 import { SetMonthlyBudgetRequestParam } from './dto/set-monthly-budget-request-param.dto';
 import { SetMonthlyBudgetRequestBody } from './dto/set-monthly-budget-request-body.dto';
+import { SetMonthlyBudgetResponseData } from './dto/set-monthly-budget-response-data.dto';
+
+import { BudgetService } from './service/budget.service';
+
+import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
+import { SuccessMessage } from '../../shared/enum/success-message.enum';
 
 @UseGuards(JwtAuthGuard)
 @Controller('budgets')
@@ -23,6 +28,15 @@ export class BudgetController {
       budgetsByCategory,
     });
 
-    return { message: '', data: '' };
+    const budget = await this.budgetService.getBudgetByYearAndMonth({
+      userId: req.user.id,
+      year,
+      month,
+    });
+
+    return {
+      message: SuccessMessage.BUDGET_SET_MONTHLY,
+      data: SetMonthlyBudgetResponseData.of(budget),
+    };
   }
 }

@@ -5,6 +5,7 @@ import { Budget } from '../../../entity/budget.entity';
 import { BudgetCategory } from '../../../entity/budget-category.entity';
 
 import { CreateOrUpdateBudgetDto } from '../dto/create-or-update-budget.dto';
+import { GetBudgetByYearAndMonthDto } from '../dto/get-budget-by-year-and-month.dto';
 
 @Injectable()
 export class BudgetService {
@@ -33,7 +34,7 @@ export class BudgetService {
         const budgetCategories: BudgetCategory[] = budgetsByCategory.map(
           (budgetByCategory) => {
             const budgetCategory = new BudgetCategory();
-            budgetCategory.categoryId = budgetByCategory.id;
+            budgetCategory.categoryId = budgetByCategory.categoryId;
             budgetCategory.amount = budgetByCategory.amount;
 
             return budgetCategory;
@@ -59,7 +60,7 @@ export class BudgetService {
       const budgetCategories: BudgetCategory[] = budgetsByCategory.map(
         (budgetByCategory) => {
           const budgetCategory = new BudgetCategory();
-          budgetCategory.categoryId = budgetByCategory.id;
+          budgetCategory.categoryId = budgetByCategory.categoryId;
           budgetCategory.amount = budgetByCategory.amount;
           budgetCategory.budget = budget;
 
@@ -76,5 +77,12 @@ export class BudgetService {
       await qr.release();
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  getBudgetByYearAndMonth({ year, month, userId }: GetBudgetByYearAndMonthDto) {
+    return this.dataSource.getRepository(Budget).findOne({
+      where: { userId, year, month },
+      relations: { budgetCategories: true },
+    });
   }
 }

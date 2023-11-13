@@ -1,14 +1,6 @@
-import { IsArray, IsNumber, IsPositive, ValidateNested } from 'class-validator';
+import { IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-
-export class BudgetByCategory {
-  @IsNumber()
-  id: number;
-
-  @IsNumber()
-  @IsPositive()
-  amount: number;
-}
+import { BudgetByCategory } from './budget-by-category.dto';
 
 export class SetMonthlyBudgetRequestBody {
   // 배열인지 검증

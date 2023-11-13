@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { BudgetCategory } from './budget-category.entity';
 import { BudgetMonth } from '../shared/enum/budget-month.enum';
 
 @Entity('budgets')
@@ -20,6 +22,15 @@ export class Budget {
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column()
+  userId: string;
+
+  // 양방향 : Budget -> BudgetCategory
+  @OneToMany(() => BudgetCategory, (budgetCategory) => budgetCategory.budget, {
+    cascade: ['insert'],
+  })
+  budgetCategories: BudgetCategory[];
 
   @Column({ type: 'varchar', length: 10 })
   year: string;

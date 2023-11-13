@@ -1,7 +1,7 @@
 import { IsArray, IsNumber, IsPositive, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class BudgetByCategory {
+export class BudgetByCategory {
   @IsNumber()
   id: number;
 

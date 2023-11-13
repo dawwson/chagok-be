@@ -7,8 +7,8 @@ import { SetMonthlyBudgetResponseData } from './dto/set-monthly-budget-response-
 import { BudgetService } from './service/budget.service';
 
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
+import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 
 @UseGuards(JwtAuthGuard)
 @Controller('budgets')
@@ -21,6 +21,7 @@ export class BudgetController {
     @Param() { year, month }: SetMonthlyBudgetRequestParam,
     @Body() { budgetsByCategory }: SetMonthlyBudgetRequestBody,
   ) {
+    // NOTE: CQS 패턴 => Command는 상태 변경만 하고 값을 반환하지 않음 & Query는 값을 반환만 하고 상태를 변경하지 않음
     await this.budgetService.createOrUpdateBudget({
       userId: req.user.id,
       year,

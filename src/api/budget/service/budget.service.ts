@@ -11,6 +11,7 @@ import { GetBudgetByYearAndMonthDto } from '../dto/get-budget-by-year-and-month.
 export class BudgetService {
   constructor(private readonly dataSource: DataSource) {}
 
+  // TODO: 엔티티 안으로 객체 생성 로직 넣어서 응집도 높이기
   async createOrUpdateBudget({
     year,
     month,
@@ -79,7 +80,7 @@ export class BudgetService {
     }
   }
 
-  getBudgetByYearAndMonth({ year, month, userId }: GetBudgetByYearAndMonthDto) {
+  getBudgetByYearAndMonth({ userId, year, month }: GetBudgetByYearAndMonthDto) {
     return this.dataSource.getRepository(Budget).findOne({
       where: { userId, year, month },
       relations: { budgetCategories: true },

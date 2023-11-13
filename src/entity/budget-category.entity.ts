@@ -5,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -24,9 +23,15 @@ export class BudgetCategory {
   @JoinColumn({ name: 'budget_id' })
   budget: Budget;
 
-  @OneToOne(() => Category, { nullable: false })
+  @Column()
+  budgetId: number;
+
+  @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @Column({ unique: false })
+  categoryId: number;
 
   @Column({ type: 'integer' })
   amount: number;

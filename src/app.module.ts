@@ -13,6 +13,7 @@ import { IServerConfig } from './shared/interface/server-config.interface';
 
 import { AuthModule } from './api/auth/auth.module';
 import { CategoryModule } from './api/category/category.module';
+import { BudgetModule } from './api/budget/budget.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { CategoryModule } from './api/category/category.module';
     }),
     AuthModule,
     CategoryModule,
+    BudgetModule,
   ],
   providers: [
     {
@@ -52,6 +54,7 @@ import { CategoryModule } from './api/category/category.module';
       useFactory: () =>
         new ValidationPipe({
           transform: true, // DTO 클래스로 자동 형변환
+          whitelist: true, //DTO 클래스에 없는 속성 제거
         }),
     },
   ],

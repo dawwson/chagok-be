@@ -13,10 +13,10 @@ export class BudgetService {
 
   // TODO: 엔티티 안으로 객체 생성 로직 넣어서 응집도 높이기
   async createOrUpdateBudget({
+    userId,
     year,
     month,
     budgetsByCategory,
-    userId,
   }: CreateOrUpdateBudgetDto): Promise<void> {
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();

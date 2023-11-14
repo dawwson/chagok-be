@@ -4,4 +4,5 @@ export enum SuccessMessage {
   AUTH_SIGN_IN = '로그인 성공했습니다.',
   CATEGORY_GET_ALL = '카테고리 목록 조회 성공했습니다.',
   BUDGET_SET_MONTHLY = '월별 예산 설정 성공했습니다.',
+  BUDGET_GET_RECOMMENDATION = '월별 예산 추천 성공했습니다.',
 }

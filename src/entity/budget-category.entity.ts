@@ -14,7 +14,7 @@ import { Category } from './category.entity';
 
 @Entity('budget_category')
 @Unique('UQ_BUDGET_ID_CATEGORY_ID', ['budget', 'category'])
-@Check(`"amount" > 0`)
+@Check(`"amount" >= 0`)
 export class BudgetCategory {
   @PrimaryGeneratedColumn()
   id: number;

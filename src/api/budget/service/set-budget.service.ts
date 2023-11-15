@@ -9,7 +9,7 @@ import { CreateOrUpdateBudgetDto } from '../dto/create-or-update-budget.dto';
 import { GetBudgetByYearAndMonthDto } from '../dto/get-budget-by-year-and-month.dto';
 
 @Injectable()
-export class BudgetService {
+export class SetBudgetService {
   constructor(private readonly dataSource: DataSource) {}
 
   // TODO: 엔티티 안으로 객체 생성 로직 넣어서 응집도 높이기

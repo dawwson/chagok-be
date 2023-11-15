@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BudgetController } from '../../src/api/budget/budget.controller';
-import { BudgetService } from '../../src/api/budget/service/budget.service';
+import { SetBudgetService } from '../../src/api/budget/service/set-budget.service';
 
 describe('BudgetController', () => {
   let controller: BudgetController;
@@ -8,7 +8,7 @@ describe('BudgetController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BudgetController],
-      providers: [BudgetService],
+      providers: [SetBudgetService],
     }).compile();
 
     controller = module.get<BudgetController>(BudgetController);

@@ -14,20 +14,20 @@ import { SetMonthlyBudgetRequestBody } from './dto/set-monthly-budget-request-bo
 import { SetMonthlyBudgetResponseData } from './dto/set-monthly-budget-response-data.dto';
 import { GetMonthlyBudgetRecommendationRequestQuery } from './dto/get-monthly-budget-recommendation-request-query.dto';
 
-import { BudgetService } from './service/budget.service';
+import { SetBudgetService } from './service/set-budget.service';
 
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { GetMonthlyBudgetRecommendationRequestParam } from './dto/get-monthly-budget-recommendation-request-param.dto';
-import { BudgetRecommendationService } from './service/budget-recommendation.service';
+import { RecommendBudgetService } from './service/recommend-budget.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('budgets')
 export class BudgetController {
   constructor(
-    private readonly budgetService: BudgetService,
-    private readonly budgetRecommendationService: BudgetRecommendationService,
+    private readonly setBudgetService: SetBudgetService,
+    private readonly recommendBudgetService: RecommendBudgetService,
   ) {}
 
   @Put(':year/:month')
@@ -37,14 +37,14 @@ export class BudgetController {
     @Body() { budgetsByCategory }: SetMonthlyBudgetRequestBody,
   ) {
     // NOTE: CQS 패턴 => Command는 상태 변경만 하고 값을 반환하지 않음 & Query는 값을 반환만 하고 상태를 변경하지 않음
-    await this.budgetService.createOrUpdateBudget({
+    await this.setBudgetService.createOrUpdateBudget({
       userId: req.user.id,
       year,
       month,
       budgetsByCategory,
     });
 
-    const budget = await this.budgetService.getBudgetByYearAndMonth({
+    const budget = await this.setBudgetService.getBudgetByYearAndMonth({
       userId: req.user.id,
       year,
       month,
@@ -63,7 +63,7 @@ export class BudgetController {
     @Query() { totalAmount }: GetMonthlyBudgetRecommendationRequestQuery,
   ) {
     const budgetsByCategoryMap =
-      await this.budgetRecommendationService.getBudgetRecommendation({
+      await this.recommendBudgetService.getBudgetRecommendation({
         userId: req.user.id,
         year,
         month,

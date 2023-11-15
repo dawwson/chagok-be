@@ -9,7 +9,7 @@ import { BudgetMonth } from '../../../shared/enum/budget-month.enum';
 import { CategoryName } from '../../../shared/enum/category-name.enum';
 
 @Injectable()
-export class BudgetRecommendationService {
+export class RecommendBudgetService {
   constructor(private readonly dataSource: DataSource) {}
 
   async getBudgetRecommendation({

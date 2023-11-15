@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { BudgetService } from './service/budget.service';
+import { SetBudgetService } from './service/set-budget.service';
 import { BudgetController } from './budget.controller';
+import { RecommendBudgetService } from './service/recommend-budget.service';
 
 @Module({
   controllers: [BudgetController],
-  providers: [BudgetService],
+  providers: [SetBudgetService, RecommendBudgetService],
 })
 export class BudgetModule {}

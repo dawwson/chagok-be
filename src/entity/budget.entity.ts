@@ -38,6 +38,9 @@ export class Budget {
   @Column({ type: 'varchar', length: 10 })
   month: BudgetMonth;
 
+  @Column({ type: 'integer' })
+  totalAmount: number;
+
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 

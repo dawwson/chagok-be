@@ -8,7 +8,7 @@ export default class CategorySeeder implements Seeder {
   async run(dataSource: DataSource): Promise<any> {
     // 테이블 데이터 초기화(스키마 유지)
     await dataSource.query(
-      'TRUNCATE TABLE categories RESTART IDENTITY CASCADE',
+      'TRUNCATE TABLE categories, budget_category, expenses, budgets, users RESTART IDENTITY CASCADE',
     );
 
     const categories = Object.keys(CategoryName).map((key) => {

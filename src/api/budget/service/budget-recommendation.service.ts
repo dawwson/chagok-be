@@ -25,6 +25,8 @@ export class BudgetRecommendationService {
       year,
       month,
     );
+
+    // 총 예산과 비교할 합계
     let sum = 0;
 
     avgRatiosByCategory.forEach(({ categoryId, avgRatio }) => {
@@ -41,7 +43,7 @@ export class BudgetRecommendationService {
     if (sum === totalAmount) {
       return budgetsByCategoryMap;
     }
-    // NOTE: 100원 단위 버림으로 인해 총 예산과 일치하지 않을 경우,
+    // NOTE: 100원 단위 버림으로 인해 총 예산과 일치하지 않을 경우
     const etcCategory = await this.dataSource
       .getRepository(Category)
       .findOneBy({ name: CategoryName.ETC });
@@ -49,9 +51,8 @@ export class BudgetRecommendationService {
     // 기타 카테고리로 채워져야 하는 금액
     const remainder = totalAmount - sum;
 
-    // 이미 기타 카테고리가 있으면 그 값에 더하고, 없으면 새로 저장
-    const etcAmount =
-      (budgetsByCategoryMap.get(etcCategory.id) ?? 0) + remainder;
+    // 이미 기타 카테고리의 예산이 있으면 그 값에 더하고, 없으면 새로 저장
+    const etcAmount = budgetsByCategoryMap.get(etcCategory.id) + remainder;
     budgetsByCategoryMap.set(etcCategory.id, etcAmount);
 
     return budgetsByCategoryMap;
@@ -108,12 +109,8 @@ export class BudgetRecommendationService {
           and ("b"."id" = "bc"."budget_id")
         where
           "b"."user_id" = '988028bb-8368-4bf0-b702-c3a9ca078ebe'
-          and TO_DATE("b"."year" || '-' || "b"."month",
-          'YYYY-MM') >= TO_DATE('2023-03',
-          'YYYY-MM') - interval '6 months'
-          and TO_DATE(year || '-' || month,
-          'YYYY-MM') < TO_DATE('2023-03',
-          'YYYY-MM')
+          and TO_DATE("b"."year" || '-' || "b"."month", 'YYYY-MM') >= TO_DATE('2023-03', 'YYYY-MM') - interval '6 months'
+          and TO_DATE(year || '-' || month, 'YYYY-MM') < TO_DATE('2023-03', 'YYYY-MM')
         group by
           "b"."year",
           "b"."month",

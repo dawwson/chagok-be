@@ -14,6 +14,7 @@ import { IServerConfig } from './shared/interface/server-config.interface';
 import { AuthModule } from './api/auth/auth.module';
 import { CategoryModule } from './api/category/category.module';
 import { BudgetModule } from './api/budget/budget.module';
+import { ExpenseModule } from './api/expense/expense.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { BudgetModule } from './api/budget/budget.module';
     AuthModule,
     CategoryModule,
     BudgetModule,
+    ExpenseModule,
   ],
   providers: [
     {

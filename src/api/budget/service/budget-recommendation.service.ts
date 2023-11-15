@@ -58,6 +58,14 @@ export class BudgetRecommendationService {
     return budgetsByCategoryMap;
   }
 
+  /**
+   * 특정 사용자의 월별 카테고리별 예산 비율의 이전 6개월 동안의 평균
+   * @param userId 사용자 고유 식별자
+   * @param year 예산 연도
+   * @param month 예산 월
+   * @private
+   * @return { categoryId: 카테고리 고유 식별자, avgRatio: 카테고리 예산 비율 평균(단위: %) }
+   */
   private getAvgRatiosByCategory(
     userId: string,
     year: string,

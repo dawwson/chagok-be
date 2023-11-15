@@ -76,7 +76,11 @@ export class BudgetController {
 
     return {
       message: SuccessMessage.BUDGET_GET_RECOMMENDATION,
-      data: budgetsByCategory,
+      data: {
+        year,
+        month,
+        budgetsByCategory,
+      },
     };
   }
 }

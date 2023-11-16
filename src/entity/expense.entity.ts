@@ -2,7 +2,6 @@ import {
   Check,
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -11,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { BudgetMonth } from '../shared/enum/budget-month.enum';
+import { Budget } from './budget.entity';
 import { Category } from './category.entity';
 
 @Entity('expenses')
@@ -24,9 +23,15 @@ export class Expense {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToOne(() => Category, { nullable: false })
+  @Column()
+  userId: string;
+
+  @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @Column()
+  categoryId: number;
 
   @Column({ type: 'varchar', length: 100 })
   content: string;
@@ -37,18 +42,12 @@ export class Expense {
   @Column({ type: 'boolean', default: false })
   isExcluded: boolean;
 
-  @Column({ type: 'varchar', length: 10 })
-  year: string;
-
-  @Column({ type: 'varchar', length: 10 })
-  month: BudgetMonth;
+  @Column({ type: 'timestamp with time zone' })
+  expenseDate: Date;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
   updatedAt: Date;
-
-  @DeleteDateColumn({ type: 'timestamp with time zone', nullable: true })
-  deletedAt: Date;
 }

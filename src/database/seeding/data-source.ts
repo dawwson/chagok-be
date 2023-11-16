@@ -25,5 +25,4 @@ export default new DataSource({
   seeds: ['src/database/seeding/seeds/**/*{.ts,.js}'],
   logging: process.env.NODE_ENV === NodeEnv.DEV,
   namingStrategy: new SnakeNamingStrategy(),
-  timezone: 'Asia/Seoul',
 } as DataSourceOptions & SeederOptions);

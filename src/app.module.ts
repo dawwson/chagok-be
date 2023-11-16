@@ -14,6 +14,7 @@ import { IServerConfig } from './shared/interface/server-config.interface';
 import { AuthModule } from './api/auth/auth.module';
 import { CategoryModule } from './api/category/category.module';
 import { BudgetModule } from './api/budget/budget.module';
+import { ExpenseModule } from './api/expense/expense.module';
 
 @Module({
   imports: [
@@ -40,13 +41,13 @@ import { BudgetModule } from './api/budget/budget.module';
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),
-          timezone: 'Asia/Seoul',
         };
       },
     }),
     AuthModule,
     CategoryModule,
     BudgetModule,
+    ExpenseModule,
   ],
   providers: [
     {

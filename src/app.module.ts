@@ -41,7 +41,6 @@ import { ExpenseModule } from './api/expense/expense.module';
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),
-          timezone: 'Asia/Seoul',
         };
       },
     }),

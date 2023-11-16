@@ -11,14 +11,15 @@ import {
 } from '@nestjs/common';
 
 import { CreateExpenseRequestBody } from './dto/create-expense-request-body.dto';
-// import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { CreateExpenseResponseData } from './dto/create-expense-response-data.dto';
+import { UpdateExpenseResponseData } from './dto/update-expense-response-body.dto';
+import { UpdateExpenseRequestBody } from './dto/update-expense-request-body.dto';
 
 import { ExpenseService } from './service/expense.service';
 
-import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
-import { CreateExpenseResponseData } from './dto/create-expense-response-data.dto';
+import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
+import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -39,10 +40,25 @@ export class ExpenseController {
     };
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: number, @Body() updateExpenseDto: UpdateExpenseDto) {
-  //   return 'PATCH /expenses/:id';
-  // }
+  @Patch(':id')
+  async updateExpense(
+    @Param('id') id: number,
+    @Body() dto: UpdateExpenseRequestBody,
+  ) {
+    // 지출 수정
+    await this.expenseService.updateExpenseById(
+      id,
+      dto.toUpdateExpenseResource(),
+    );
+
+    // 수정된 지출 조회
+    const expense = await this.expenseService.getExpenseById(id);
+
+    return {
+      message: SuccessMessage.EXPENSE_UPDATE,
+      data: UpdateExpenseResponseData.of(expense),
+    };
+  }
 
   @Get()
   findAll() {

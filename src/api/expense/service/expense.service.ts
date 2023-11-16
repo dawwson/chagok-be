@@ -5,9 +5,9 @@ import { Repository } from 'typeorm';
 import { CreateExpenseResource } from '../dto/create-expense-resource.dto';
 
 import { Expense } from '../../../entity/expense.entity';
-import { BudgetMonth } from '../../../shared/enum/budget-month.enum';
 import { Category } from '../../../entity/category.entity';
 import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { UpdateExpenseResource } from '../dto/update-expense-resource.dto';
 
 @Injectable()
 export class ExpenseService {
@@ -34,11 +34,14 @@ export class ExpenseService {
     );
   }
 
-  extractMonth(date: Date) {
-    return Object.values(BudgetMonth)[date.getUTCMonth()];
+  async updateExpenseById(
+    id: number,
+    dto: UpdateExpenseResource,
+  ): Promise<void> {
+    await this.expenseRepo.update({ id }, dto);
   }
 
-  extractYear(date: Date) {
-    return date.getUTCFullYear().toString();
+  getExpenseById(id: number): Promise<Expense> {
+    return this.expenseRepo.findOneBy({ id });
   }
 }

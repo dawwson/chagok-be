@@ -7,6 +7,21 @@ export class CreateExpenseResponseData {
   id: number;
 
   @Expose()
+  categoryId: number;
+
+  @Expose()
+  content: string;
+
+  @Expose()
+  amount: number;
+
+  @Expose()
+  expenseDate: Date;
+
+  @Expose()
+  isExcluded: boolean;
+
+  @Expose()
   createdAt: Date;
 
   static of(expense: Expense): CreateExpenseResponseData {

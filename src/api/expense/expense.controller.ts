@@ -20,6 +20,7 @@ import { ExpenseService } from './service/expense.service';
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
+import { OwnExpenseGuard } from './guard/own-expense.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -40,6 +41,7 @@ export class ExpenseController {
     };
   }
 
+  @UseGuards(OwnExpenseGuard)
   @Patch(':id')
   async updateExpense(
     @Param('id') id: number,
@@ -65,11 +67,13 @@ export class ExpenseController {
     return 'GET /expenses';
   }
 
+  @UseGuards(OwnExpenseGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return 'GET /expenses/:id';
   }
 
+  @UseGuards(OwnExpenseGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return 'DELETE /expenses/:id';

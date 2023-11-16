@@ -6,10 +6,12 @@ import { ExpenseController } from './expense.controller';
 
 import { Expense } from '../../entity/expense.entity';
 import { Category } from '../../entity/category.entity';
+import { ExpenseLib } from './service/expense.lib';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Expense, Category])],
   controllers: [ExpenseController],
-  providers: [ExpenseService],
+  providers: [ExpenseService, ExpenseLib],
+  exports: [ExpenseLib],
 })
 export class ExpenseModule {}

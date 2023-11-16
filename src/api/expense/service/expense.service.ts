@@ -18,26 +18,30 @@ export class ExpenseService {
     private readonly categoryRepo: Repository<Expense>,
   ) {}
 
-  async createExpenseData(
-    createExpenseResource: CreateExpenseResource,
-  ): Promise<Expense> {
+  async createExpenseData(dto: CreateExpenseResource): Promise<Expense> {
     const category = await this.categoryRepo.findOneBy({
-      id: createExpenseResource.categoryId,
+      id: dto.categoryId,
     });
 
     if (!category) {
       throw new BadRequestException(FailMessage.EXPENSE_INVALID_CATEGORY_ID);
     }
 
-    return this.expenseRepo.save(
-      this.expenseRepo.create({ ...createExpenseResource }),
-    );
+    return this.expenseRepo.save(this.expenseRepo.create(dto));
   }
 
   async updateExpenseById(
     id: number,
     dto: UpdateExpenseResource,
   ): Promise<void> {
+    const category = await this.categoryRepo.findOneBy({
+      id: dto.categoryId,
+    });
+
+    if (!category) {
+      throw new BadRequestException(FailMessage.EXPENSE_INVALID_CATEGORY_ID);
+    }
+
     await this.expenseRepo.update({ id }, dto);
   }
 

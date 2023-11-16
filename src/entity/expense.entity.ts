@@ -26,14 +26,7 @@ export class Expense {
   @Column()
   userId: string;
 
-  @ManyToOne(() => Budget)
-  @JoinColumn({ name: 'budget_id' })
-  budget: Budget;
-
-  @Column()
-  budgetId: number;
-
-  @OneToOne(() => Category, { nullable: false })
+  @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 

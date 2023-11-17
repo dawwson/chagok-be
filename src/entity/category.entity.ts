@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CategoryName } from '../shared/enum/category-name.enum';
 
 @Entity('categories')
 export class Category {
@@ -11,7 +12,7 @@ export class Category {
   id: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
-  name: string;
+  name: CategoryName;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;

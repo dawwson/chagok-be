@@ -75,7 +75,10 @@ export class ExpenseController {
 
   @UseGuards(OwnExpenseGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return 'DELETE /expenses/:id';
+  async deleteExpense(@Param('id') id: number) {
+    await this.expenseService.deleteExpenseById(id);
+    return {
+      message: SuccessMessage.EXPENSE_DELETE,
+    };
   }
 }

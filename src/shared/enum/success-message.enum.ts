@@ -7,4 +7,5 @@ export enum SuccessMessage {
   BUDGET_GET_RECOMMENDATION = '월별 예산 추천 성공했습니다.',
   EXPENSE_CREATE = '지출 생성 성공했습니다.',
   EXPENSE_UPDATE = '지출 수정 성공했습니다.',
+  EXPENSE_DELETE = '지출 삭제 성공했습니다.',
 }

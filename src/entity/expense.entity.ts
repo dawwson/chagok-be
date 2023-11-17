@@ -5,12 +5,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Budget } from './budget.entity';
 import { Category } from './category.entity';
 
 @Entity('expenses')
@@ -49,5 +47,5 @@ export class Expense {
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

@@ -45,5 +45,5 @@ export class Budget {
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

@@ -24,7 +24,7 @@ export class User {
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {

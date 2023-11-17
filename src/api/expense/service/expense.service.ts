@@ -48,4 +48,8 @@ export class ExpenseService {
   getExpenseById(id: number): Promise<Expense> {
     return this.expenseRepo.findOneBy({ id });
   }
+
+  async deleteExpenseById(id: number): Promise<void> {
+    await this.expenseRepo.delete({ id });
+  }
 }

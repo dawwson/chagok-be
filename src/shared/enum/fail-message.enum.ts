@@ -7,4 +7,6 @@ export enum FailMessage {
   USER_PASSWORD_IS_WRONG = '비밀번호가 일치하지 않습니다.',
   EXPENSE_INVALID_CATEGORY_ID = '카테고리 ID가 유효하지 않습니다.',
   EXPENSE_NOT_FOUND = '지출이 존재하지 않습니다.',
+  EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE = 'minAmount와 maxAmount는 함께 포함되어야 합니다.',
+  EXPENSE_MIN_AMOUNT_MORE_THAN_MAX = 'minAmount는 maxAmount보다 작아야 합니다.',
 }

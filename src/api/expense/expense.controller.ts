@@ -16,20 +16,24 @@ import { CreateExpenseResponseData } from './dto/create-expense-response-data.dt
 import { UpdateExpenseResponseData } from './dto/update-expense-response-data.dto';
 import { UpdateExpenseRequestBody } from './dto/update-expense-request-body.dto';
 import { GetExpensesListRequestQuery } from './dto/get-expenses-list-request-query.dto';
+import { GetExpensesListResponseData } from './dto/get-expenses-list-reponse-data.dto';
 import { GetExpenseDetailResponseData } from './dto/get-expense-detail-response-data.dto';
 
 import { ExpenseService } from './service/expense.service';
+import { StatisticsExpenseService } from './service/statistics-expense.service';
 
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from './guard/own-expense.guard';
-import { GetExpensesListResponseData } from './dto/get-expenses-list-reponse-data.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
 export class ExpenseController {
-  constructor(private readonly expenseService: ExpenseService) {}
+  constructor(
+    private readonly expenseService: ExpenseService,
+    private readonly statisticsExpenseService: StatisticsExpenseService,
+  ) {}
 
   @Post()
   async createExpense(
@@ -82,6 +86,38 @@ export class ExpenseController {
     return {
       message: SuccessMessage.EXPENSE_GET_LIST,
       data: GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount),
+    };
+  }
+
+  @Get('statistics')
+  async getExpenseStatistics(@Req() req: RequestWithUser) {
+    // 지난달, 이번달 카테고리별 지출 합계
+    const monthStatisticsByCategory =
+      await this.statisticsExpenseService.compareLastMonthWithThisMonth(
+        req.user.id,
+      );
+
+    // 7일 전, 오늘 카테고리별 지출 합계
+    const weekStatisticsByCategory =
+      await this.statisticsExpenseService.compareLastWeekWithThisWeek(
+        req.user.id,
+      );
+    return {
+      message: SuccessMessage.EXPENSE_GET_STATISTICS,
+      data: {
+        comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
+          ...statistic,
+          // string -> number로 변환
+          lastMonthAmount: Number(statistic.lastMonthAmount),
+          thisMonthAmount: Number(statistic.thisMonthAmount),
+        })),
+        comparedToLastWeek: weekStatisticsByCategory.map((statistic) => ({
+          ...statistic,
+          // string -> number로 변환
+          lastWeekAmount: Number(statistic.lastWeekAmount),
+          thisWeekAmount: Number(statistic.thisWeekAmount),
+        })),
+      },
     };
   }
 

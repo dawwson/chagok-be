@@ -14,6 +14,7 @@ import { Type } from 'class-transformer';
 import { GetExpensesCondition } from './get-expenses-condition.dto';
 import { BadRequestException } from '@nestjs/common';
 import { GetCategoriesWithTotalAmountCondition } from './get-categories-with-total-amount-condition.dto';
+import { FailMessage } from '../../../shared/enum/fail-message.enum';
 
 export class GetExpensesListRequestQuery {
   @Type(() => Date)
@@ -54,12 +55,14 @@ export class GetExpensesListRequestQuery {
       (this.minAmount && !this.maxAmount)
     ) {
       throw new BadRequestException(
-        'minAmount와 maxAmount는 함께 포함되어야 합니다.',
+        FailMessage.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE,
       );
     }
 
     if (this.minAmount > this.maxAmount) {
-      throw new BadRequestException('minAmount는 maxAmount보다 작아야 합니다.');
+      throw new BadRequestException(
+        FailMessage.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX,
+      );
     }
 
     if (this.minAmount && this.maxAmount) {

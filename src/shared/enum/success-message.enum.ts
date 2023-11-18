@@ -10,4 +10,5 @@ export enum SuccessMessage {
   EXPENSE_GET_DETAIL = '지출 상세 조회 성공했습니다.',
   EXPENSE_UPDATE = '지출 수정 성공했습니다.',
   EXPENSE_DELETE = '지출 삭제 성공했습니다.',
+  EXPENSE_GET_STATISTICS = '지출 통계 조회 성공했습니다.',
 }

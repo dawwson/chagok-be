@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
+import { CategoryName } from '../../../shared/enum/category-name.enum';
 
 @Injectable()
 export class StatisticsExpenseService {
@@ -14,53 +15,96 @@ export class StatisticsExpenseService {
     private readonly categoryRepo: Repository<Category>,
   ) {}
 
-  compareLastMonthWithThisMonth(userId: string): Promise<{
-    lastMonthAmount: string | null;
-    thisMonthAmount: string | null;
-  }> {
+  compareLastMonthWithThisMonth(userId: string): Promise<
+    {
+      categoryId: number;
+      categoryName: CategoryName;
+      lastMonthAmount: string;
+      thisMonthAmount: string;
+    }[]
+  > {
     return (
-      this.expenseRepo
-        .createQueryBuilder('e')
+      this.categoryRepo
+        .createQueryBuilder('c')
+        .select('c.id', 'categoryId')
+        .addSelect('c.name', 'categoryName')
         // 지난 달 지출 합계
-        .select(
+        .addSelect(
           // NOTE: 지난 달에 해당하는 지출만 집계에 포함시킵니다.
-          'SUM(e.amount) FILTER(WHERE EXTRACT(MONTH FROM e.expenseDate) = EXTRACT(MONTH FROM CURRENT_DATE) - 1)',
+          'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(MONTH FROM e.expenseDate) = EXTRACT(MONTH FROM CURRENT_DATE) - 1), 0)',
           'lastMonthAmount',
         )
         // 이번 달 지출 합계
         .addSelect(
           // NOTE: 이번 달에 해당하는 지출만 집계에 포함시킵니다.
-          'SUM(amount) FILTER(WHERE EXTRACT(MONTH FROM expense_date) = EXTRACT(MONTH FROM CURRENT_DATE))',
+          'COALESCE(SUM(amount) FILTER(WHERE EXTRACT(MONTH FROM expense_date) = EXTRACT(MONTH FROM CURRENT_DATE)), 0)',
           'thisMonthAmount',
         )
-        .where('e.userId = :userId', { userId })
-        .andWhere('e.isExcluded = false')
-        .getRawOne()
+        .leftJoin(
+          'expenses',
+          'e',
+          'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false',
+          { userId },
+        )
+        // .where('e.userId = :userId', { userId })
+        // .andWhere('e.isExcluded = false')
+        .groupBy('c.id')
+        .orderBy('c.id', 'ASC')
+        .getRawMany()
     );
   }
 
-  compareLastWeekWithThisWeek(userId: string): Promise<{
-    lastWeekAmount: string | null;
-    thisWeekAmount: string | null;
-  }> {
+  compareLastWeekWithThisWeek(userId: string): Promise<
+    {
+      categoryId: number;
+      categoryName: CategoryName;
+      lastWeekAmount: string;
+      thisWeekAmount: string;
+    }[]
+  > {
     return (
-      this.expenseRepo
-        .createQueryBuilder('e')
-        // 지난 달 지출 합계
-        .select(
+      this.categoryRepo
+        .createQueryBuilder('c')
+        // 지난주 오늘 지출 합계
+        .select('c.id', 'categoryId')
+        .addSelect('c.name', 'categoryName')
+        .addSelect(
           // NOTE: 지난 주 오늘(7일 전)에 해당하는 row만 집계에 포함시킵니다.
-          "SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM e.expenseDate) = EXTRACT(DAY FROM CURRENT_DATE - interval '7 days'))",
+          // COALESCE : NULL -> 0으로 변환
+          "COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM e.expenseDate) = EXTRACT(DAY FROM CURRENT_DATE - interval '7 days')), 0)",
           'lastWeekAmount',
         )
-        // 이번 달 지출 합계
+        // 오늘 지출 합계
         .addSelect(
           // NOTE: 오늘에 해당하는 row만 집계에 포함시킵니다.
-          'SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE))',
+          'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE)), 0)',
           'thisWeekAmount',
         )
-        .where('e.userId = :userId', { userId })
-        .andWhere('e.isExcluded = false')
-        .getRawOne()
+        .leftJoin(
+          'expenses',
+          'e',
+          'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false',
+          { userId },
+        )
+        .groupBy('c.id')
+        .orderBy('c.id', 'ASC')
+        .getRawMany()
+      /*
+      select
+  c.id,
+  c.name,
+  SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE - interval '7 days')) AS lastWeekAmount,
+  SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE)) AS thisWeekAmount
+FROM
+  categories c
+inner join
+  expenses e
+  on c.id = e.category_id
+WHERE
+  e.user_id = 'c09b51ca-3116-4abd-a804-ab22315d4d1f'
+  and e.is_excluded = false
+group by c.id;
+       */
     );
   }
 }

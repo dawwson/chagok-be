@@ -91,28 +91,32 @@ export class ExpenseController {
 
   @Get('statistics')
   async getExpenseStatistics(@Req() req: RequestWithUser) {
-    const { lastMonthAmount, thisMonthAmount } =
+    // 지난달, 이번달 카테고리별 지출 합계
+    const monthStatisticsByCategory =
       await this.statisticsExpenseService.compareLastMonthWithThisMonth(
         req.user.id,
       );
 
-    const { lastWeekAmount, thisWeekAmount } =
+    // 7일 전, 오늘 카테고리별 지출 합계
+    const weekStatisticsByCategory =
       await this.statisticsExpenseService.compareLastWeekWithThisWeek(
         req.user.id,
       );
     return {
       message: '성공',
       data: {
-        comparedToLastMonth: {
-          // null이면 0, 아니면 number로 변환
-          lastMonthAmount: Number(lastMonthAmount),
-          thisMonthAmount: Number(thisMonthAmount),
-        },
-        comparedToLast: {
-          // null이면 0, 아니면 number로 변환
-          lastWeekAmount: Number(lastWeekAmount),
-          thisWeekAmount: Number(thisWeekAmount),
-        },
+        comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
+          ...statistic,
+          // string -> number로 변환
+          lastMonthAmount: Number(statistic.lastMonthAmount),
+          thisMonthAmount: Number(statistic.thisMonthAmount),
+        })),
+        comparedToLastWeek: weekStatisticsByCategory.map((statistic) => ({
+          ...statistic,
+          // string -> number로 변환
+          lastWeekAmount: Number(statistic.lastWeekAmount),
+          thisWeekAmount: Number(statistic.thisWeekAmount),
+        })),
       },
     };
   }

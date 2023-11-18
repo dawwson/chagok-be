@@ -103,7 +103,7 @@ export class ExpenseController {
         req.user.id,
       );
     return {
-      message: '성공',
+      message: SuccessMessage.EXPENSE_GET_STATISTICS,
       data: {
         comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
           ...statistic,

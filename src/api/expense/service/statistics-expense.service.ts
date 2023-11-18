@@ -46,8 +46,6 @@ export class StatisticsExpenseService {
           'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false',
           { userId },
         )
-        // .where('e.userId = :userId', { userId })
-        // .andWhere('e.isExcluded = false')
         .groupBy('c.id')
         .orderBy('c.id', 'ASC')
         .getRawMany()
@@ -89,22 +87,6 @@ export class StatisticsExpenseService {
         .groupBy('c.id')
         .orderBy('c.id', 'ASC')
         .getRawMany()
-      /*
-      select
-  c.id,
-  c.name,
-  SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE - interval '7 days')) AS lastWeekAmount,
-  SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE)) AS thisWeekAmount
-FROM
-  categories c
-inner join
-  expenses e
-  on c.id = e.category_id
-WHERE
-  e.user_id = 'c09b51ca-3116-4abd-a804-ab22315d4d1f'
-  and e.is_excluded = false
-group by c.id;
-       */
     );
   }
 }

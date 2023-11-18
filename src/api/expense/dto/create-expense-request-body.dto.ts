@@ -23,7 +23,7 @@ export class CreateExpenseRequestBody {
   amount: number;
 
   @Type(() => Date)
-  @IsDate() // YYYY-MM-DD
+  @IsDate()
   expenseDate: Date;
 
   // TODO: Mapper 클래스로 만들어보기

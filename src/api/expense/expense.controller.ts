@@ -8,12 +8,15 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 
 import { CreateExpenseRequestBody } from './dto/create-expense-request-body.dto';
 import { CreateExpenseResponseData } from './dto/create-expense-response-data.dto';
 import { UpdateExpenseResponseData } from './dto/update-expense-response-data.dto';
 import { UpdateExpenseRequestBody } from './dto/update-expense-request-body.dto';
+import { GetExpensesListRequestQuery } from './dto/get-expenses-list-request-query.dto';
+import { GetExpenseDetailResponseData } from './dto/get-expense-detail-response-data.dto';
 
 import { ExpenseService } from './service/expense.service';
 
@@ -21,7 +24,7 @@ import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from './guard/own-expense.guard';
-import { GetExpenseDetailResponseData } from './dto/get-expense-detail-response-data.dto';
+import { GetExpensesListResponseData } from './dto/get-expenses-list-reponse-data.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -64,8 +67,22 @@ export class ExpenseController {
   }
 
   @Get()
-  findAll() {
-    return 'GET /expenses';
+  async getExpensesList(
+    @Req() req: RequestWithUser,
+    @Query() dto: GetExpensesListRequestQuery,
+  ) {
+    const expenses = await this.expenseService.getExpensesWithCondition(
+      dto.toGetExpensesCondition(req.user.id),
+    );
+
+    const categoriesWithTotalAmount =
+      await this.expenseService.getCategoriesWithTotalAmount(
+        dto.toGetCategoriesWithTotalAmountCondition(req.user.id),
+      );
+    return {
+      message: SuccessMessage.EXPENSE_GET_LIST,
+      data: GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount),
+    };
   }
 
   @UseGuards(OwnExpenseGuard)

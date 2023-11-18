@@ -1,18 +1,8 @@
 import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
 import { Expense } from '../../../entity/expense.entity';
-import {
-  IsBoolean,
-  IsDate,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  MaxLength,
-  Min,
-} from 'class-validator';
 
 @Exclude()
-export class UpdateExpenseResponseData {
+export class GetExpenseDetailResponseData {
   @Expose()
   id: number;
 
@@ -32,9 +22,12 @@ export class UpdateExpenseResponseData {
   isExcluded: boolean;
 
   @Expose()
+  createdAt: Date;
+
+  @Expose()
   updatedAt: Date;
 
-  static of(expense: Expense): UpdateExpenseResponseData {
-    return plainToInstance(UpdateExpenseResponseData, expense);
+  static of(expense: Expense): GetExpenseDetailResponseData {
+    return plainToInstance(GetExpenseDetailResponseData, expense);
   }
 }

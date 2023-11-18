@@ -16,20 +16,24 @@ import { CreateExpenseResponseData } from './dto/create-expense-response-data.dt
 import { UpdateExpenseResponseData } from './dto/update-expense-response-data.dto';
 import { UpdateExpenseRequestBody } from './dto/update-expense-request-body.dto';
 import { GetExpensesListRequestQuery } from './dto/get-expenses-list-request-query.dto';
+import { GetExpensesListResponseData } from './dto/get-expenses-list-reponse-data.dto';
 import { GetExpenseDetailResponseData } from './dto/get-expense-detail-response-data.dto';
 
 import { ExpenseService } from './service/expense.service';
+import { StatisticsExpenseService } from './service/statistics-expense.service';
 
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from './guard/own-expense.guard';
-import { GetExpensesListResponseData } from './dto/get-expenses-list-reponse-data.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
 export class ExpenseController {
-  constructor(private readonly expenseService: ExpenseService) {}
+  constructor(
+    private readonly expenseService: ExpenseService,
+    private readonly statisticsExpenseService: StatisticsExpenseService,
+  ) {}
 
   @Post()
   async createExpense(
@@ -82,6 +86,34 @@ export class ExpenseController {
     return {
       message: SuccessMessage.EXPENSE_GET_LIST,
       data: GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount),
+    };
+  }
+
+  @Get('statistics')
+  async getExpenseStatistics(@Req() req: RequestWithUser) {
+    const { lastMonthAmount, thisMonthAmount } =
+      await this.statisticsExpenseService.compareLastMonthWithThisMonth(
+        req.user.id,
+      );
+
+    const { lastWeekAmount, thisWeekAmount } =
+      await this.statisticsExpenseService.compareLastWeekWithThisWeek(
+        req.user.id,
+      );
+    return {
+      message: '성공',
+      data: {
+        comparedToLastMonth: {
+          // null이면 0, 아니면 number로 변환
+          lastMonthAmount: Number(lastMonthAmount),
+          thisMonthAmount: Number(thisMonthAmount),
+        },
+        comparedToLast: {
+          // null이면 0, 아니면 number로 변환
+          lastWeekAmount: Number(lastWeekAmount),
+          thisWeekAmount: Number(thisWeekAmount),
+        },
+      },
     };
   }
 

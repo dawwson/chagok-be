@@ -31,15 +31,18 @@ export class StatisticsExpenseService {
         // 지난 달 지출 합계
         .addSelect(
           // NOTE: 지난 달에 해당하는 지출만 집계에 포함시킵니다.
+          // COALESCE : NULL -> 0으로 변환
           'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(MONTH FROM e.expenseDate) = EXTRACT(MONTH FROM CURRENT_DATE) - 1), 0)',
           'lastMonthAmount',
         )
         // 이번 달 지출 합계
         .addSelect(
           // NOTE: 이번 달에 해당하는 지출만 집계에 포함시킵니다.
+          // COALESCE : NULL -> 0으로 변환
           'COALESCE(SUM(amount) FILTER(WHERE EXTRACT(MONTH FROM expense_date) = EXTRACT(MONTH FROM CURRENT_DATE)), 0)',
           'thisMonthAmount',
         )
+        // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
         .leftJoin(
           'expenses',
           'e',
@@ -75,9 +78,11 @@ export class StatisticsExpenseService {
         // 오늘 지출 합계
         .addSelect(
           // NOTE: 오늘에 해당하는 row만 집계에 포함시킵니다.
+          // COALESCE : NULL -> 0으로 변환
           'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE)), 0)',
           'thisWeekAmount',
         )
+        // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
         .leftJoin(
           'expenses',
           'e',

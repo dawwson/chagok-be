@@ -1,15 +1,15 @@
 <h1 align="center">Budget Keeper</h1>
 
 <p align="center">
-  <img src="https://cdn.pixabay.com/photo/2018/05/15/08/44/save-3402476_1280.jpg" width="100%" height="300" />
+  <img src="https://github.com/dawwson/budget-keeper-be/assets/45624238/ba7ab27e-f40b-4d24-9ea5-00b8590536b0" width="100%" height="400" />
 </p>
 
 <h2 align="center">Introduction</h2>
 <p align="center">
-    <code>Budget Keeper</code>는 사용자들이 개인 재무를 관리하고 지출을 추적하는 데 도움을 주는 서비스입니다. 월별로 예산을 설정하고 카테고리별로 지출 내역을 관리함으로써 사용자들의 재무 목표를 달성할 수 있습니다.
+    <code>Budget Keeper</code>는 사용자들이 개인 재무를 관리하고 지출을 추적하는 데 도움을 주는 서비스입니다.<br>월별로 예산을 설정하고 카테고리별로 지출 내역을 관리함으로써 사용자들의 재무 목표를 달성할 수 있습니다.
     <br>
     <br>
-    <img src="https://img.shields.io/badge/E2E Test-Passing-2ade16?style=flat-square&logo=">
+    <img src="https://img.shields.io/badge/E2E Test-Passing-2ade16?style=flat-square">
     <br>
     <br>
 </p>
@@ -88,8 +88,10 @@ test
     </pre>
 </details>
 
+<br>
+
 ## ERD
-![Budget Keeper](https://hackmd.io/_uploads/Sy-RyRwVT.png)
+![Budget Keeper](https://github.com/dawwson/budget-keeper-be/assets/45624238/d8fe946c-c933-41bb-9791-3edfe09047eb)
 <details>
     <summary>테이블 설계 의도 보기</summary>
     <br>

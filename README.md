@@ -1,7 +1,7 @@
 <h1 align="center">Budget Keeper</h1>
 
 <p align="center">
-  <img src="https://github.com/dawwson/budget-keeper-be/assets/45624238/ba7ab27e-f40b-4d24-9ea5-00b8590536b0" width="100%" height="400" />
+  <img src="https://github.com/dawwson/budget-keeper-be/assets/45624238/ba7ab27e-f40b-4d24-9ea5-00b8590536b0" width="100%" height="300" />
 </p>
 
 <h2 align="center">Introduction</h2>

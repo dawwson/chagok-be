@@ -126,7 +126,7 @@ test
 | `POST` | `/auth/sign-in` | 로그인 | X | ✅ |
 | `GET` | `/categories` | 카테고리 목록 조회 | O | ✅ |
 | `PUT` | `/budgets/{year}/{month}` | 월별 예산 설정 | O | ✅ |
-| `GET` | `/budgets/recommendation` | 월별 예산 추천 | O | ✅ |
+| `GET` | `/budgets/{year}/{month}/recommendation` | 월별 예산 추천 | O | ✅ |
 | `POST` | `/expenses` | 지출 생성 | O | ✅ |
 | `PATCH` | `/expenses/{id}` | 지출 수정 | O | ✅ |
 | `GET` | `/expenses/{id}` | 지출 상세 조회 | O | ✅ |

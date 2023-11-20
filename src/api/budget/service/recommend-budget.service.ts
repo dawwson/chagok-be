@@ -52,8 +52,12 @@ export class RecommendBudgetService {
     const remainder = totalAmount - sum;
 
     // 이미 기타 카테고리의 예산이 있으면 그 값에 더하고, 없으면 새로 저장
-    const etcAmount = budgetsByCategoryMap.get(etcCategory.id) + remainder;
-    budgetsByCategoryMap.set(etcCategory.id, etcAmount);
+    let etcAmount = budgetsByCategoryMap.get(etcCategory.id);
+
+    budgetsByCategoryMap.set(
+      etcCategory.id,
+      etcAmount ? etcAmount + remainder : remainder,
+    );
 
     return budgetsByCategoryMap;
   }

@@ -26,6 +26,19 @@ export class RecommendBudgetService {
       month,
     );
 
+    // 6개월 내에 설정한 예산이 없는 경우
+    if (avgRatiosByCategory.length === 0) {
+      const categories = await this.dataSource.getRepository(Category).find();
+      categories.forEach(({ id, name }) => {
+        // 기타 카테고리로 모든 예산을 포함시킵니다.
+        name === CategoryName.ETC
+          ? budgetsByCategoryMap.set(id, totalAmount)
+          : budgetsByCategoryMap.set(id, 0);
+      });
+
+      return budgetsByCategoryMap;
+    }
+
     // 총 예산과 비교할 합계
     let sum = 0;
 
@@ -101,34 +114,4 @@ export class RecommendBudgetService {
       .groupBy('"category_ratios"."categoryId"')
       .getRawMany();
   }
-
-  /*
-  <Raw Query>
-    select
-      "category_ratios"."categoryId" as "categoryId",
-      AVG(ratio) as "avgPercentage"
-    from
-      (
-        select
-          "b"."year" as "year",
-          "b"."month" as "month",
-          "bc"."category_id" as "categoryId",
-          AVG("bc"."amount" * 100 / "b"."total_amount") as "ratio"
-        from
-          "budgets" "b"
-        inner join "budget_category" "bc" on
-          "bc"."budget_id" = "b"."id"
-          and ("b"."id" = "bc"."budget_id")
-        where
-          "b"."user_id" = '988028bb-8368-4bf0-b702-c3a9ca078ebe'
-          and TO_DATE("b"."year" || '-' || "b"."month", 'YYYY-MM') >= TO_DATE('2023-03', 'YYYY-MM') - interval '6 months'
-          and TO_DATE(year || '-' || month, 'YYYY-MM') < TO_DATE('2023-03', 'YYYY-MM')
-        group by
-          "b"."year",
-          "b"."month",
-          "bc"."category_id"
-      ) "category_ratios"
-    group by
-      "category_ratios"."categoryId";
-   */
 }

@@ -5,11 +5,11 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { InMemoryTestingModule } from '../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../in-memory-testing/setup-test-data';
-import { testExpenses, testUsers } from '../in-memory-testing/test-data';
+import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
+import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
+import { setupTestData } from '../../in-memory-testing/setup-test-data';
+import { testCategories, testUsers } from '../../in-memory-testing/test-data';
 
 describe('/expenses (DELETE)', () => {
   let app: INestApplication;
@@ -67,18 +67,35 @@ describe('/expenses (DELETE)', () => {
       agent.set('Cookie', res.get('Set-Cookie'));
     });
 
-    test('지출 삭제 성공(200)', async () => {
+    test('지출 생성 성공(201)', async () => {
       // given
-      const testExpense = testExpenses[0];
+      const category = testCategories[0];
+
+      const testRequestBody = {
+        categoryId: category.id,
+        content: '떡볶이',
+        amount: 14000,
+        expenseDate: new Date(),
+      };
 
       // when
-      const res = await agent //
-        .delete(`/expenses/${testExpense.id}`) //
-        .expect(200);
+      const res = await agent
+        .post('/expenses')
+        .send(testRequestBody)
+        .expect(201);
 
       // then
       expect(res.body).toEqual({
         message: expect.any(String),
+        data: {
+          id: expect.any(Number),
+          categoryId: category.id,
+          content: testRequestBody.content,
+          amount: testRequestBody.amount,
+          expenseDate: testRequestBody.expenseDate.toISOString(),
+          isExcluded: false,
+          createdAt: expect.any(String),
+        },
       });
     });
   });

@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
-import { AppModule } from '../../src/app.module';
+import { AppModule } from '../../../src/app.module';
 
 describe.skip('/categories (GET)', () => {
   let app: INestApplication;

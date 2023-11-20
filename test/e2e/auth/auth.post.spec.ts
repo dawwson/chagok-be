@@ -4,11 +4,11 @@ import { DataSource } from 'typeorm';
 import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 
-import { initializeDataSource } from '../in-memory-testing/initialize-data-source';
-import { setupMemoryDb } from '../in-memory-testing/setup-memory-db';
-import { setupTestData } from '../in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '../in-memory-testing/in-memory-testing.module';
-import { testUsers } from '../in-memory-testing/test-data';
+import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
+import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
+import { setupTestData } from '../../in-memory-testing/setup-test-data';
+import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
+import { testUsers } from '../../in-memory-testing/test-data';
 
 describe('/auth (POST)', () => {
   let app: INestApplication;

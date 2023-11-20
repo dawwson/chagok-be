@@ -67,35 +67,56 @@ describe('/expenses (DELETE)', () => {
       agent.set('Cookie', res.get('Set-Cookie'));
     });
 
-    test('지출 생성 성공(201)', async () => {
-      // given
-      const category = testCategories[0];
+    describe('POST /expenses', () => {
+      test('지출 생성 성공(201)', async () => {
+        // given
+        const category = testCategories[0];
 
-      const testRequestBody = {
-        categoryId: category.id,
-        content: '떡볶이',
-        amount: 14000,
-        expenseDate: new Date(),
-      };
-
-      // when
-      const res = await agent
-        .post('/expenses')
-        .send(testRequestBody)
-        .expect(201);
-
-      // then
-      expect(res.body).toEqual({
-        message: expect.any(String),
-        data: {
-          id: expect.any(Number),
+        const testRequestBody = {
           categoryId: category.id,
-          content: testRequestBody.content,
-          amount: testRequestBody.amount,
-          expenseDate: testRequestBody.expenseDate.toISOString(),
-          isExcluded: false,
-          createdAt: expect.any(String),
-        },
+          content: '떡볶이',
+          amount: 14000,
+          expenseDate: new Date(),
+        };
+
+        // when
+        const res = await agent
+          .post('/expenses')
+          .send(testRequestBody)
+          .expect(201);
+
+        // then
+        expect(res.body).toEqual({
+          message: expect.any(String),
+          data: {
+            id: expect.any(Number),
+            categoryId: category.id,
+            content: testRequestBody.content,
+            amount: testRequestBody.amount,
+            expenseDate: testRequestBody.expenseDate.toISOString(),
+            isExcluded: false,
+            createdAt: expect.any(String),
+          },
+        });
+      });
+
+      test('지출 생성 실패(400) - 유효하지 않은 categoryId', async () => {
+        // given
+        const invalidCategoryId = 9999;
+
+        const testRequestBody = {
+          categoryId: invalidCategoryId,
+          content: '떡볶이',
+          amount: 14000,
+          expenseDate: new Date(),
+        };
+
+        // when
+        const res = await agent
+          .post('/expenses')
+          .send(testRequestBody)
+          // then
+          .expect(400);
       });
     });
   });

@@ -1,4 +1,10 @@
-import { Exclude, Expose, plainToInstance, Transform } from 'class-transformer';
+import {
+  Exclude,
+  Expose,
+  plainToInstance,
+  Transform,
+  Type,
+} from 'class-transformer';
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
 
@@ -8,7 +14,7 @@ export class GetExpensesListResponseData {
   totalAmount: number;
 
   @Expose()
-  totalAmountByCategory: CategoryWithTotalAmount[];
+  totalAmountsByCategory: CategoryWithTotalAmount[];
 
   @Expose()
   expenses: PartialExpense[];
@@ -19,7 +25,7 @@ export class GetExpensesListResponseData {
       (acc, expense) => (acc += expense.amount),
       0,
     );
-    getExpensesListResponseData.totalAmountByCategory = plainToInstance(
+    getExpensesListResponseData.totalAmountsByCategory = plainToInstance(
       CategoryWithTotalAmount,
       Categories,
     );
@@ -32,12 +38,13 @@ export class GetExpensesListResponseData {
 }
 
 class CategoryWithTotalAmount {
-  @Expose()
-  id: number;
+  @Expose({ name: 'id' })
+  categoryId: number;
 
   @Expose()
   name: number;
 
+  @Type(() => Number)
   @Expose()
   totalAmount: number;
 }

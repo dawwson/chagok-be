@@ -5,13 +5,14 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { InMemoryTestingModule } from '../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../in-memory-testing/setup-test-data';
-import { testExpenses, testUsers } from '../in-memory-testing/test-data';
+import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
+import { setupTestData } from '../../in-memory-testing/setup-test-data';
+import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
+import { testCategories, testUsers } from '../../in-memory-testing/test-data';
+import { numbers } from 'pg-mem/types/datatypes';
 
-describe('/expenses (DELETE)', () => {
+describe('/budgets (GET)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
   let memoryDb: IMemoryDb;
@@ -67,18 +68,46 @@ describe('/expenses (DELETE)', () => {
       agent.set('Cookie', res.get('Set-Cookie'));
     });
 
-    test('지출 삭제 성공(200)', async () => {
-      // given
-      const testExpense = testExpenses[0];
+    describe('GET /budgets/recommendation', () => {
+      test('월별 예산 추천 성공(200)', async () => {
+        // given
+        const testYear = '2023';
+        const testMonth = '11';
+        const testTotalAmount = 1000000;
 
-      // when
-      const res = await agent //
-        .delete(`/expenses/${testExpense.id}`) //
-        .expect(200);
+        // when
+        const res = await agent
+          .get(`/budgets/${testYear}/${testMonth}/recommendation`)
+          .query({ totalAmount: testTotalAmount })
+          .expect(200);
 
-      // then
-      expect(res.body).toEqual({
-        message: expect.any(String),
+        // then
+        expect(res.body).toEqual({
+          message: expect.any(String),
+          data: {
+            year: testYear,
+            month: testMonth,
+            budgetsByCategory: expect.any(Array),
+          },
+        });
+        // 모든 카테고리에 대한 예산이 나오는지 확인
+        expect(res.body.data.budgetsByCategory).toHaveLength(
+          testCategories.length,
+        );
+        // 카테고리별 예산의 합이 설정한 총 예산과 일치하는지 확인
+        expect(
+          res.body.data.budgetsByCategory.reduce(
+            (acc, { amount }) => (acc += amount),
+            0,
+          ),
+        ).toBe(testTotalAmount);
+
+        res.body.data.budgetsByCategory.forEach((budgetByCategory) => {
+          expect(budgetByCategory).toEqual({
+            categoryId: expect.any(Number),
+            amount: expect.any(Number),
+          });
+        });
       });
     });
   });

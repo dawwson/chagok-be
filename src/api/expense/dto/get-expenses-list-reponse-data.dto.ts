@@ -1,4 +1,10 @@
-import { Exclude, Expose, plainToInstance, Transform } from 'class-transformer';
+import {
+  Exclude,
+  Expose,
+  plainToInstance,
+  Transform,
+  Type,
+} from 'class-transformer';
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
 
@@ -8,20 +14,20 @@ export class GetExpensesListResponseData {
   totalAmount: number;
 
   @Expose()
-  totalAmountByCategory: CategoryWithTotalAmount[];
+  totalAmountsByCategory: CategoryWithTotalAmount[];
 
   @Expose()
   expenses: PartialExpense[];
 
-  static of(expenses: Expense[], Categories: Category[]) {
+  static of(expenses: Expense[], categories: Category[]) {
     const getExpensesListResponseData = new GetExpensesListResponseData();
     getExpensesListResponseData.totalAmount = expenses.reduce(
       (acc, expense) => (acc += expense.amount),
       0,
     );
-    getExpensesListResponseData.totalAmountByCategory = plainToInstance(
+    getExpensesListResponseData.totalAmountsByCategory = plainToInstance(
       CategoryWithTotalAmount,
-      Categories,
+      categories,
     );
     getExpensesListResponseData.expenses = plainToInstance(
       PartialExpense,
@@ -32,12 +38,13 @@ export class GetExpensesListResponseData {
 }
 
 class CategoryWithTotalAmount {
-  @Expose()
-  id: number;
+  @Expose({ name: 'id' })
+  categoryId: number;
 
   @Expose()
-  name: number;
+  name: string;
 
+  @Type(() => Number)
   @Expose()
   totalAmount: number;
 }
@@ -48,10 +55,10 @@ class PartialExpense {
   id: number;
 
   @Expose()
-  content: number;
+  content: string;
 
   @Expose()
-  amount: number;
+  amount: string;
 
   @Expose()
   expenseDate: string;

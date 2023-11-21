@@ -149,5 +149,44 @@ describe('/expenses (GET)', () => {
           .expect(404);
       });
     });
+
+    describe('GET /expenses/statistics', () => {
+      test('지출 통계 성공(200)', async () => {
+        // given
+
+        // when
+        const res = await agent //
+          .get('/expenses/statistics') //
+          .expect(200);
+
+        // then
+        expect(res.body).toEqual({
+          message: expect.any(String),
+          data: {
+            comparedToLastMonth: expect.any(Array),
+            comparedToLastWeek: expect.any(Array),
+          },
+        });
+
+        res.body.data.comparedToLastMonth.forEach((category) => {
+          expect(category).toMatchObject({
+            categoryId: expect.any(Number),
+            // FIXME: name이 쿼리에서부터 null로 나옴. 그런데 로컬 DB로 테스트할 때는 문제 없음(아마도 pg-mem 문제?)
+            // categoryName: expect.any(String),
+            lastMonthAmount: expect.any(Number),
+            thisMonthAmount: expect.any(Number),
+          });
+        });
+        res.body.data.comparedToLastWeek.forEach((category) => {
+          expect(category).toMatchObject({
+            categoryId: expect.any(Number),
+            // FIXME: name이 쿼리에서부터 null로 나옴. 그런데 로컬 DB로 테스트할 때는 문제 없음(아마도 pg-mem 문제?)
+            // categoryName: expect.any(String),
+            lastWeekAmount: expect.any(Number),
+            thisWeekAmount: expect.any(Number),
+          });
+        });
+      });
+    });
   });
 });

@@ -19,7 +19,7 @@ export class GetExpensesListResponseData {
   @Expose()
   expenses: PartialExpense[];
 
-  static of(expenses: Expense[], Categories: Category[]) {
+  static of(expenses: Expense[], categories: Category[]) {
     const getExpensesListResponseData = new GetExpensesListResponseData();
     getExpensesListResponseData.totalAmount = expenses.reduce(
       (acc, expense) => (acc += expense.amount),
@@ -27,7 +27,7 @@ export class GetExpensesListResponseData {
     );
     getExpensesListResponseData.totalAmountsByCategory = plainToInstance(
       CategoryWithTotalAmount,
-      Categories,
+      categories,
     );
     getExpensesListResponseData.expenses = plainToInstance(
       PartialExpense,
@@ -42,7 +42,7 @@ class CategoryWithTotalAmount {
   categoryId: number;
 
   @Expose()
-  name: number;
+  name: string;
 
   @Type(() => Number)
   @Expose()
@@ -55,10 +55,10 @@ class PartialExpense {
   id: number;
 
   @Expose()
-  content: number;
+  content: string;
 
   @Expose()
-  amount: number;
+  amount: string;
 
   @Expose()
   expenseDate: string;

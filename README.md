@@ -31,13 +31,14 @@
 <br>
 
 ## Table of Contents
-- [Installation](#Installation)
-- [Directory](#Directory)
-- [ERD](#ERD)
-- [REST API](#REST-API)
-- [Convention](#Convention)
-- [Architecture](#Architecture)
+- [Installation](#installation)
+- [Directory](#directory)
+- [ERD](#erd)
+- [REST API](#rest-api)
+- [Convention](#convention)
+- [Architecture](#architecture)
 - [Project TIL](#project-til-작성-중)
+- [Test Result](#test-result)
 
 <br>
 
@@ -198,6 +199,13 @@ test
 - `CQS 패턴`
 - `TypeORM`으로 `SubQuery` 작성하기
 - `In-Memory DB`로 `E2E` 테스트 만들기 with `pg-mem`
+
+<br>
+
+## Test Result
+- E2E 테스트 결과
+<img width="335" alt="스크린샷 2023-11-21 오후 8 08 41" src="https://github.com/dawwson/budget-keeper-be/assets/45624238/75e2ba05-877b-44ee-97bb-01153b2be9d7">
+
 
 <br>
 <br>

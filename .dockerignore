@@ -1,0 +1,27 @@
+# Versioning and metadata
+.git
+.gitignore
+.dockerignore
+
+# 빌드 결과물들
+dist
+node_modules
+coverage
+
+# 프로덕션과 관련없는 환경변수 파일
+.development.env
+.template.env
+.test.env
+
+# 프로덕션과 관련없는 파일들
+.github
+.idea
+database
+test
+.eslintrc.js
+.prettierrc
+docker-compose.db.yml
+Dockerfile
+init.sql
+nest-cli.json
+README.md

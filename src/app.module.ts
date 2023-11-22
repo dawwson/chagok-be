@@ -41,6 +41,9 @@ import { ExpenseModule } from './api/expense/expense.module';
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),
+          // FIXME: RDS DB 접근 시 ssl 인증을 요구함.
+          //        개발 단계에서는 ssl 검증을 생략할 수 있으나, 프로덕션 단계에서는 인증서를 쓰는 게 좋다.
+          ssl: { rejectUnauthorized: false },
         };
       },
     }),

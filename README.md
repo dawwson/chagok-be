@@ -23,8 +23,11 @@
     <br>
     <img src="https://img.shields.io/badge/PostgreSQL-00758F?style=for-the-badge&logo=postgresql&logoColor=white">
     <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white">
-    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
     <img src="https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
+    <br>
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+    <img src="https://img.shields.io/badge/aws ec2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white">
+    <img src="https://img.shields.io/badge/aws rds-527FFF?style=for-the-badge&logo=amazon-rds&logoColor=white">
 
 </p>
 
@@ -37,7 +40,8 @@
 - [REST API](#rest-api)
 - [Convention](#convention)
 - [Architecture](#architecture)
-- [Project TIL](#project-til-작성-중)
+- [Deployment Structure](#deployment-structure)
+- [TIL & Trouble Shooting](#til-&-trouble-shooting)
 - [Test Result](#test-result)
 
 <br>
@@ -59,24 +63,24 @@
         <code>
 src
 ├── api                # API 요청이 들어오는 Controller가 포함된 모듈
-│   ├── auth           # 인증 모듈(/auth)
-│   │   ├── dto
-│   │   ├── service
-│   │   └── strategy
-│   ├── budget         # 예산 모듈(/budgets)
-│   │   ├── dto
-│   │   └── service
-│   ├── category       # 카테고리 모듈(/categories)
-│   │   ├── dto
-│   │   └── service
-│   └── expense        # 지출 모듈(/expenses)
-│       ├── dto
-│       ├── enum
-│       ├── guard
-│       └── service
+│   ├── auth           # 인증 모듈(/auth)
+│   │   ├── dto
+│   │   ├── service
+│   │   └── strategy
+│   ├── budget         # 예산 모듈(/budgets)
+│   │   ├── dto
+│   │   └── service
+│   ├── category       # 카테고리 모듈(/categories)
+│   │   ├── dto
+│   │   └── service
+│   └── expense        # 지출 모듈(/expenses)
+│       ├── dto
+│       ├── enum
+│       ├── guard
+│       └── service
 ├── config             # 환경 변수 설정 관련
 ├── database
-│   └── seeding        # DB seeding 관련
+│   └── seeding        # DB seeding 관련
 ├── entity
 └── shared             # 여러 모듈에 걸쳐서 쓰이는 파일
     ├── enum
@@ -146,12 +150,12 @@ test
 <details>
     <summary>아키텍쳐 설계 의도 보기</summary>
     <br>
-    <b>1. Repository 파일을 분리하지 않습니다.</b>
+    <b>1. Custom Repository를 사용하지 않습니다.</b>
     <ul>
         <li><code>TypeORM</code> 0.3 버전부터 <code>@EntityRepository()</code> 데코레이터가 <code>deprecated</code>됨에 따라 여러 기술 블로그에서 <code>Custom Repository</code> 만드는 방법을 소개하고 있습니다. 하지만 따라서 적용하지 않은 이유는 다음과 같습니다. </li>
             <ul>
-                <li>이미 <code>ORM</code>에서 제공하는 메서드를 한 번 더 추상화하게 되어, 요구사항이 늘어날수록 유지보수가 어려워집니다.</li>
-                <li>향후 <code>ORM</code>의 교체를 고려하여 서비스 레이어에서의 <code>ORM</code>에 대한 의존성을 줄이기 위해 분리한다 하더라도, 현실적으로 한 번 정해진 <code>ORM</code>시스템을 교체하기는 어렵습니다. <code>ORM</code>마다 모델링 방법부터도 매우 다르니까요!</li>
+                <li>이미 <code>ORM</code>에서 제공하는 메서드를 한 번 더 추상화하게 되어, 요구사항이 늘어날수록 유지보수가 어려워진다고 느꼈습니다.</li>
+                <li>향후 <code>ORM</code>의 교체를 고려하여 서비스 레이어에서의 <code>ORM</code>에 대한 의존성을 줄이기 위해 분리한다 하더라도, 현실적으로 한 번 정해진 <code>ORM</code>시스템을 교체하기는 어렵다고 생각했습니다. <code>ORM</code>마다 모델링 방법부터도 매우 다르기 때문입니다.</li>
                 <li><code>Custom Repository</code>의 단위 테스트가 어려워집니다. <code>Repository</code>를 분리하게 되면 테스트의 목적은 <code>TypeORM</code>의 메소드가 잘 동작하는지 확인하는 것에 그치게 됩니다.</li>
             </ul>
         <li>대신 <code>NestJS</code>에서 제공하는 <code>@InjectRepository()</code>를 사용하여 <code>Repository Pattern</code>을 사용합니다.</li>
@@ -181,7 +185,7 @@ test
             </ul>
         <li><code>Entity</code> ➡️ <code>Response</code></li>
             <ul>
-                <li>응답 <code>DTO</code> 클래스의 static 함수에서 변환합니다</li>
+                <li>응답 <code>DTO</code> 클래스의 <code>static</code> 함수에서 변환합니다</li>
                 <li>함수명은 <code>of()</code>로 지정합니다.</li>
             </ul>
         <li>참고 자료</li>
@@ -193,7 +197,20 @@ test
 
 <br>
 
-## Project TIL (작성 중...😓)
+## Deployment Structure
+<img width="1082" alt="image" src="https://github.com/dawwson/budget-keeper-be/assets/45624238/28afc544-793d-40bd-8e04-4758ad12f91e">
+
+- 로컬 개발 환경에서 프로덕션 환경변수를 설정하여 `Docker`기반으로 빌드합니다.
+- `Docker Hub`에 빌드한 이미지를 업로드합니다.
+- `EC2`에서 이미지를 내려받아서 실행합니다.
+- `EC2`와 `RDS`는 동일한 `VPC` 내에서 다른 보안 그룹으로 설정하여 통신합니다.
+- 참고 자료
+  - [[AWS] EC2에서 RDS로 VPC 통신을 어떻게 하나요?](https://support.bespinglobal.com/ko/support/solutions/articles/73000615322--aws-ec2%EC%97%90%EC%84%9C-rds%EB%A1%9C-vpc-%ED%86%B5%EC%8B%A0%EC%9D%84-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%98%EB%82%98%EC%9A%94-)
+  - [[AWS RDS] EC2와 RDS 연동하기 / EC2에서 RDS 접근하기](https://codesyun.tistory.com/303)
+
+<br>
+
+## TIL & Trouble Shooting
 [자세한 내용은 GitHub Wiki로 이동! 🏃🏻‍♀️💨](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-TIL)
 
 - `CQS 패턴`

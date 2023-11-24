@@ -5,7 +5,7 @@ FROM node:18 AS builder
 WORKDIR /usr/app/source
 # 앱의 소스 코드 복사
 COPY . .
-# 의존성 설치(package-lock.json 기준 & dev-Dependencies 포함)
+# 의존성 설치(package-lock.json 기준 & devDependencies 포함)
 RUN npm ci
 # 빌드
 RUN npm run build
@@ -18,9 +18,8 @@ WORKDIR /usr/app/build
 # 빌드한 소스 코드 복사(실행에 필요한 것만)
 COPY --from=builder /usr/app/source/package*.json .
 COPY --from=builder /usr/app/source/dist ./dist
-COPY --from=builder /usr/app/source/node_modules ./node_modules
 COPY --from=builder /usr/app/source/.production.env .
-# 의존성 설치(dev-Dependencies 제외)
+# 의존성 설치(devDependencies 제외)
 RUN npm ci --only=production
 # 노출할 포트 지정
 EXPOSE 5190

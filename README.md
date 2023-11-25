@@ -210,14 +210,13 @@ test
 
 <br>
 
-## TIL & Trouble Shooting
-[자세한 내용은 GitHub Wiki로 이동! 🏃🏻‍♀️💨](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-TIL)
+## TIL & Retrospective
+[자세한 내용은 GitHub Wiki로 이동! 🏃🏻‍♀️💨](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%08TIL-&-Retrospective)
 
-- `CQS 패턴`
-- `TypeORM`으로 `SubQuery` 작성하기
-- `In-Memory DB`로 `E2E` 테스트 만들기 with `pg-mem`
-
+- [[NestJS] `in-memory` 데이터베이스로 테스트 코드 작성하기(with `pg-mem`)](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%08TIL-&-Retrospective#-in-memory-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%EB%A1%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0with-pg-mem)
+- [[Docker] 빌드 스테이지와 실행 스테이지 나누기](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%08TIL-&-Retrospective#-%EB%B9%8C%EB%93%9C-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80%EC%99%80-%EC%8B%A4%ED%96%89-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80-%EB%82%98%EB%88%84%EA%B8%B0)
 <br>
+- [[AWS] EC2 & RDS 환경 설정 방법](https://github.com/dawwson/budget-keeper-be/wiki/3%EF%B8%8F%E2%83%A3-%08TIL-&-Retrospective#1-6-aws)
 
 ## Test Result
 - E2E 테스트 결과

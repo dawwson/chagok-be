@@ -1,4 +1,5 @@
-import { newDb, IMemoryDb } from 'pg-mem';
+import { newDb, IMemoryDb, DataType } from 'pg-mem';
+import { v4 } from 'uuid';
 
 export const setupMemoryDb = (): IMemoryDb => {
   const db = newDb({
@@ -18,6 +19,16 @@ export const setupMemoryDb = (): IMemoryDb => {
     name: 'current_database',
     // 쿼리 결과
     implementation: () => 'test',
+  });
+
+  // CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+  db.registerExtension('uuid-ossp', (schema) => {
+    schema.registerFunction({
+      name: 'uuid_generate_v4',
+      returns: DataType.uuid,
+      implementation: v4,
+      impure: true,
+    });
   });
 
   return db;

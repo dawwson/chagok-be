@@ -3,15 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 @Entity('users')
 export class User {
-  @PrimaryColumn({ type: 'uuid', default: uuid() })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })

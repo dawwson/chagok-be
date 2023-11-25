@@ -41,7 +41,7 @@
 - [Convention](#convention)
 - [Architecture](#architecture)
 - [Deployment Structure](#deployment-structure)
-- [TIL & Trouble Shooting](#til--trouble-shooting)
+- [TIL & Retrospective](#til--retrospective)
 - [Test Result](#test-result)
 
 <br>

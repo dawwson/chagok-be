@@ -17,7 +17,8 @@ import serverConfig from '../../src/config/server.config';
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(), // NOTE: TypeORM DataSource를 프로바이더로 등록됩니다. 세부 옵션은 setup.ts에서 설정합니다.
+    // NOTE: TypeORM DataSource를 프로바이더로 등록됩니다. 세부 옵션은 initialize-data-source.ts에서 설정합니다.
+    TypeOrmModule.forRoot(),
     AuthModule,
     CategoryModule,
     BudgetModule,

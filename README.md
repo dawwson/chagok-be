@@ -204,9 +204,6 @@ test
 - `Docker Hub`에 빌드한 이미지를 업로드합니다.
 - `EC2`에서 이미지를 내려받아서 실행합니다.
 - `EC2`와 `RDS`는 동일한 `VPC` 내에서 다른 보안 그룹으로 설정하여 통신합니다.
-- 참고 자료
-  - [[AWS] EC2에서 RDS로 VPC 통신을 어떻게 하나요?](https://support.bespinglobal.com/ko/support/solutions/articles/73000615322--aws-ec2%EC%97%90%EC%84%9C-rds%EB%A1%9C-vpc-%ED%86%B5%EC%8B%A0%EC%9D%84-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%98%EB%82%98%EC%9A%94-)
-  - [[AWS RDS] EC2와 RDS 연동하기 / EC2에서 RDS 접근하기](https://codesyun.tistory.com/303)
 
 <br>
 

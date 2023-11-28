@@ -97,13 +97,16 @@ test
 <br>
 
 ## ERD
-![Budget Keeper](https://github.com/dawwson/budget-keeper-be/assets/45624238/d8fe946c-c933-41bb-9791-3edfe09047eb)
+![budget-keeper erd](https://github.com/dawwson/budget-keeper-be/assets/45624238/755f0bc3-fdac-469c-b748-15518095318c)
+
 <details>
     <summary>테이블 설계 의도 보기</summary>
     <br>
     <b>사용자, 예산, 카테고리의 관계</b>
         <ul>
-            <li>사용자는 여러 예산을 설정할 수 있습니다. 그리고 한 번 예산을 설정할 때 카테고리별 예산을 지정할 수 있으므로 예산과 카테고리는 다대다 관계입니다. 다대다 관계는 확장성과 유지보수 문제로 일반적으로 잘 사용하지 않으므로 중간 테이블<code>budget_category</code>을 두어 일대다, 다대일로 풀어냈습니다.</li>
+            <li>사용자는 여러 예산을 설정할 수 있습니다.</li>
+            <li>한 번 예산을 설정할 때 카테고리별 예산을 지정할 수 있으므로 예산과 카테고리는 다대다 관계입니다.</li>
+            <li>다대다 관계는 확장성과 유지보수 문제로 일반적으로 잘 사용하지 않으므로 중간 테이블<code>budget_category</code>을 두어 일대다, 다대일로 풀어냈습니다.</li>
             <ul>
                 <li>사용자 : 예산 = <code>1:N</code></li>
                 <li>예산 : 예산-카테고리 = <code>1:N</code></li>
@@ -112,7 +115,8 @@ test
         </ul>
     <b>사용자, 지출, 카테고리의 관계</b>
         <ul>
-            <li>사용자는 여러 지출을 등록할 수 있으므로 일대다 관계입니다. 그리고 한 번 지출을 등록할 때 한 개의 카테고리를 지정할 수 있으므로 다대일 관계입니다.</li>
+            <li>사용자는 여러 지출을 등록할 수 있으므로 일대다 관계입니다.</li>
+            <li>한 번 지출을 등록할 때 한 개의 카테고리를 지정할 수 있으므로 다대일 관계입니다.</li>
             <ul>
                 <li>사용자 : 지출 = <code>1:N</code></li>
                 <li>지출 : 카테고리 = <code>N:1</code></li>

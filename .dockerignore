@@ -9,9 +9,9 @@ node_modules
 coverage
 
 # 프로덕션과 관련없는 환경변수 파일
-.development.env
-.template.env
-.test.env
+.env.dev
+.env.template
+.env.test
 
 # 프로덕션과 관련없는 파일들
 .github

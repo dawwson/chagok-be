@@ -19,7 +19,7 @@ import { ExpenseModule } from './api/expense/expense.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.development.env', '.stage.env', '.production.env'],
+      envFilePath: ['.env.dev', '.env.stage', '.env.prod'],
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),

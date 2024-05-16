@@ -1,7 +1,7 @@
 # .env
-.development.env
-.stage.env
-.production.env
+.env.dev
+.env.stage
+.env.prod
 
 # docker-compose db 볼륨 바인딩 경로
 /database

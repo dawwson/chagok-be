@@ -1,6 +1,4 @@
 # 개발 환경에서만 사용합니다.
-version: '3.8'
-
 services:
   db:
     # Docker Hub에서 이미지 다운로드
@@ -9,7 +7,7 @@ services:
     container_name: postgres
     # <로컬:컨테이너> 포트 바인딩
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}:5432
     # 환경변수 설정
     environment:
       POSTGRES_USER: ${DB_USERNAME}

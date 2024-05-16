@@ -18,8 +18,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     res.status(status).json({
       statusCode: status,
       path: req.url,
-      code: exception.message,
-      detail: ErrorMessage[exception.message],
+      code: status >= 500 ? 'INTERNAL_SERVER_ERROR' : exception.message,
+      detail:
+        status >= 500 ? exception.message : ErrorMessage[exception.message],
       timestamp: new Date().toISOString(),
     });
   }

@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { RequestWithUser } from '../../../shared/interface/request-with-user.interfact';
+import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
 import { ExpenseLib } from '../service/expense.lib';
 import { FailMessage } from '../../../shared/enum/fail-message.enum';
 

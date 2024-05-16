@@ -18,7 +18,7 @@ import { SetBudgetService } from './service/set-budget.service';
 
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
-import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
+import { RequestWithUser } from '../../shared/interface/request-with-user.interface';
 import { GetMonthlyBudgetRecommendationRequestParam } from './dto/get-monthly-budget-recommendation-request-param.dto';
 import { RecommendBudgetService } from './service/recommend-budget.service';
 

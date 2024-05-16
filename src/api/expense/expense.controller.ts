@@ -23,7 +23,7 @@ import { ExpenseService } from './service/expense.service';
 import { StatisticsExpenseService } from './service/statistics-expense.service';
 
 import { SuccessMessage } from '../../shared/enum/success-message.enum';
-import { RequestWithUser } from '../../shared/interface/request-with-user.interfact';
+import { RequestWithUser } from '../../shared/interface/request-with-user.interface';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from './guard/own-expense.guard';
 

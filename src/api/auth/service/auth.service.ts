@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { VerifyUserDto } from '../dto/verify-user.dto';
 import { User } from '../../../entity/user.entity';
-import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
       return await this.userRepo.save(userToSave);
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException(FailMessage.USER_EMAIL_IS_DUPLICATED);
+        throw new ConflictException(ErrorCode.USER_EMAIL_IS_DUPLICATED);
       }
     }
   }
@@ -44,12 +44,12 @@ export class AuthService {
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<User> {
     const user = await this.userRepo.findOneBy({ email: verifyUserDto.email });
     if (!user) {
-      throw new UnauthorizedException(FailMessage.USER_EMAIL_DO_NOT_EXIST);
+      throw new UnauthorizedException(ErrorCode.USER_EMAIL_DO_NOT_EXIST);
     }
 
     const isMatch = await bcrypt.compare(verifyUserDto.password, user.password);
     if (!isMatch) {
-      throw new UnauthorizedException(FailMessage.USER_PASSWORD_IS_WRONG);
+      throw new UnauthorizedException(ErrorCode.USER_PASSWORD_IS_WRONG);
     }
     return user;
   }

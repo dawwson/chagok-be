@@ -1,13 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { IServerConfig } from '../../../shared/interface/server-config.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../../entity/user.entity';
+import { PassportStrategy } from '@nestjs/passport';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
-import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+
+import { User } from '../../../entity/user.entity';
+import { IServerConfig } from '../../../shared/interface/server-config.interface';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -32,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // NOTE: 여기서부터는 JWT가 유효하다고 가정합니다.
     const user = await this.userRepo.findOneBy({ id: payload.id });
     if (!user) {
-      throw new UnauthorizedException(FailMessage.USER_NOT_FOUND);
+      throw new UnauthorizedException(ErrorCode.USER_NOT_FOUND);
     }
 
     // password만 삭제 후 request의 user에 붙여서 전달

@@ -14,14 +14,9 @@ export const initializeDataSource = async (
   });
 
   // 커넥션 수립
-  await dataSource
-    .initialize()
-    .then(() => {
-      console.log('Data Source has been initialized!');
-    })
-    .catch((error) => {
-      console.error('Error during Data Source initialization', error);
-    });
+  await dataSource.initialize().catch((error) => {
+    console.error('Error during Data Source initialization', error);
+  });
 
   return dataSource;
 };

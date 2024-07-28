@@ -13,7 +13,7 @@ import serverConfig from '../../src/config/server.config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.test.env'],
+      envFilePath: ['.env.test'],
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),

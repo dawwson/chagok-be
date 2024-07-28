@@ -222,7 +222,7 @@ test
 
 ## Test Result
 - E2E 테스트 결과
-<img width="335" alt="스크린샷 2023-11-21 오후 8 08 41" src="https://github.com/dawwson/budget-keeper-be/assets/45624238/75e2ba05-877b-44ee-97bb-01153b2be9d7">
+<img width="316" alt="image" src="https://github.com/user-attachments/assets/3de8c899-ac35-43b1-a4c9-88e697905368">
 
 
 <br>

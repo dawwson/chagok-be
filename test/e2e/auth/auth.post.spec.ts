@@ -1,51 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
 import { testUsers } from '../../in-memory-testing/test-data';
+import { AppModule } from '../../../src/app.module';
+import {
+  clearDatabase,
+  setupTestData,
+} from '../../in-memory-testing/setup-test-data';
 
 describe('/auth (POST)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
-  let memoryDb: IMemoryDb;
-  let backup: IBackup;
 
   beforeAll(async () => {
-    // 1. DB 설정
-    memoryDb = setupMemoryDb();
-    // 2. 연결 설정된 dataSource를 가져옴
-    dataSource = await initializeDataSource(memoryDb);
-    // 3. 테스트에 필요한 데이터 생성
-    await setupTestData(dataSource);
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [InMemoryTestingModule],
-    })
-      .overrideProvider(DataSource)
-      .useValue(dataSource)
-      .compile();
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-
-    // NOTE: datasource initialize 한 시점의 데이터를 백업합니다.
-    backup = memoryDb.backup();
+    dataSource = app.get(DataSource);
   });
 
-  afterEach(async () => {
-    // NOTE: 매 테스트 종료 후 백업한 데이터로 ROLLBACK 합니다.
-    backup.restore();
-  });
-
-  afterAll(async () => {
-    // NOTE: 모든 테스트 종료 후 앱을 종료합니다.(+ connection closed)
-    await app.close();
+  beforeEach(async () => {
+    await setupTestData(dataSource);
   });
 
   describe('POST /auth/sign-up', () => {
@@ -81,7 +61,7 @@ describe('/auth (POST)', () => {
       };
 
       // when
-      const res = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/auth/sign-up')
         .send(testUserInfo)
         // then
@@ -143,5 +123,13 @@ describe('/auth (POST)', () => {
         // then
         .expect(401);
     });
+  });
+
+  afterEach(async () => {
+    await clearDatabase(dataSource);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });

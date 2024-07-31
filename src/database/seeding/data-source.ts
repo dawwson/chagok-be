@@ -12,7 +12,7 @@ NOTE :
 2. seeds의 디폴트 경로는 src/database/seeds 여서, 다른 경로에 둘 경우 seeds 옵션을 설정해줘야 한다.
  */
 
-dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 export default new DataSource({
   type: 'postgres',

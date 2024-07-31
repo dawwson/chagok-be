@@ -18,7 +18,7 @@ WORKDIR /usr/app/build
 # 빌드한 소스 코드 복사(실행에 필요한 것만)
 COPY --from=builder /usr/app/source/package*.json .
 COPY --from=builder /usr/app/source/dist ./dist
-COPY --from=builder /usr/app/source/.production.env .
+COPY --from=builder /usr/app/source/.env.prod .
 # 의존성 설치(devDependencies 제외)
 RUN npm ci --only=production
 # 노출할 포트 지정

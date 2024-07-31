@@ -12,9 +12,9 @@
     "start": "node dist/main",
     "start:db": "docker-compose -f docker-compose.db.yml --env-file .env.dev up -d",
     "stop:db": "docker-compose -f docker-compose.db.yml --env-file .env.dev down",
-    "seed:dev": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
+    "seed:dev": "NODE_ENV=dev ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "seed:stage": "NODE_ENV=stage ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
-    "seed:production": "NODE_ENV=production ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
+    "seed:production": "NODE_ENV=prod ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"

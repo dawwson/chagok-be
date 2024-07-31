@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { CreateExpenseResource } from './create-expense-resource.dto';
 import { Type } from 'class-transformer';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class CreateExpenseRequestBody {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

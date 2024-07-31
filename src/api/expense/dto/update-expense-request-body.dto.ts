@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UpdateExpenseResource } from './update-expense-resource.dto';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class UpdateExpenseRequestBody {
   @IsNumber({}, { message: ErrorCode.INVALID_CATEGORY_ID })

@@ -1,6 +1,6 @@
 import { IsDefined, IsIn, IsNumberString, Length } from 'class-validator';
 import { BudgetMonth } from '../../../shared/enum/budget-month.enum';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class GetMonthlyBudgetRecommendationRequestParam {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

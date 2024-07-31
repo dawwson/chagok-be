@@ -1,6 +1,6 @@
 import { IsDefined, IsNumber, IsPositive } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class GetMonthlyBudgetRecommendationRequestQuery {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

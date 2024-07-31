@@ -1,7 +1,7 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from './create-user.dto';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class SignUpRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

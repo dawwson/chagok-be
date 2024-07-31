@@ -53,8 +53,6 @@ export class GetExpensesListRequestQuery {
     getExpensesCondition.maxAmount = this.maxAmount;
     getExpensesCondition.minAmount = this.minAmount;
 
-    console.log(getExpensesCondition);
-
     return getExpensesCondition;
   }
 

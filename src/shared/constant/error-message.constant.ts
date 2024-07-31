@@ -3,6 +3,8 @@ import { ErrorCode } from '../enum/error-code.enum';
 export const ErrorMessage: Record<ErrorCode, string> = {
   // 400
   [ErrorCode.MISSING_PARAMETER]: '필수 파라미터가 지정되지 않았습니다.',
+  [ErrorCode.INVALID_EMAIL]: '유효하지 않은 이메일입니다.',
+  [ErrorCode.INVALID_PASSWORD]: '유효하지 않은 비밀번호입니다.',
   [ErrorCode.INVALID_CATEGORY_ID]: '카테고리 ID가 유효하지 않습니다.',
   [ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE]:
     'minAmount와 maxAmount는 함께 포함되어야 합니다.',

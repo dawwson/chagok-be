@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
 import { ExpenseLib } from '../service/expense.lib';
-import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 /**
  * 지출에 대한 권한 검사를 하는 가드
@@ -28,7 +28,7 @@ export class OwnExpenseGuard implements CanActivate {
 
     if (!isOwnExpense) {
       // NOTE: 보안 상의 이유로 403이 아니라 404로 응답합니다.
-      throw new NotFoundException(FailMessage.EXPENSE_NOT_FOUND);
+      throw new NotFoundException(ErrorCode.EXPENSE_NOT_FOUND);
     }
     return true;
   }

@@ -1,7 +1,7 @@
 export class GetCategoriesWithTotalAmountCondition {
   userId: string;
-  startDate: number;
-  endDate: number;
+  startDate: Date;
+  endDate: Date;
   minAmount?: number;
   maxAmount?: number;
 }

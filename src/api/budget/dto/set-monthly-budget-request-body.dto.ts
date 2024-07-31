@@ -14,8 +14,8 @@ export class BudgetByCategory {
   categoryId: number;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsNumber({}, { message: ErrorCode.INVALID_AMOUNT_OF_BUDGET })
-  @IsPositive({ message: ErrorCode.INVALID_AMOUNT_OF_BUDGET })
+  @IsNumber({}, { message: ErrorCode.INVALID_AMOUNT })
+  @IsPositive({ message: ErrorCode.INVALID_AMOUNT })
   amount: number;
 }
 

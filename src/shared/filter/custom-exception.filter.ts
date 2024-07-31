@@ -7,6 +7,7 @@ import {
 import { Response } from 'express';
 import { ErrorMessage } from '../constant/error-message.constant';
 import { QueryFailedError } from 'typeorm';
+import { ErrorCode } from '../enum/error-code.enum';
 
 interface HttpExceptionResponse {
   message: string[] | string;
@@ -22,31 +23,31 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     const status = exception.getStatus();
+    const { message } = <HttpExceptionResponse>exception.getResponse();
+    const errorCode = Array.isArray(message)
+      ? message[0].split('.').at(-1)
+      : message;
+    const detail = ErrorMessage[errorCode];
 
     if (status === 400) {
-      const { message } = <HttpExceptionResponse>exception.getResponse();
-      const errorCode = Array.isArray(message)
-        ? message[0].split('.').at(-1)
-        : message;
-
       res.status(status).json({
         path: req.url,
-        errorCode,
-        detail: ErrorMessage[errorCode],
+        errorCode: detail ? errorCode : 'BAD_REQUEST',
+        detail: detail ?? errorCode,
         timestamp: new Date().toISOString(),
       });
     } else if (status >= 500) {
       res.status(status).json({
         path: req.url,
         errorCode: 'INTERNAL_SERVER_ERROR',
-        detail: exception.message,
+        detail: message,
         timestamp: new Date().toISOString(),
       });
     } else {
       res.status(status).json({
         path: req.url,
-        errorCode: exception.message,
-        detail: ErrorMessage[exception.message],
+        errorCode,
+        detail,
         timestamp: new Date().toISOString(),
       });
     }

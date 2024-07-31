@@ -3,42 +3,43 @@ import {
   IsDefined,
   IsNumber,
   IsOptional,
-  IsString,
-  Max,
-  MaxLength,
   Min,
-  Validate,
+  registerDecorator,
   ValidateIf,
+  ValidationArguments,
+  ValidationOptions,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { GetExpensesCondition } from './get-expenses-condition.dto';
-import { BadRequestException } from '@nestjs/common';
 import { GetCategoriesWithTotalAmountCondition } from './get-categories-with-total-amount-condition.dto';
-import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 export class GetExpensesListRequestQuery {
   @Type(() => Date)
-  @IsDate()
-  startDate: number;
+  @IsDate({ message: ErrorCode.MISSING_PARAMETER })
+  startDate: Date;
 
   @Type(() => Date)
-  @IsDate()
-  endDate: number;
+  @IsDate({ message: ErrorCode.MISSING_PARAMETER })
+  endDate: Date;
 
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({}, { message: ErrorCode.INVALID_CATEGORY_ID })
   categoryId?: number;
 
   @ValidateIf((o) => o.maxAmount !== undefined)
-  @IsOptional()
+  @IsDefined({ message: () => ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE })
   @Type(() => Number)
   @IsNumber()
   @Min(1000)
+  @IsSmallerThan('maxAmount', {
+    message: ErrorCode.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX,
+  })
   minAmount?: number;
 
   @ValidateIf((o) => o.minAmount !== undefined)
-  @IsOptional()
+  @IsDefined({ message: () => ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE })
   @Type(() => Number)
   @IsNumber()
   maxAmount?: number;
@@ -49,26 +50,10 @@ export class GetExpensesListRequestQuery {
     getExpensesCondition.startDate = this.startDate;
     getExpensesCondition.endDate = this.endDate;
     getExpensesCondition.categoryId = this.categoryId;
+    getExpensesCondition.maxAmount = this.maxAmount;
+    getExpensesCondition.minAmount = this.minAmount;
 
-    if (
-      (!this.minAmount && this.maxAmount) ||
-      (this.minAmount && !this.maxAmount)
-    ) {
-      throw new BadRequestException(
-        FailMessage.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE,
-      );
-    }
-
-    if (this.minAmount > this.maxAmount) {
-      throw new BadRequestException(
-        FailMessage.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX,
-      );
-    }
-
-    if (this.minAmount && this.maxAmount) {
-      getExpensesCondition.maxAmount = this.maxAmount;
-      getExpensesCondition.minAmount = this.minAmount;
-    }
+    console.log(getExpensesCondition);
 
     return getExpensesCondition;
   }
@@ -88,4 +73,30 @@ export class GetExpensesListRequestQuery {
     }
     return getCategoriesWithTotalAmountCondition;
   }
+}
+
+export function IsSmallerThan(
+  property: string,
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: any, propertyName: string) {
+    registerDecorator({
+      name: 'isSmallerThan',
+      target: object.constructor,
+      propertyName: propertyName,
+      constraints: [property],
+      options: validationOptions,
+      validator: {
+        validate(value: any, args: ValidationArguments) {
+          const [relatedPropertyName] = args.constraints;
+          const relatedValue = (args.object as any)[relatedPropertyName];
+          return (
+            typeof value === 'number' &&
+            typeof relatedValue === 'number' &&
+            value < relatedValue
+          );
+        },
+      },
+    });
+  };
 }

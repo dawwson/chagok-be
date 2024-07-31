@@ -1,7 +1,7 @@
 export class GetExpensesCondition {
   userId: string;
-  startDate: number;
-  endDate: number;
+  startDate: Date;
+  endDate: Date;
   categoryId?: number;
   minAmount?: number;
   maxAmount?: number;

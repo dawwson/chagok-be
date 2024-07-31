@@ -9,7 +9,7 @@ import { GetCategoriesWithTotalAmountCondition } from '../dto/get-categories-wit
 
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
-import { FailMessage } from '../../../shared/enum/fail-message.enum';
+import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 @Injectable()
 export class ExpenseService {
@@ -26,7 +26,7 @@ export class ExpenseService {
     });
 
     if (!category) {
-      throw new BadRequestException(FailMessage.EXPENSE_INVALID_CATEGORY_ID);
+      throw new BadRequestException(ErrorCode.INVALID_CATEGORY_ID);
     }
 
     return this.expenseRepo.save(this.expenseRepo.create(dto));
@@ -41,7 +41,7 @@ export class ExpenseService {
     });
 
     if (!category) {
-      throw new BadRequestException(FailMessage.EXPENSE_INVALID_CATEGORY_ID);
+      throw new BadRequestException(ErrorCode.INVALID_CATEGORY_ID);
     }
 
     await this.expenseRepo.update({ id }, dto);

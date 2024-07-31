@@ -25,7 +25,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (status === 400) {
       const { message } = <HttpExceptionResponse>exception.getResponse();
-      const errorCode = Array.isArray(message) ? message[0] : message;
+      const errorCode = Array.isArray(message)
+        ? message[0].split('.').at(-1)
+        : message;
 
       res.status(status).json({
         path: req.url,

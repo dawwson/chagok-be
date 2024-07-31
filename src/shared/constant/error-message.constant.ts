@@ -5,7 +5,13 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.MISSING_PARAMETER]: '필수 파라미터가 지정되지 않았습니다.',
   [ErrorCode.INVALID_EMAIL]: '유효하지 않은 이메일입니다.',
   [ErrorCode.INVALID_PASSWORD]: '유효하지 않은 비밀번호입니다.',
-  [ErrorCode.INVALID_CATEGORY_ID]: '카테고리 ID가 유효하지 않습니다.',
+  [ErrorCode.INVALID_YEAR]: '유효하지 않은 연도 형식입니다.',
+  [ErrorCode.INVALID_MONTH]: '유효하지 않은 월 형식입니다.',
+  [ErrorCode.INVALID_TOTAL_AMOUNT]: '유효하지 않은 총 예산입니다.',
+  [ErrorCode.INVALID_CATEGORY_ID]: '유효하지 않은 카테고리 ID 입니다.',
+  [ErrorCode.INVALID_AMOUNT_OF_BUDGET]: '유효하지 않은 예산 금액입니다.',
+  [ErrorCode.INVALID_BUDGET_BY_CATEGORY]:
+    '유효하지 않은 카테고리별 예산입니다.',
   [ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE]:
     'minAmount와 maxAmount는 함께 포함되어야 합니다.',
   [ErrorCode.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX]:

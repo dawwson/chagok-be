@@ -15,7 +15,6 @@ import { IServerConfig } from '../../shared/interface/server-config.interface';
 import { SignUpRequest } from './dto/sign-up-request.dto';
 import { SignInRequest } from './dto/sign-in-request.dto';
 import { AuthService } from './service/auth.service';
-import { SuccessMessage } from '../../shared/enum/success-message.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -31,11 +30,8 @@ export class AuthController {
     const savedUser = await this.authService.createUser(createUserDto);
 
     return {
-      message: SuccessMessage.AUTH_SIGN_UP,
-      data: {
-        id: savedUser.id,
-        email: savedUser.email,
-      },
+      id: savedUser.id,
+      email: savedUser.email,
     };
   }
 
@@ -59,9 +55,6 @@ export class AuthController {
         maxAge:
           this.configService.get<IServerConfig>('server').jwtExpiresIn * 1000,
       })
-      .json({
-        message: SuccessMessage.AUTH_SIGN_IN,
-        data: payload,
-      });
+      .json({ data: payload });
   }
 }

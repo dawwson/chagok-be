@@ -22,7 +22,6 @@ import { GetExpenseDetailResponseData } from './dto/get-expense-detail-response-
 import { ExpenseService } from './service/expense.service';
 import { StatisticsExpenseService } from './service/statistics-expense.service';
 
-import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interface';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from './guard/own-expense.guard';
@@ -43,10 +42,7 @@ export class ExpenseController {
     const expense = await this.expenseService.createExpenseData(
       dto.toCreateExpenseResource(req.user.id),
     );
-    return {
-      message: SuccessMessage.EXPENSE_CREATE,
-      data: CreateExpenseResponseData.of(expense),
-    };
+    return CreateExpenseResponseData.of(expense);
   }
 
   @UseGuards(OwnExpenseGuard)
@@ -64,10 +60,7 @@ export class ExpenseController {
     // 수정된 지출 조회
     const expense = await this.expenseService.getExpenseById(id);
 
-    return {
-      message: SuccessMessage.EXPENSE_UPDATE,
-      data: UpdateExpenseResponseData.of(expense),
-    };
+    return UpdateExpenseResponseData.of(expense);
   }
 
   @Get()
@@ -83,10 +76,7 @@ export class ExpenseController {
       await this.expenseService.getCategoriesWithTotalAmount(
         dto.toGetCategoriesWithTotalAmountCondition(req.user.id),
       );
-    return {
-      message: SuccessMessage.EXPENSE_GET_LIST,
-      data: GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount),
-    };
+    return GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount);
   }
 
   @Get('statistics')
@@ -103,21 +93,18 @@ export class ExpenseController {
         req.user.id,
       );
     return {
-      message: SuccessMessage.EXPENSE_GET_STATISTICS,
-      data: {
-        comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
-          ...statistic,
-          // string -> number로 변환
-          lastMonthAmount: Number(statistic.lastMonthAmount),
-          thisMonthAmount: Number(statistic.thisMonthAmount),
-        })),
-        comparedToLastWeek: weekStatisticsByCategory.map((statistic) => ({
-          ...statistic,
-          // string -> number로 변환
-          lastWeekAmount: Number(statistic.lastWeekAmount),
-          thisWeekAmount: Number(statistic.thisWeekAmount),
-        })),
-      },
+      comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
+        ...statistic,
+        // string -> number로 변환
+        lastMonthAmount: Number(statistic.lastMonthAmount),
+        thisMonthAmount: Number(statistic.thisMonthAmount),
+      })),
+      comparedToLastWeek: weekStatisticsByCategory.map((statistic) => ({
+        ...statistic,
+        // string -> number로 변환
+        lastWeekAmount: Number(statistic.lastWeekAmount),
+        thisWeekAmount: Number(statistic.thisWeekAmount),
+      })),
     };
   }
 
@@ -126,18 +113,13 @@ export class ExpenseController {
   async getExpenseDetail(@Param('id') id: number) {
     const expense = await this.expenseService.getExpenseById(id);
 
-    return {
-      message: SuccessMessage.EXPENSE_GET_DETAIL,
-      data: GetExpenseDetailResponseData.of(expense),
-    };
+    return GetExpenseDetailResponseData.of(expense);
   }
 
   @UseGuards(OwnExpenseGuard)
   @Delete(':id')
   async deleteExpense(@Param('id') id: number) {
     await this.expenseService.deleteExpenseById(id);
-    return {
-      message: SuccessMessage.EXPENSE_DELETE,
-    };
+    return;
   }
 }

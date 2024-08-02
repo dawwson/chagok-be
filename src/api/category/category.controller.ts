@@ -1,7 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CategoryService } from './service/category.service';
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
-import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { GetCategoryListResponse } from './dto/get-category-list-response.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -12,9 +11,6 @@ export class CategoryController {
   @Get('/')
   async getCategoryList() {
     const categories = await this.categoryService.getCategories();
-    return {
-      message: SuccessMessage.CATEGORY_GET_ALL,
-      data: GetCategoryListResponse.of(categories),
-    };
+    return GetCategoryListResponse.of(categories);
   }
 }

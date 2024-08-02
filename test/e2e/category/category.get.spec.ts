@@ -77,7 +77,6 @@ describe('/categories (GET)', () => {
           .expect(200);
 
         // then
-        expect(res.body).toHaveProperty('message', expect.any(String));
         expect(res.body.data).toHaveLength(testCategories.length);
         res.body.data.forEach((category) => {
           expect(category).toEqual({

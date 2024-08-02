@@ -65,7 +65,6 @@ describe('/auth (POST)', () => {
       // then
       expect(res.statusCode).toBe(201);
       expect(res.body).toEqual({
-        message: expect.any(String),
         data: {
           id: expect.any(String),
           email: testUserInfo.email,
@@ -81,7 +80,7 @@ describe('/auth (POST)', () => {
       };
 
       // when
-      const res = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/auth/sign-up')
         .send(testUserInfo)
         // then
@@ -106,7 +105,6 @@ describe('/auth (POST)', () => {
       expect(res.statusCode).toBe(200);
       expect(res.headers['set-cookie'][0]).toContain('accessToken=');
       expect(res.body).toEqual({
-        message: expect.any(String),
         data: {
           id: expect.any(String),
           email: testUserInfo.email,

@@ -72,14 +72,11 @@ describe('/expenses (DELETE)', () => {
       const testExpense = testExpenses[0];
 
       // when
-      const res = await agent //
+      await agent //
         .delete(`/expenses/${testExpense.id}`) //
         .expect(200);
 
       // then
-      expect(res.body).toEqual({
-        message: expect.any(String),
-      });
     });
 
     test('지출 삭제 실패(404) - 존재하지 않거나 접근 권한이 없음', async () => {
@@ -87,7 +84,7 @@ describe('/expenses (DELETE)', () => {
       const testExpense = testExpenses[2]; // 사용자 2의 지출
 
       // when
-      const res = await agent //
+      await agent //
         .delete(`/expenses/${testExpense.id}`) //
         // then
         .expect(404);

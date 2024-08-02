@@ -83,7 +83,6 @@ describe('/expenses (GET)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             totalAmount: expect.any(Number),
             totalAmountsByCategory: expect.any(Array),
@@ -124,7 +123,6 @@ describe('/expenses (GET)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             id: testExpense.id,
             categoryId: testExpense.categoryId,
@@ -143,7 +141,7 @@ describe('/expenses (GET)', () => {
         const testExpense = testExpenses[2]; // 사용자 2의 지출
 
         // when
-        const res = await agent
+        await agent
           .get(`/expenses/${testExpense.id}`)
           // then
           .expect(404);
@@ -161,7 +159,6 @@ describe('/expenses (GET)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             comparedToLastMonth: expect.any(Array),
             comparedToLastWeek: expect.any(Array),

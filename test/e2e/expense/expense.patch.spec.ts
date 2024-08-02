@@ -90,7 +90,6 @@ describe('/expenses (PATCH)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             id: testExpense.id,
             categoryId: testRequestBody.categoryId,
@@ -116,7 +115,7 @@ describe('/expenses (PATCH)', () => {
         };
 
         // when
-        const res = await agent
+        await agent
           .patch(`/expenses/${testExpense.id}`)
           .send(testRequestBody)
           // then
@@ -155,7 +154,7 @@ describe('/expenses (PATCH)', () => {
         };
 
         // when
-        const res = await agent
+        await agent
           .patch('/expenses')
           .send(testRequestBody)
           // then

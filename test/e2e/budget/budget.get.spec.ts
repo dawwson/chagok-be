@@ -10,7 +10,6 @@ import { initializeDataSource } from '../../in-memory-testing/initialize-data-so
 import { setupTestData } from '../../in-memory-testing/setup-test-data';
 import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
 import { testCategories, testUsers } from '../../in-memory-testing/test-data';
-import { numbers } from 'pg-mem/types/datatypes';
 
 describe('/budgets (GET)', () => {
   let app: INestApplication;
@@ -83,7 +82,6 @@ describe('/budgets (GET)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             year: testYear,
             month: testMonth,

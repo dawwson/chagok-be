@@ -87,7 +87,6 @@ describe('/expenses (DELETE)', () => {
 
         // then
         expect(res.body).toEqual({
-          message: expect.any(String),
           data: {
             id: expect.any(Number),
             categoryId: category.id,
@@ -112,7 +111,7 @@ describe('/expenses (DELETE)', () => {
         };
 
         // when
-        const res = await agent
+        await agent
           .post('/expenses')
           .send(testRequestBody)
           // then

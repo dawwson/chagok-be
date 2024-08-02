@@ -7,7 +7,6 @@ import {
 import { Response } from 'express';
 import { ErrorMessage } from '../constant/error-message.constant';
 import { QueryFailedError } from 'typeorm';
-import { ErrorCode } from '../enum/error-code.enum';
 
 interface HttpExceptionResponse {
   message: string[] | string;

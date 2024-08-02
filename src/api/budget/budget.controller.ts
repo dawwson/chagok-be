@@ -17,7 +17,6 @@ import { GetMonthlyBudgetRecommendationRequestQuery } from './dto/get-monthly-bu
 import { SetBudgetService } from './service/set-budget.service';
 
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
-import { SuccessMessage } from '../../shared/enum/success-message.enum';
 import { RequestWithUser } from '../../shared/interface/request-with-user.interface';
 import { GetMonthlyBudgetRecommendationRequestParam } from './dto/get-monthly-budget-recommendation-request-param.dto';
 import { RecommendBudgetService } from './service/recommend-budget.service';
@@ -50,10 +49,7 @@ export class BudgetController {
       month,
     });
 
-    return {
-      message: SuccessMessage.BUDGET_SET_MONTHLY,
-      data: SetMonthlyBudgetResponseData.of(budget),
-    };
+    return SetMonthlyBudgetResponseData.of(budget);
   }
 
   @Get('/:year/:month/recommendation')
@@ -75,12 +71,9 @@ export class BudgetController {
     );
 
     return {
-      message: SuccessMessage.BUDGET_GET_RECOMMENDATION,
-      data: {
-        year,
-        month,
-        budgetsByCategory,
-      },
+      year,
+      month,
+      budgetsByCategory,
     };
   }
 }

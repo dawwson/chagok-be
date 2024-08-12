@@ -30,21 +30,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (status === 400) {
       res.status(status).json({
-        path: req.url,
+        path: `${req.method} ${req.url}`,
         errorCode: detail ? errorCode : 'BAD_REQUEST',
         detail: detail ?? errorCode,
         timestamp: new Date().toISOString(),
       });
     } else if (status >= 500) {
       res.status(status).json({
-        path: req.url,
+        path: `${req.method} ${req.url}`,
         errorCode: 'INTERNAL_SERVER_ERROR',
         detail: message,
         timestamp: new Date().toISOString(),
       });
     } else {
       res.status(status).json({
-        path: req.url,
+        path: `${req.method} ${req.url}`,
         errorCode,
         detail,
         timestamp: new Date().toISOString(),
@@ -61,7 +61,7 @@ export class QueryFailedFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     res.status(500).json({
-      path: req.url,
+      path: `${req.method} ${req.url}`,
       errorCode: 'INTERNAL_SERVER_ERROR',
       detail: exception.message,
       timestamp: new Date().toISOString(),

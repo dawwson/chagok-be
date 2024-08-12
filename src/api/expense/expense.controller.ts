@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 
 import { CreateExpenseRequestBody } from './dto/create-expense-request-body.dto';
@@ -117,6 +118,7 @@ export class ExpenseController {
   }
 
   @UseGuards(OwnExpenseGuard)
+  @HttpCode(204)
   @Delete(':id')
   async deleteExpense(@Param('id') id: number) {
     await this.expenseService.deleteExpenseById(id);

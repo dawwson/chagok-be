@@ -10,11 +10,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
-import { IServerConfig } from '../../shared/interface/server-config.interface';
-
 import { SignUpRequest } from './dto/sign-up-request.dto';
 import { SignInRequest } from './dto/sign-in-request.dto';
 import { AuthService } from './service/auth.service';
+import { ServerConfig } from '../../shared/interface/config.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -53,7 +52,7 @@ export class AuthController {
         httpOnly: true,
         // NOTE: JWT랑 만료시간 동일하게 설정(ms 단위여서 1000을 곱한다)
         maxAge:
-          this.configService.get<IServerConfig>('server').jwtExpiresIn * 1000,
+          this.configService.get<ServerConfig>('server').jwtExpiresIn * 1000,
       })
       .json({ data: payload });
   }

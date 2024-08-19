@@ -7,8 +7,8 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { User } from '../../../entity/user.entity';
-import { IServerConfig } from '../../../shared/interface/server-config.interface';
 import { ErrorCode } from '../../../shared/enum/error-code.enum';
+import { ServerConfig } from '../../../shared/interface/config.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // Passport에서 JWT 만료 기간을 검증함
       ignoreExpiration: false,
       // secret key
-      secretOrKey: configService.get<IServerConfig>('server').jwtSecret,
+      secretOrKey: configService.get<ServerConfig>('server').jwtSecret,
     });
   }
 

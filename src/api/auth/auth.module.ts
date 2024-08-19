@@ -8,7 +8,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './auth.controller';
 
 import { User } from '../../entity/user.entity';
-import { IServerConfig } from '../../shared/interface/server-config.interface';
+import { ServerConfig } from '../../shared/interface/config.interface';
 
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { IServerConfig } from '../../shared/interface/server-config.interface';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
-          secret: configService.get<IServerConfig>('server').jwtSecret,
+          secret: configService.get<ServerConfig>('server').jwtSecret,
           signOptions: {
-            expiresIn: configService.get<IServerConfig>('server').jwtExpiresIn,
+            expiresIn: configService.get<ServerConfig>('server').jwtExpiresIn,
           },
         };
       },

@@ -1,9 +1,9 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { VerifyUserDto } from './verify-user.dto';
-import { ErrorCode } from '../../../shared/enum/error-code.enum';
+import { UserVerifyInput } from '../../../service/dto/input/user-verify.input';
+import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
 
-export class SignInRequest {
+export class UserSignInRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsEmail({}, { message: ErrorCode.INVALID_EMAIL })
   email: string;
@@ -13,6 +13,6 @@ export class SignInRequest {
   password: string;
 
   toVerifyUserDto() {
-    return plainToInstance(VerifyUserDto, this);
+    return plainToInstance(UserVerifyInput, this);
   }
 }

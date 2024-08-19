@@ -10,10 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
-import { SignUpRequest } from './dto/sign-up-request.dto';
-import { SignInRequest } from './dto/sign-in-request.dto';
-import { AuthService } from './service/auth.service';
-import { ServerConfig } from '../../shared/interface/config.interface';
+import { UserSignUpRequest } from './dto/request/user-sign-up.request';
+import { UserSignInRequest } from './dto/request/user-sign-in.request';
+import { UserSignUpResponse } from './dto/response/user-sign-up.response';
+import { AuthService } from '../service/auth.service';
+import { ServerConfig } from '../../../shared/interface/config.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -24,26 +25,23 @@ export class AuthController {
   ) {}
 
   @Post('/sign-up')
-  async signUp(@Body() signUpRequest: SignUpRequest) {
-    const createUserDto = signUpRequest.toCreateUserDto();
-    const savedUser = await this.authService.createUser(createUserDto);
+  async signUp(@Body() dto: UserSignUpRequest): Promise<UserSignUpResponse> {
+    const userCreateDto = dto.toCreateUserDto();
+    const { id, email } = await this.authService.createUser(userCreateDto);
 
-    return {
-      id: savedUser.id,
-      email: savedUser.email,
-    };
+    return { id, email };
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('/sign-in')
-  async signIn(@Body() signInRequest: SignInRequest, @Res() res: Response) {
-    const verifyUserDto = signInRequest.toVerifyUserDto();
+  async signIn(@Body() dto: UserSignInRequest, @Res() res: Response) {
+    const verifyUserDto = dto.toVerifyUserDto();
 
     // 사용자 검증
-    const verifiedUser = await this.authService.verifyUser(verifyUserDto);
+    const { id, email } = await this.authService.verifyUser(verifyUserDto);
 
     // accessToken 발급(JWT)
-    const payload = { id: verifiedUser.id, email: verifiedUser.email };
+    const payload = { id, email };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return res

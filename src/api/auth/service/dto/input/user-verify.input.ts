@@ -1,4 +1,4 @@
-export class CreateUserDto {
+export class UserVerifyInput {
   email: string;
   password: string;
 }

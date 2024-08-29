@@ -1,9 +1,12 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { CategoryService } from './service/category.service';
+import { ClassSerializerInterceptor, Controller, Get, UseGuards, UseInterceptors } from '@nestjs/common';
+
 import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
-import { GetCategoryListResponse } from './dto/get-category-list-response.dto';
+
+import { CategoryService } from './service/category.service';
+import { CategoryShowResponse } from './controller/dto/response/category-show.response';
 
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
@@ -11,6 +14,6 @@ export class CategoryController {
   @Get('/')
   async getCategoryList() {
     const categories = await this.categoryService.getCategories();
-    return GetCategoryListResponse.of(categories);
+    return CategoryShowResponse.from(categories);
   }
 }

@@ -1,9 +1,9 @@
 import { ClassSerializerInterceptor, Controller, Get, UseGuards, UseInterceptors } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../../shared/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
 
-import { CategoryService } from './service/category.service';
-import { CategoryShowResponse } from './controller/dto/response/category-show.response';
+import { CategoryService } from '../service/category.service';
+import { CategoryShowResponse } from './dto/response/category-show.response';
 
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)

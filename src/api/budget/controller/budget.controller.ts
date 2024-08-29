@@ -68,7 +68,7 @@ export class BudgetController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:year/:month/recommendation')
-  async getMonthlyBudgetRecommendation(
+  async recommendMonthlyBudget(
     @Req() req: RequestWithUser,
     @Param() param: BudgetRecommendRequestParam,
     @Query() query: BudgetRecommendRequestQuery,

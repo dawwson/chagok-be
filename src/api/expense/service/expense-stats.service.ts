@@ -7,7 +7,7 @@ import { Category } from '../../../entity/category.entity';
 import { CategoryName } from '../../../shared/enum/category-name.enum';
 
 @Injectable()
-export class StatisticsExpenseService {
+export class ExpenseStatsService {
   constructor(
     @InjectRepository(Expense)
     private readonly expenseRepo: Repository<Expense>,
@@ -43,12 +43,7 @@ export class StatisticsExpenseService {
           'thisMonthAmount',
         )
         // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
-        .leftJoin(
-          'expenses',
-          'e',
-          'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false',
-          { userId },
-        )
+        .leftJoin('expenses', 'e', 'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false', { userId })
         .groupBy('c.id')
         .orderBy('c.id', 'ASC')
         .getRawMany()
@@ -83,12 +78,7 @@ export class StatisticsExpenseService {
           'thisWeekAmount',
         )
         // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
-        .leftJoin(
-          'expenses',
-          'e',
-          'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false',
-          { userId },
-        )
+        .leftJoin('expenses', 'e', 'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false', { userId })
         .groupBy('c.id')
         .orderBy('c.id', 'ASC')
         .getRawMany()

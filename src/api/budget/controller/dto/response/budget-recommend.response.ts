@@ -1,4 +1,4 @@
-import { Exclude, Expose, plainToInstance } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
 
 interface BudgetByCategory {
@@ -7,14 +7,9 @@ interface BudgetByCategory {
 }
 
 export class BudgetRecommendResponse {
-  @Exclude()
-  private readonly _year: string;
-
-  @Exclude()
-  private readonly _month: BudgetMonth;
-
-  @Exclude()
-  private readonly _budgetsByCategory: BudgetByCategory[];
+  @Exclude() private readonly _year: string;
+  @Exclude() private readonly _month: BudgetMonth;
+  @Exclude() private readonly _budgetsByCategory: BudgetByCategory[];
 
   constructor(_year: string, _month: BudgetMonth, _budgetsByCategory: BudgetByCategory[]) {
     this._year = _year;

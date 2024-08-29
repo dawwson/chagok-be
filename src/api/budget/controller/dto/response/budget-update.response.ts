@@ -1,7 +1,6 @@
 import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
-
-import { Budget } from '../../../entity/budget.entity';
-import { BudgetMonth } from '../../../shared/enum/budget-month.enum';
+import { Budget } from 'src/entity/budget.entity';
+import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
 
 @Exclude()
 class BudgetByCategory {
@@ -13,7 +12,7 @@ class BudgetByCategory {
 }
 
 @Exclude()
-export class SetMonthlyBudgetResponseData {
+export class BudgetUpdateResponse {
   @Expose()
   id: number;
 
@@ -28,6 +27,6 @@ export class SetMonthlyBudgetResponseData {
   budgetsByCategory: BudgetByCategory;
 
   static of(budget: Budget) {
-    return plainToInstance(SetMonthlyBudgetResponseData, budget);
+    return plainToInstance(BudgetUpdateResponse, budget);
   }
 }

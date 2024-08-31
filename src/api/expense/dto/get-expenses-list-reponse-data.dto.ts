@@ -1,10 +1,4 @@
-import {
-  Exclude,
-  Expose,
-  plainToInstance,
-  Transform,
-  Type,
-} from 'class-transformer';
+import { Exclude, Expose, plainToInstance, Transform, Type } from 'class-transformer';
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
 
@@ -19,22 +13,22 @@ export class GetExpensesListResponseData {
   @Expose()
   expenses: PartialExpense[];
 
-  static of(expenses: Expense[], categories: Category[]) {
-    const getExpensesListResponseData = new GetExpensesListResponseData();
-    getExpensesListResponseData.totalAmount = expenses.reduce(
-      (acc, expense) => (acc += expense.amount),
-      0,
-    );
-    getExpensesListResponseData.totalAmountsByCategory = plainToInstance(
-      CategoryWithTotalAmount,
-      categories,
-    );
-    getExpensesListResponseData.expenses = plainToInstance(
-      PartialExpense,
-      expenses,
-    );
-    return getExpensesListResponseData;
-  }
+  // static of(expenses: Expense[], categories: Category[]) {
+  //   const getExpensesListResponseData = new GetExpensesListResponseData();
+  //   getExpensesListResponseData.totalAmount = expenses.reduce(
+  //     (acc, expense) => (acc += expense.amount),
+  //     0,
+  //   );
+  //   getExpensesListResponseData.totalAmountsByCategory = plainToInstance(
+  //     CategoryWithTotalAmount,
+  //     categories,
+  //   );
+  //   getExpensesListResponseData.expenses = plainToInstance(
+  //     PartialExpense,
+  //     expenses,
+  //   );
+  //   return getExpensesListResponseData;
+  // }
 }
 
 class CategoryWithTotalAmount {

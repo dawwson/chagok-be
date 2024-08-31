@@ -1,7 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Query,
+  HttpCode,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 
-import { CreateExpenseRequestBody } from '../dto/create-expense-request-body.dto';
-import { CreateExpenseResponseData } from '../dto/create-expense-response-data.dto';
 import { UpdateExpenseResponseData } from '../dto/update-expense-response-data.dto';
 import { UpdateExpenseRequestBody } from '../dto/update-expense-request-body.dto';
 import { GetExpensesListRequestQuery } from '../dto/get-expenses-list-request-query.dto';
@@ -14,19 +26,25 @@ import { ExpenseStatsService } from '../service/expense-stats.service';
 import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
 import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
 import { OwnExpenseGuard } from '../guard/own-expense.guard';
+import { ExpenseRegisterResponse } from './dto/response/expense-register.response';
+import { ExpenseRegisterRequest } from './dto/request/expense-register.request';
+import { ExpenseQueryService } from '../service/expense-query.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
 export class ExpenseController {
   constructor(
     private readonly expenseService: ExpenseService,
-    private readonly statisticsExpenseService: ExpenseStatsService,
+    private readonly expenseStatsService: ExpenseStatsService,
+    private readonly expenseQueryService: ExpenseQueryService,
   ) {}
 
   @Post()
-  async createExpense(@Req() req: RequestWithUser, @Body() dto: CreateExpenseRequestBody) {
-    const expense = await this.expenseService.createExpenseData(dto.toCreateExpenseResource(req.user.id));
-    return CreateExpenseResponseData.of(expense);
+  @UseInterceptors(ClassSerializerInterceptor)
+  async registerExpense(@Req() req: RequestWithUser, @Body() dto: ExpenseRegisterRequest) {
+    const expense = await this.expenseService.createExpense(dto.toEntity(req.user.id));
+
+    return new ExpenseRegisterResponse(expense);
   }
 
   @UseGuards(OwnExpenseGuard)
@@ -36,28 +54,28 @@ export class ExpenseController {
     await this.expenseService.updateExpenseById(id, dto.toUpdateExpenseResource());
 
     // 수정된 지출 조회
-    const expense = await this.expenseService.getExpenseById(id);
+    const expense = await this.expenseQueryService.getExpenseById(id);
 
     return UpdateExpenseResponseData.of(expense);
   }
 
-  @Get()
-  async getExpensesList(@Req() req: RequestWithUser, @Query() dto: GetExpensesListRequestQuery) {
-    const expenses = await this.expenseService.getExpensesWithCondition(dto.toGetExpensesCondition(req.user.id));
+  // @Get()
+  // async getExpensesList(@Req() req: RequestWithUser, @Query() dto: GetExpensesListRequestQuery) {
+  //   const expenses = await this.expenseService.getExpensesWithCondition(dto.toGetExpensesCondition(req.user.id));
 
-    const categoriesWithTotalAmount = await this.expenseService.getCategoriesWithTotalAmount(
-      dto.toGetCategoriesWithTotalAmountCondition(req.user.id),
-    );
-    return GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount);
-  }
+  //   const categoriesWithTotalAmount = await this.expenseService.getCategoriesWithTotalAmount(
+  //     dto.toGetCategoriesWithTotalAmountCondition(req.user.id),
+  //   );
+  //   return GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount);
+  // }
 
   @Get('statistics')
   async getExpenseStatistics(@Req() req: RequestWithUser) {
     // 지난달, 이번달 카테고리별 지출 합계
-    const monthStatisticsByCategory = await this.statisticsExpenseService.compareLastMonthWithThisMonth(req.user.id);
+    const monthStatisticsByCategory = await this.expenseStatsService.compareLastMonthWithThisMonth(req.user.id);
 
     // 7일 전, 오늘 카테고리별 지출 합계
-    const weekStatisticsByCategory = await this.statisticsExpenseService.compareLastWeekWithThisWeek(req.user.id);
+    const weekStatisticsByCategory = await this.expenseStatsService.compareLastWeekWithThisWeek(req.user.id);
     return {
       comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
         ...statistic,
@@ -77,7 +95,7 @@ export class ExpenseController {
   @UseGuards(OwnExpenseGuard)
   @Get(':id')
   async getExpenseDetail(@Param('id') id: number) {
-    const expense = await this.expenseService.getExpenseById(id);
+    const expense = await this.expenseQueryService.getExpenseById(id);
 
     return GetExpenseDetailResponseData.of(expense);
   }
@@ -86,7 +104,7 @@ export class ExpenseController {
   @HttpCode(204)
   @Delete(':id')
   async deleteExpense(@Param('id') id: number) {
-    await this.expenseService.deleteExpenseById(id);
+    await this.expenseQueryService.deleteExpenseById(id);
     return;
   }
 }

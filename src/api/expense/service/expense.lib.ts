@@ -11,7 +11,7 @@ export class ExpenseLib {
     private readonly expenseRepo: Repository<Expense>,
   ) {}
 
-  async isOwnExpense(id: number, userId: string): Promise<boolean> {
+  async isOwnExpense(id: number, userId: string) {
     return !!(await this.expenseRepo.findOneBy({ id, userId }));
   }
 }

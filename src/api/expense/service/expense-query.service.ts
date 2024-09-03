@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,6 +7,7 @@ import { GetCategoriesWithTotalAmountCondition } from '../dto/get-categories-wit
 
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
+import { ErrorCode } from 'src/shared/enum/error-code.enum';
 
 @Injectable()
 export class ExpenseQueryService {
@@ -16,6 +17,16 @@ export class ExpenseQueryService {
     @InjectRepository(Category)
     private readonly categoryRepo: Repository<Category>,
   ) {}
+
+  async getExpenseById(expenseId: number) {
+    const expense = await this.expenseRepo.findOneBy({ id: expenseId });
+
+    if (!expense) {
+      throw new NotFoundException(ErrorCode.EXPENSE_NOT_FOUND);
+    }
+
+    return expense;
+  }
 
   getExpensesWithCondition({
     userId,
@@ -83,10 +94,6 @@ export class ExpenseQueryService {
     return query
       .groupBy('c.id') //
       .getRawMany();
-  }
-
-  getExpenseById(id: number): Promise<Expense> {
-    return this.expenseRepo.findOneBy({ id });
   }
 
   async deleteExpenseById(id: number): Promise<void> {

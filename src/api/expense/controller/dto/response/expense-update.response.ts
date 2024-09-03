@@ -1,8 +1,8 @@
 import { Exclude, Expose, plainToInstance } from 'class-transformer';
-import { Expense } from '../../../entity/expense.entity';
+import { Expense } from 'src/entity/expense.entity';
 
 @Exclude()
-export class UpdateExpenseResponseData {
+export class ExpenseUpdateResponse {
   @Expose()
   id: number;
 
@@ -24,7 +24,7 @@ export class UpdateExpenseResponseData {
   @Expose()
   updatedAt: Date;
 
-  static of(expense: Expense): UpdateExpenseResponseData {
-    return plainToInstance(UpdateExpenseResponseData, expense);
+  static from(expense: Expense): ExpenseUpdateResponse {
+    return plainToInstance(ExpenseUpdateResponse, expense);
   }
 }

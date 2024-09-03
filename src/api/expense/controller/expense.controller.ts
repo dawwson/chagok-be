@@ -14,21 +14,20 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 
-import { UpdateExpenseResponseData } from '../dto/update-expense-response-data.dto';
-import { UpdateExpenseRequestBody } from '../dto/update-expense-request-body.dto';
-import { GetExpensesListRequestQuery } from '../dto/get-expenses-list-request-query.dto';
-import { GetExpensesListResponseData } from '../dto/get-expenses-list-reponse-data.dto';
-import { GetExpenseDetailResponseData } from '../dto/get-expense-detail-response-data.dto';
-
-import { ExpenseService } from '../service/expense.service';
-import { ExpenseStatsService } from '../service/expense-stats.service';
-
 import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
 import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
+
 import { OwnExpenseGuard } from '../guard/own-expense.guard';
-import { ExpenseRegisterResponse } from './dto/response/expense-register.response';
-import { ExpenseRegisterRequest } from './dto/request/expense-register.request';
+import { ExpenseService } from '../service/expense.service';
+import { ExpenseStatsService } from '../service/expense-stats.service';
 import { ExpenseQueryService } from '../service/expense-query.service';
+
+import { ExpenseRegisterRequest } from './dto/request/expense-register.request';
+import { ExpenseRegisterResponse } from './dto/response/expense-register.response';
+import { ExpenseUpdateRequest } from './dto/request/expense-update.request';
+import { ExpenseUpdateResponse } from './dto/response/expense-update.response';
+
+import { GetExpenseDetailResponseData } from '../dto/get-expense-detail-response-data.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -49,14 +48,14 @@ export class ExpenseController {
 
   @UseGuards(OwnExpenseGuard)
   @Patch(':id')
-  async updateExpense(@Param('id') id: number, @Body() dto: UpdateExpenseRequestBody) {
+  async updateExpense(@Param('id') expenseId: number, @Body() dto: ExpenseUpdateRequest) {
     // 지출 수정
-    await this.expenseService.updateExpenseById(id, dto.toUpdateExpenseResource());
+    await this.expenseService.updateExpense(dto.toEntity(expenseId));
 
     // 수정된 지출 조회
-    const expense = await this.expenseQueryService.getExpenseById(id);
+    const expense = await this.expenseQueryService.getExpenseById(expenseId);
 
-    return UpdateExpenseResponseData.of(expense);
+    return ExpenseUpdateResponse.from(expense);
   }
 
   // @Get()

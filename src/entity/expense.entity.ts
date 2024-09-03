@@ -15,41 +15,42 @@ import { Category } from './category.entity';
 @Check(`"amount" > 0`)
 export class Expense {
   @PrimaryGeneratedColumn({ name: 'id' })
-  private _id: number;
+  id: number;
 
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({ name: 'user_id' })
-  private _user: User;
+  user: User;
 
   @Column({ name: 'user_id' })
-  private _userId: string;
+  userId: string;
 
   @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
-  private _category: Category;
+  category: Category;
 
   @Column({ name: 'category_id' })
-  private _categoryId: number;
+  categoryId: number;
 
   @Column({ name: 'content', type: 'varchar', length: 100 })
-  private _content: string;
+  content: string;
 
   @Column({ name: 'amount', type: 'integer' })
-  private _amount: number;
+  amount: number;
 
   @Column({ name: 'is_excluded', type: 'boolean', default: false })
-  private _isExcluded: boolean;
+  isExcluded: boolean;
 
   @Column({ name: 'expense_date', type: 'timestamp with time zone' })
-  private _expenseDate: Date;
+  expenseDate: Date;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
-  private _createdAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone', nullable: true })
-  private _updatedAt?: Date;
+  updatedAt?: Date;
 
   constructor(
+    id: number,
     userId: string,
     categoryId: number,
     content: string,
@@ -57,64 +58,22 @@ export class Expense {
     isExcluded: boolean,
     expenseDate: Date,
   ) {
-    this._userId = userId;
-    this._categoryId = categoryId;
-    this._content = content;
-    this._amount = amount;
-    this._isExcluded = isExcluded;
-    this._expenseDate = expenseDate;
+    this.id = id;
+    this.userId = userId;
+    this.categoryId = categoryId;
+    this.content = content;
+    this.amount = amount;
+    this.isExcluded = isExcluded;
+    this.expenseDate = expenseDate;
   }
 
   static builder() {
     return new Builder();
   }
-
-  get id() {
-    return this._id;
-  }
-
-  get user() {
-    return this._user;
-  }
-
-  get userId() {
-    return this._userId;
-  }
-
-  get category() {
-    return this._category;
-  }
-
-  get categoryId() {
-    return this._categoryId;
-  }
-
-  get content() {
-    return this._content;
-  }
-
-  get amount() {
-    return this._amount;
-  }
-
-  get isExcluded() {
-    return this._isExcluded;
-  }
-
-  get expenseDate() {
-    return this._expenseDate;
-  }
-
-  get createdAt() {
-    return this._createdAt;
-  }
-
-  get updatedAt() {
-    return this._updatedAt;
-  }
 }
 
 class Builder {
+  private _id: number;
   private _userId: string;
   private _categoryId: number;
   private _content: string;
@@ -123,6 +82,11 @@ class Builder {
   private _expenseDate: Date;
 
   constructor() {}
+
+  id(id: number) {
+    this._id = id;
+    return this;
+  }
 
   userId(userId: string) {
     this._userId = userId;
@@ -156,6 +120,7 @@ class Builder {
 
   build() {
     return new Expense(
+      this._id,
       this._userId,
       this._categoryId,
       this._content,

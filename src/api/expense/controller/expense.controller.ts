@@ -26,7 +26,8 @@ import { ExpenseRegisterRequest } from './dto/request/expense-register.request';
 import { ExpenseRegisterResponse } from './dto/response/expense-register.response';
 import { ExpenseUpdateRequest } from './dto/request/expense-update.request';
 import { ExpenseUpdateResponse } from './dto/response/expense-update.response';
-
+import { ExpenseShowRequest } from './dto/request/expense-show.request';
+import { ExpenseShowResponse } from './dto/response/expense-show.reponse';
 import { GetExpenseDetailResponseData } from '../dto/get-expense-detail-response-data.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -49,24 +50,21 @@ export class ExpenseController {
   @UseGuards(OwnExpenseGuard)
   @Patch(':id')
   async updateExpense(@Param('id') expenseId: number, @Body() dto: ExpenseUpdateRequest) {
-    // 지출 수정
     await this.expenseService.updateExpense(dto.toEntity(expenseId));
-
-    // 수정된 지출 조회
     const expense = await this.expenseQueryService.getExpenseById(expenseId);
 
     return ExpenseUpdateResponse.from(expense);
   }
 
-  // @Get()
-  // async getExpensesList(@Req() req: RequestWithUser, @Query() dto: GetExpensesListRequestQuery) {
-  //   const expenses = await this.expenseService.getExpensesWithCondition(dto.toGetExpensesCondition(req.user.id));
+  @Get()
+  async showExpenses(@Req() req: RequestWithUser, @Query() dto: ExpenseShowRequest) {
+    const userId = req.user.id;
 
-  //   const categoriesWithTotalAmount = await this.expenseService.getCategoriesWithTotalAmount(
-  //     dto.toGetCategoriesWithTotalAmountCondition(req.user.id),
-  //   );
-  //   return GetExpensesListResponseData.of(expenses, categoriesWithTotalAmount);
-  // }
+    const expenses = await this.expenseQueryService.getExpensesBy(userId, dto);
+    const expensesByCategory = await this.expenseQueryService.getExpensesByCatogory(userId, dto);
+
+    return ExpenseShowResponse.from(expenses, expensesByCategory);
+  }
 
   @Get('statistics')
   async getExpenseStatistics(@Req() req: RequestWithUser) {

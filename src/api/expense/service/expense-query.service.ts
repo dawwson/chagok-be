@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { GetExpensesCondition } from '../dto/get-expenses-condition.dto';
-import { GetCategoriesWithTotalAmountCondition } from '../dto/get-categories-with-total-amount-condition.dto';
-
 import { Expense } from '../../../entity/expense.entity';
 import { Category } from '../../../entity/category.entity';
 import { ErrorCode } from 'src/shared/enum/error-code.enum';
+
+import { ExpenseShowRequest } from '../controller/dto/request/expense-show.request';
+import { ExpenseFindByCategoryOutput } from './dto/output/expense-find-by-category.output';
 
 @Injectable()
 export class ExpenseQueryService {
@@ -28,14 +28,9 @@ export class ExpenseQueryService {
     return expense;
   }
 
-  getExpensesWithCondition({
-    userId,
-    startDate,
-    categoryId,
-    endDate,
-    minAmount,
-    maxAmount,
-  }: GetExpensesCondition): Promise<Expense[]> {
+  getExpensesBy(userId: string, dto: ExpenseShowRequest) {
+    const { startDate, categoryId, endDate, minAmount, maxAmount } = dto;
+
     const query = this.expenseRepo
       .createQueryBuilder('e')
       .select() // 지출 모든 컬럼 조회
@@ -65,13 +60,44 @@ export class ExpenseQueryService {
       .getMany();
   }
 
-  getCategoriesWithTotalAmount({
-    userId,
-    startDate,
-    endDate,
-    minAmount,
-    maxAmount,
-  }: GetCategoriesWithTotalAmountCondition): Promise<Category[]> {
+  getExpensesByCatogory(userId: string, dto: ExpenseShowRequest): Promise<ExpenseFindByCategoryOutput[]> {
+    const { startDate, endDate, minAmount, maxAmount } = dto;
+
+    const query = this.expenseRepo
+      .createQueryBuilder('e')
+      .select('c.id', 'categoryId')
+      .addSelect('c.name', 'categoryName')
+      .addSelect('SUM(e.amount)', 'totalAmount')
+      .innerJoin('categories', 'c', 'e.categoryId = c.id')
+      .where('e.userId = :userId', { userId })
+      .andWhere('e.isExcluded = false')
+      .andWhere('(e.expenseDate >= :startDate AND e.expenseDate <= :endDate)', { startDate, endDate });
+
+    if (minAmount !== undefined && maxAmount !== undefined) {
+      query.andWhere('(e.amount >= :minAmount AND e.amount <= :maxAmount)', {
+        minAmount,
+        maxAmount,
+      });
+    }
+
+    return query.groupBy('c.id').addGroupBy('c.name').getRawMany();
+
+    // SELECT
+    //     "c"."id" AS "categoryId",
+    //     "c"."name" AS "categoryName",
+    //     SUM("e"."amount") AS "totalAmount"
+    // FROM
+    //     "expenses" "e"
+    //     INNER JOIN "categories" "c" ON "e"."category_id" = "c"."id"
+    // WHERE
+    //     "e"."user_id" = '41f116c2-c9f5-4ee3-90e0-b9315f4fee7d'
+    //     AND "e"."is_excluded" = FALSE
+    //     AND ("e"."expense_date" >= '2024-08-16T00:00:00.000Z'
+    //         AND "e"."expense_date" <= '2024-09-20T00:00:00.000Z')
+    // GROUP BY
+    //     "c"."id", "c"."name";
+
+    /*
     const query = this.categoryRepo
       .createQueryBuilder('c')
       .select('c.id', 'id')
@@ -94,6 +120,7 @@ export class ExpenseQueryService {
     return query
       .groupBy('c.id') //
       .getRawMany();
+*/
   }
 
   async deleteExpenseById(id: number): Promise<void> {

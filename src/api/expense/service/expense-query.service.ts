@@ -80,47 +80,10 @@ export class ExpenseQueryService {
       });
     }
 
-    return query.groupBy('c.id').addGroupBy('c.name').getRawMany();
-
-    // SELECT
-    //     "c"."id" AS "categoryId",
-    //     "c"."name" AS "categoryName",
-    //     SUM("e"."amount") AS "totalAmount"
-    // FROM
-    //     "expenses" "e"
-    //     INNER JOIN "categories" "c" ON "e"."category_id" = "c"."id"
-    // WHERE
-    //     "e"."user_id" = '41f116c2-c9f5-4ee3-90e0-b9315f4fee7d'
-    //     AND "e"."is_excluded" = FALSE
-    //     AND ("e"."expense_date" >= '2024-08-16T00:00:00.000Z'
-    //         AND "e"."expense_date" <= '2024-09-20T00:00:00.000Z')
-    // GROUP BY
-    //     "c"."id", "c"."name";
-
-    /*
-    const query = this.categoryRepo
-      .createQueryBuilder('c')
-      .select('c.id', 'id')
-      .addSelect('c.name', 'name')
-      .addSelect('SUM(e.amount)', 'totalAmount')
-      .innerJoin('expenses', 'e', 'e.categoryId = c.id')
-      .where('e.userId = :userId', { userId })
-      .andWhere('e.isExcluded = false')
-      .andWhere('(e.expenseDate >= :startDate AND e.expenseDate <= :endDate)', {
-        startDate,
-        endDate,
-      });
-
-    if (minAmount && maxAmount) {
-      query.andWhere('(e.amount >= :minAmount AND e.amount <= :maxAmount)', {
-        minAmount,
-        maxAmount,
-      });
-    }
     return query
       .groupBy('c.id') //
+      .addGroupBy('c.name') //
       .getRawMany();
-*/
   }
 
   async deleteExpenseById(id: number): Promise<void> {

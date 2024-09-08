@@ -11,7 +11,7 @@ export class CategoryLib {
     private readonly categoryRepo: Repository<Category>,
   ) {}
 
-  isExist(id: number) {
-    return this.categoryRepo.exist({ where: { id } });
+  async isExist(id: number) {
+    return !!(await this.categoryRepo.findOneBy({ id }));
   }
 }

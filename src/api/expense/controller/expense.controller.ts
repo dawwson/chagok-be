@@ -29,8 +29,7 @@ import { ExpenseUpdateResponse } from './dto/response/expense-update.response';
 import { ExpenseShowRequest } from './dto/request/expense-show.request';
 import { ExpenseShowResponse } from './dto/response/expense-show.reponse';
 import { ExpenseStatsResponse } from './dto/response/expense-stats.response';
-
-import { GetExpenseDetailResponseData } from '../dto/get-expense-detail-response-data.dto';
+import { ExpenseShowDetailResponse } from './dto/response/expense-show-detail.response';
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -83,10 +82,10 @@ export class ExpenseController {
 
   @UseGuards(OwnExpenseGuard)
   @Get(':id')
-  async getExpenseDetail(@Param('id') id: number) {
+  async showExpenseDetail(@Param('id') id: number) {
     const expense = await this.expenseQueryService.getExpenseById(id);
 
-    return GetExpenseDetailResponseData.of(expense);
+    return ExpenseShowDetailResponse.from(expense);
   }
 
   @UseGuards(OwnExpenseGuard)

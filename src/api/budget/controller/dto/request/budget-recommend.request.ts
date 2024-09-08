@@ -1,14 +1,8 @@
 import { Transform } from 'class-transformer';
-import {
-  IsDefined,
-  IsIn,
-  IsNumber,
-  IsNumberString,
-  IsPositive,
-  Length,
-} from 'class-validator';
-import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { IsDefined, IsIn, IsNumber, IsNumberString, IsPositive, Length } from 'class-validator';
+
+import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class BudgetRecommendRequestParam {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

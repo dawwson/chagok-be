@@ -9,8 +9,9 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+
+import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class BudgetUpdateRequestBody {
   // 배열인지 검증

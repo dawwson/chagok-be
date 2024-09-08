@@ -1,7 +1,8 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { UserVerifyInput } from '../../../service/dto/input/user-verify.input';
-import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
+
+import { UserVerifyInput } from '@src/api/auth/service/dto/input/user-verify.input';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class UserSignInRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

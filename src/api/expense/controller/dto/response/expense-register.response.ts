@@ -1,5 +1,5 @@
 import { Exclude, Expose, plainToInstance } from 'class-transformer';
-import { Expense } from 'src/entity/expense.entity';
+import { Expense } from '@src/entity/expense.entity';
 
 @Exclude()
 export class ExpenseRegisterResponse {

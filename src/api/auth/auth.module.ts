@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
+import { User } from '@src/entity/user.entity';
+import { ServerConfig } from '@src/shared/interface/config.interface';
+
 import { AuthService } from './service/auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './controller/auth.controller';
-
-import { User } from '../../entity/user.entity';
-import { ServerConfig } from '../../shared/interface/config.interface';
 
 @Module({
   imports: [

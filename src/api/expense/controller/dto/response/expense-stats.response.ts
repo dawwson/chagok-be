@@ -1,4 +1,4 @@
-import { CategoryName } from 'src/shared/enum/category-name.enum';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
 
 export class ExpenseStatsResponse {
   private constructor(

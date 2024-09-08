@@ -1,5 +1,5 @@
 import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
-import { CategoryName } from 'src/shared/enum/category-name.enum';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
 
 @Exclude()
 export class ExpenseFindMonthlyOutput {

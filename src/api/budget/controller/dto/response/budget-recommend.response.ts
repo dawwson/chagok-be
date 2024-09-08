@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
+import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
 
 interface BudgetByCategory {
   categoryId: number;

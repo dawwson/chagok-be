@@ -2,9 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Expense } from '../../../entity/expense.entity';
-import { Category } from '../../../entity/category.entity';
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
+import { Expense } from '@src/entity/expense.entity';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 import { ExpenseShowRequest } from '../controller/dto/request/expense-show.request';
 import { ExpenseFindByCategoryOutput } from './dto/output/expense-find-by-category.output';
@@ -14,8 +13,6 @@ export class ExpenseQueryService {
   constructor(
     @InjectRepository(Expense)
     private readonly expenseRepo: Repository<Expense>,
-    @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>,
   ) {}
 
   async getExpenseById(expenseId: number) {

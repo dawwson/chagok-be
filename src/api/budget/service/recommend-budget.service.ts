@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
+import { Budget } from '@src/entity/budget.entity';
+import { Category } from '@src/entity/category.entity';
+import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
+
 import { BudgetRecommendInput } from './dto/input/budget-recommend.input';
 import { BudgetByCategory, RecommendBudgetOutput } from './dto/output/budget-recommend.output';
-
-import { Budget } from '../../../entity/budget.entity';
-import { Category } from '../../../entity/category.entity';
-import { BudgetMonth } from '../../../shared/enum/budget-month.enum';
-import { CategoryName } from '../../../shared/enum/category-name.enum';
 
 @Injectable()
 export class RecommendBudgetService {

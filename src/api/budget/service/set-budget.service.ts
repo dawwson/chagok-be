@@ -2,9 +2,9 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
-import { Budget } from '../../../entity/budget.entity';
-import { BudgetCategory } from '../../../entity/budget-category.entity';
-import { Category } from '../../../entity/category.entity';
+import { Budget } from '@src/entity/budget.entity';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
+import { Category } from '@src/entity/category.entity';
 
 import { FindBudgetInput } from './dto/input/budget-find.input';
 import { CreateBudgetInput } from './dto/input/budget-create.input';

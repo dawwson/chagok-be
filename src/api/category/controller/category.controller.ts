@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
 import { CategoryService } from '../service/category.service';
 import { CategoryShowResponse } from './dto/response/category-show.response';

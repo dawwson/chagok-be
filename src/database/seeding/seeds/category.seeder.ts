@@ -1,8 +1,8 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
-import { Category } from '../../../entity/category.entity';
-import { CategoryName } from '../../../shared/enum/category-name.enum';
+import { Category } from '@src/entity/category.entity';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
 
 export default class CategorySeeder implements Seeder {
   async run(dataSource: DataSource): Promise<any> {

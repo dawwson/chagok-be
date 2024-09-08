@@ -11,9 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { ErrorCode } from 'src/shared/enum/error-code.enum';
-// import { ExpenseFindInput } from 'src/api/expense/service/dto/input/expense-find.input';
-// import { ExpenseFindByCategoryInput } from 'src/api/expense/service/dto/input/expense-find-by-category.input';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class ExpenseShowRequest {
   @Type(() => Date)

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Category } from '../../../entity/category.entity';
+import { Category } from '@src/entity/category.entity';
 
 @Injectable()
 export class CategoryLib {

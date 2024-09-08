@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
+import { User } from '@src/entity/user.entity';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+
 import { UserVerifyInput } from './dto/input/user-verify.input';
-import { User } from '../../../entity/user.entity';
-import { ErrorCode } from '../../../shared/enum/error-code.enum';
 import { UserVerifyOutput } from './dto/output/user-verify.output';
 
 @Injectable()

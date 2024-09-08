@@ -1,8 +1,8 @@
 import { IsDate, IsDefined, IsNumber, IsString, Max, MaxLength, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { Expense } from 'src/entity/expense.entity';
-import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
+import { Expense } from '@src/entity/expense.entity';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class ExpenseRegisterRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

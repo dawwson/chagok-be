@@ -1,6 +1,6 @@
 import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
-import { Budget } from 'src/entity/budget.entity';
-import { BudgetMonth } from 'src/shared/enum/budget-month.enum';
+import { Budget } from '@src/entity/budget.entity';
+import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
 
 @Exclude()
 class BudgetByCategory {

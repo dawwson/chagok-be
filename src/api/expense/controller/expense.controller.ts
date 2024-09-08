@@ -13,8 +13,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
-import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
+import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
 import { OwnExpenseGuard } from '../guard/own-expense.guard';
 import { ExpenseService } from '../service/expense.service';

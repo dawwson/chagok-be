@@ -3,11 +3,12 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
+import { AuthService } from '@src/api/auth/service/auth.service';
+import { ServerConfig } from '@src/shared/interface/config.interface';
+
 import { UserSignUpRequest } from './dto/request/user-sign-up.request';
 import { UserSignInRequest } from './dto/request/user-sign-in.request';
 import { UserSignUpResponse } from './dto/response/user-sign-up.response';
-import { AuthService } from '../service/auth.service';
-import { ServerConfig } from '../../../shared/interface/config.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -20,7 +21,6 @@ export class AuthController {
   @Post('/sign-up')
   async signUp(@Body() dto: UserSignUpRequest) {
     const createdUser = await this.authService.createUser(await dto.toEntity());
-
     return UserSignUpResponse.from(createdUser);
   }
 

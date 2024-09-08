@@ -1,7 +1,7 @@
 import { Exclude, Expose, plainToInstance, Transform, Type } from 'class-transformer';
 import { ExpenseFindByCategoryOutput } from 'src/api/expense/service/dto/output/expense-find-by-category.output';
-import { Expense } from 'src/entity/expense.entity';
-import { CategoryName } from 'src/shared/enum/category-name.enum';
+import { Expense } from '@src/entity/expense.entity';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
 
 @Exclude()
 export class ExpenseShowResponse {

@@ -1,7 +1,8 @@
 import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
-import { Expense } from 'src/entity/expense.entity';
+
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { Expense } from '@src/entity/expense.entity';
 
 export class ExpenseUpdateRequest {
   @IsNumber({}, { message: ErrorCode.INVALID_CATEGORY_ID })

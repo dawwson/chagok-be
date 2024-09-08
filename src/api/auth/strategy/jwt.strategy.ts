@@ -6,9 +6,9 @@ import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { User } from '../../../entity/user.entity';
-import { ErrorCode } from '../../../shared/enum/error-code.enum';
-import { ServerConfig } from '../../../shared/interface/config.interface';
+import { User } from '@src/entity/user.entity';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { ServerConfig } from '@src/shared/interface/config.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,9 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       // cookie 헤더에서 JWT 추출
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => req.cookies.accessToken,
-      ]),
+      jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => req.cookies.accessToken]),
       // Passport에서 JWT 만료 기간을 검증함
       ignoreExpiration: false,
       // secret key

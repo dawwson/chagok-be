@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CategoryLib } from 'src/api/category/service/category.lib';
+import { CategoryLib } from '@src/api/category/service/category.lib';
 
-import { Expense } from '../../../entity/expense.entity';
-import { ErrorCode } from '../../../shared/enum/error-code.enum';
+import { Expense } from '@src/entity/expense.entity';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 @Injectable()
 export class ExpenseService {

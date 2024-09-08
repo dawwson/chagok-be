@@ -1,6 +1,7 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
-import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
-import { User } from 'src/entity/user.entity';
+
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { User } from '@src/entity/user.entity';
 
 export class UserSignUpRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

@@ -5,15 +5,11 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import {
-  testCategories,
-  testExpenses,
-  testUsers,
-} from '../../in-memory-testing/test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { testCategories, testExpenses, testUsers } from '@test/in-memory-testing/test-data';
 
 describe('/expenses (PATCH)', () => {
   let app: INestApplication;
@@ -83,9 +79,9 @@ describe('/expenses (PATCH)', () => {
         };
 
         // when
-        const res = await agent
-          .patch(`/expenses/${testExpense.id}`)
-          .send(testRequestBody)
+        const res = await agent //
+          .patch(`/expenses/${testExpense.id}`) //
+          .send(testRequestBody) //
           .expect(200);
 
         // then
@@ -102,13 +98,13 @@ describe('/expenses (PATCH)', () => {
         });
       });
 
-      test('지출 수정 실패(400) - 유효하지 않은 categoryId', async () => {
+      test('지출 수정 실패(400) - 존재하지 않는 categoryId', async () => {
         // given
         const testExpense = testExpenses[0];
-        const invalidCategoryId = 9999;
+        const notFoundCategoryId = 9999;
 
         const testRequestBody = {
-          categoryId: invalidCategoryId,
+          categoryId: notFoundCategoryId,
           content: '떡볶이',
           amount: 14000,
           expenseDate: new Date(),
@@ -119,7 +115,7 @@ describe('/expenses (PATCH)', () => {
           .patch(`/expenses/${testExpense.id}`)
           .send(testRequestBody)
           // then
-          .expect(400);
+          .expect(404);
       });
     });
   });

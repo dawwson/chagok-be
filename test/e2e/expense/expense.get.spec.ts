@@ -6,11 +6,11 @@ import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 import * as dayjs from 'dayjs';
 
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { testExpenses, testUsers } from '../../in-memory-testing/test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { testExpenses, testUsers } from '@test/in-memory-testing/test-data';
 
 describe('/expenses (GET)', () => {
   let app: INestApplication;
@@ -85,20 +85,19 @@ describe('/expenses (GET)', () => {
         expect(res.body).toEqual({
           data: {
             totalAmount: expect.any(Number),
-            totalAmountsByCategory: expect.any(Array),
+            expensesByCategory: expect.any(Array),
             expenses: expect.any(Array),
           },
         });
-        res.body.data.totalAmountsByCategory.forEach(
-          (totalAmountByCategory) => {
-            expect(totalAmountByCategory).toMatchObject({
-              categoryId: expect.any(Number),
-              // FIXME: name이 쿼리에서부터 null로 나옴. 그런데 로컬 DB로 테스트할 때는 문제 없음(아마도 pg-mem 문제?)
-              // name: expect.any(String),
-              totalAmount: expect.any(Number),
-            });
-          },
-        );
+
+        res.body.data.expensesByCategory.forEach((expenseByCategory) => {
+          expect(expenseByCategory).toEqual({
+            categoryId: expect.any(Number),
+            categoryName: expect.any(String),
+            totalAmount: expect.any(Number),
+          });
+        });
+
         res.body.data.expenses.forEach((expense) => {
           expect(expense).toEqual({
             id: expect.any(Number),
@@ -160,27 +159,30 @@ describe('/expenses (GET)', () => {
         // then
         expect(res.body).toEqual({
           data: {
-            comparedToLastMonth: expect.any(Array),
-            comparedToLastWeek: expect.any(Array),
+            monthlyExpenseByCategory: expect.any(Array),
+            weeklyExpenseByCategory: expect.any(Array),
           },
         });
 
-        res.body.data.comparedToLastMonth.forEach((category) => {
+        const { monthlyExpenseByCategory, weeklyExpenseByCategory } = res.body.data;
+
+        monthlyExpenseByCategory.forEach((category) => {
           expect(category).toMatchObject({
             categoryId: expect.any(Number),
             // FIXME: name이 쿼리에서부터 null로 나옴. 그런데 로컬 DB로 테스트할 때는 문제 없음(아마도 pg-mem 문제?)
             // categoryName: expect.any(String),
-            lastMonthAmount: expect.any(Number),
-            thisMonthAmount: expect.any(Number),
+            lastMonthExpense: expect.any(Number),
+            thisMonthExpense: expect.any(Number),
           });
         });
-        res.body.data.comparedToLastWeek.forEach((category) => {
+
+        weeklyExpenseByCategory.forEach((category) => {
           expect(category).toMatchObject({
             categoryId: expect.any(Number),
             // FIXME: name이 쿼리에서부터 null로 나옴. 그런데 로컬 DB로 테스트할 때는 문제 없음(아마도 pg-mem 문제?)
             // categoryName: expect.any(String),
-            lastWeekAmount: expect.any(Number),
-            thisWeekAmount: expect.any(Number),
+            lastWeekExpense: expect.any(Number),
+            thisWeekExpense: expect.any(Number),
           });
         });
       });

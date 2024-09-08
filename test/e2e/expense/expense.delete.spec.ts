@@ -5,11 +5,11 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { testExpenses, testUsers } from '../../in-memory-testing/test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { testExpenses, testUsers } from '@test/in-memory-testing/test-data';
 
 describe('/expenses (DELETE)', () => {
   let app: INestApplication;
@@ -67,14 +67,14 @@ describe('/expenses (DELETE)', () => {
       agent.set('Cookie', res.get('Set-Cookie'));
     });
 
-    test('지출 삭제 성공(200)', async () => {
+    test('지출 삭제 성공(204)', async () => {
       // given
       const testExpense = testExpenses[0];
 
       // when
       await agent //
         .delete(`/expenses/${testExpense.id}`) //
-        .expect(200);
+        .expect(204);
 
       // then
     });

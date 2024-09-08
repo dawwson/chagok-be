@@ -5,11 +5,11 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { testCategories, testUsers } from '../../in-memory-testing/test-data';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { testCategories, testUsers } from '@test/in-memory-testing/test-data';
 
 describe('/budgets (PUT)', () => {
   let app: INestApplication;
@@ -100,9 +100,7 @@ describe('/budgets (PUT)', () => {
           budgetsByCategory: expect.arrayContaining(testBudgetsByCategory),
         });
         // 모든 카테고리별 예산을 가지고 있는지 확인
-        expect(res.body.data.budgetsByCategory).toHaveLength(
-          testCategories.length,
-        );
+        expect(res.body.data.budgetsByCategory).toHaveLength(testCategories.length);
       });
     });
   });

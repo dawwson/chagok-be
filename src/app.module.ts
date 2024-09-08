@@ -5,21 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as path from 'path';
 
-import dbConfig from './config/db.config';
-import serverConfig from './config/server.config';
-import { NodeEnv } from './shared/enum/node-env.enum';
-import { IDbConfig } from './shared/interface/db-config.interface';
-import { IServerConfig } from './shared/interface/server-config.interface';
-import { TransformInterceptor } from './shared/interceptor/transform.interceptor';
-
 import { AuthModule } from './api/auth/auth.module';
 import { CategoryModule } from './api/category/category.module';
 import { BudgetModule } from './api/budget/budget.module';
 import { ExpenseModule } from './api/expense/expense.module';
-import {
-  HttpExceptionFilter,
-  QueryFailedFilter,
-} from './shared/filter/custom-exception.filter';
+
+import dbConfig from './config/db.config';
+import serverConfig from './config/server.config';
+import { NodeEnv } from './shared/enum/node-env.enum';
+import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from './shared/filter/custom-exception.filter';
+import { TransformInterceptor } from './shared/interceptor/transform.interceptor';
+import { DbConfig, ServerConfig } from './shared/interface/config.interface';
 
 @Module({
   imports: [
@@ -32,8 +28,8 @@ import {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const serverConfig = configService.get<IServerConfig>('server');
-        const dbConfig = configService.get<IDbConfig>('db');
+        const serverConfig = configService.get<ServerConfig>('server');
+        const dbConfig = configService.get<DbConfig>('db');
 
         return {
           type: 'postgres',
@@ -65,6 +61,11 @@ import {
           transform: true, // DTO 클래스로 자동 형변환
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
+    },
+    // NOTE: 필터 우선순위는 역순입니다!!
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
     },
     {
       provide: APP_FILTER,

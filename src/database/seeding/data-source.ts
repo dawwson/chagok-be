@@ -4,7 +4,7 @@ import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-import { NodeEnv } from '../../shared/enum/node-env.enum';
+import { NodeEnv } from '@src/shared/enum/node-env.enum';
 
 /*
 NOTE :

@@ -1,97 +1,107 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { Budget } from '../../../entity/budget.entity';
-import { BudgetCategory } from '../../../entity/budget-category.entity';
-import { Category } from '../../../entity/category.entity';
+import { Budget } from '@src/entity/budget.entity';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
+import { Category } from '@src/entity/category.entity';
 
-import { CreateOrUpdateBudgetDto } from '../dto/create-or-update-budget.dto';
-import { GetBudgetByYearAndMonthDto } from '../dto/get-budget-by-year-and-month.dto';
+import { FindBudgetInput } from './dto/input/budget-find.input';
+import { CreateBudgetInput } from './dto/input/budget-create.input';
+import { UpdateBudgetInput } from './dto/input/budget-update.input';
 
 @Injectable()
 export class SetBudgetService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    @InjectRepository(Budget)
+    private readonly budgetRepo: Repository<Budget>,
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>,
+  ) {}
 
-  // TODO: 엔티티 안으로 객체 생성 로직 넣어서 응집도 높이기
-  async createOrUpdateBudget({
-    userId,
-    year,
-    month,
-    budgetsByCategory,
-  }: CreateOrUpdateBudgetDto): Promise<void> {
+  async findBudget(dto: FindBudgetInput): Promise<Budget> {
+    return this.budgetRepo.findOneBy({
+      userId: dto.userId,
+      year: dto.year,
+      month: dto.month,
+    });
+  }
+
+  async createBudget(dto: CreateBudgetInput) {
+    // 모든 카테고리 조회
+    const categories = await this.categoryRepo.find();
+
+    // BudgetCategory 생성
+    const budgetCategories = categories.reduce((budgetCategories, category) => {
+      const budgetCategory = new BudgetCategory();
+
+      const budgetByCategory = dto.budgetsByCategory.find(({ categoryId }) => categoryId === category.id);
+
+      // 사용자가 설정하지 않은 카테고리의 예산은 0으로 설정
+      budgetCategory.categoryId = category.id;
+      budgetCategory.amount = budgetByCategory?.amount ?? 0;
+      budgetCategories.push(budgetCategory);
+
+      return budgetCategories;
+    }, [] as BudgetCategory[]);
+
+    // Budget 생성
+    const newBudget = new Budget();
+    newBudget.year = dto.year;
+    newBudget.month = dto.month;
+    newBudget.userId = dto.userId;
+    newBudget.totalAmount = dto.calculateTotalAmount();
+    newBudget.budgetCategories = budgetCategories;
+
+    return this.budgetRepo.save(newBudget);
+  }
+
+  async updateBudget(dto: UpdateBudgetInput) {
+    // 모든 카테고리 조회
+    const categories = await this.categoryRepo.find();
+
+    // BudgetCategory 생성
+    const newBudgetCategories = categories.reduce((budgetCategories, category) => {
+      const budgetCategory = new BudgetCategory();
+
+      const budgetByCategory = dto.budgetsByCategory.find(({ categoryId }) => categoryId === category.id);
+
+      // 사용자가 설정하지 않은 카테고리의 예산은 0으로 설정
+      budgetCategory.budgetId = dto.budgetId;
+      budgetCategory.categoryId = category.id;
+      budgetCategory.amount = budgetByCategory?.amount ?? 0;
+      budgetCategory.updatedAt = new Date();
+      budgetCategories.push(budgetCategory);
+
+      return budgetCategories;
+    }, [] as BudgetCategory[]);
+
+    // === START TRANSACTION ===
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
 
-    const budgetRepo = qr.manager.getRepository(Budget);
-    const budgetCategoryRepo = qr.manager.getRepository(BudgetCategory);
-    const categoryRepo = qr.manager.getRepository(Category);
-
-    const categoryAmountMap = new Map();
-    budgetsByCategory.forEach(({ categoryId, amount }) => {
-      categoryAmountMap.set(categoryId, amount);
-    });
-    const categories = await categoryRepo.find();
-    categories.forEach(({ id }) => {
-      if (!categoryAmountMap.get(id)) {
-        categoryAmountMap.set(id, 0);
-      }
-    });
-
     try {
-      // 1. budget이 존재하는지 조회
-      const budget = await budgetRepo.findOneBy({ userId, year, month });
-
-      // budgetCategory 객체 생성
-      const budgetCategories: BudgetCategory[] = [];
-      // 총 예산 계산
-      let totalAmount = 0;
-
-      categoryAmountMap.forEach((amount, categoryId) => {
-        totalAmount += amount;
-
-        const budgetCategory = new BudgetCategory();
-        budgetCategory.categoryId = categoryId;
-        budgetCategory.amount = amount;
-
-        budgetCategories.push(budgetCategory);
+      // 1. Budget totalAmount 업데이트
+      await qr.manager.update(Budget, dto.budgetId, {
+        totalAmount: dto.calculateTotalAmount(),
       });
-
-      // 1-1. budget이 없으면 : budget -> budget category 생성
-      if (!budget) {
-        // budget 객체 생성
-        const newBudget = new Budget();
-        newBudget.year = year;
-        newBudget.month = month;
-        newBudget.userId = userId;
-        newBudget.totalAmount = totalAmount;
-        newBudget.budgetCategories = budgetCategories;
-
-        await budgetRepo.save(newBudget);
-
-        await qr.commitTransaction();
-        await qr.release();
-        return;
-      }
-
-      // 1-2. budget이 있으면 해당 Budget의 BudgetCategory 모두 삭제 후 새로 생성
-      // budgetCategory 객체 생성
-      budgetCategories.forEach((bc) => (bc.budget = budget));
-      await budgetCategoryRepo.delete({ budgetId: budget.id });
-      await budgetCategoryRepo.save(budgetCategories);
+      // 2. 기존 BudgetCategory에 덮어쓰기
+      await qr.manager.upsert(BudgetCategory, newBudgetCategories, ['budgetId', 'categoryId']);
 
       await qr.commitTransaction();
-      await qr.release();
     } catch (error) {
       await qr.rollbackTransaction();
-      await qr.release();
       throw new InternalServerErrorException(error.message);
+    } finally {
+      await qr.release();
     }
   }
 
-  getBudgetByYearAndMonth({ userId, year, month }: GetBudgetByYearAndMonthDto) {
-    return this.dataSource.getRepository(Budget).findOne({
-      where: { userId, year, month },
+  getBudgetWithCategory(budgetId: number) {
+    return this.budgetRepo.findOne({
+      where: { id: budgetId },
       relations: { budgetCategories: true },
     });
   }

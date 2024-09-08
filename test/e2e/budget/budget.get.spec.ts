@@ -5,11 +5,11 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { testCategories, testUsers } from '../../in-memory-testing/test-data';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { testCategories, testUsers } from '@test/in-memory-testing/test-data';
 
 describe('/budgets (GET)', () => {
   let app: INestApplication;
@@ -89,16 +89,9 @@ describe('/budgets (GET)', () => {
           },
         });
         // 모든 카테고리에 대한 예산이 나오는지 확인
-        expect(res.body.data.budgetsByCategory).toHaveLength(
-          testCategories.length,
-        );
+        expect(res.body.data.budgetsByCategory).toHaveLength(testCategories.length);
         // 카테고리별 예산의 합이 설정한 총 예산과 일치하는지 확인
-        expect(
-          res.body.data.budgetsByCategory.reduce(
-            (acc, { amount }) => (acc += amount),
-            0,
-          ),
-        ).toBe(testTotalAmount);
+        expect(res.body.data.budgetsByCategory.reduce((acc, { amount }) => (acc += amount), 0)).toBe(testTotalAmount);
 
         res.body.data.budgetsByCategory.forEach((budgetByCategory) => {
           expect(budgetByCategory).toEqual({

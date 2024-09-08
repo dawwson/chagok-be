@@ -1,12 +1,9 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
+import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
+
+import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+
 import { ExpenseLib } from '../service/expense.lib';
-import { ErrorCode } from '../../../shared/enum/error-code.enum';
 
 /**
  * 지출에 대한 권한 검사를 하는 가드

@@ -1,7 +1,7 @@
-import { User } from '../../src/entity/user.entity';
-import { Category } from '../../src/entity/category.entity';
-import { CategoryName } from '../../src/shared/enum/category-name.enum';
-import { Expense } from '../../src/entity/expense.entity';
+import { User } from '@src/entity/user.entity';
+import { Category } from '@src/entity/category.entity';
+import { CategoryName } from '@src/shared/enum/category-name.enum';
+import { Expense } from '@src/entity/expense.entity';
 
 export const testUsers: User[] = [
   // 사용자 1

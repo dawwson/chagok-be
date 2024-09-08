@@ -5,13 +5,13 @@ import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { InMemoryTestingModule } from '../../in-memory-testing/in-memory-testing.module';
-import { setupMemoryDb } from '../../in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '../../in-memory-testing/initialize-data-source';
-import { setupTestData } from '../../in-memory-testing/setup-test-data';
-import { testCategories, testUsers } from '../../in-memory-testing/test-data';
+import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
+import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
+import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
+import { setupTestData } from '@test/in-memory-testing/setup-test-data';
+import { testCategories, testUsers } from '@test/in-memory-testing/test-data';
 
-describe('/expenses (DELETE)', () => {
+describe('/expenses (POST)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
   let memoryDb: IMemoryDb;
@@ -80,10 +80,7 @@ describe('/expenses (DELETE)', () => {
         };
 
         // when
-        const res = await agent
-          .post('/expenses')
-          .send(testRequestBody)
-          .expect(201);
+        const res = await agent.post('/expenses').send(testRequestBody).expect(201);
 
         // then
         expect(res.body).toEqual({
@@ -99,12 +96,12 @@ describe('/expenses (DELETE)', () => {
         });
       });
 
-      test('지출 생성 실패(400) - 유효하지 않은 categoryId', async () => {
+      test('지출 생성 실패(404) - 존재하지 않는 categoryId', async () => {
         // given
-        const invalidCategoryId = 9999;
+        const notFoundCategoryId = 9999;
 
         const testRequestBody = {
-          categoryId: invalidCategoryId,
+          categoryId: notFoundCategoryId,
           content: '떡볶이',
           amount: 14000,
           expenseDate: new Date(),
@@ -115,7 +112,7 @@ describe('/expenses (DELETE)', () => {
           .post('/expenses')
           .send(testRequestBody)
           // then
-          .expect(400);
+          .expect(404);
       });
     });
   });

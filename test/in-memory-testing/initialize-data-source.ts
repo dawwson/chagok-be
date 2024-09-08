@@ -2,9 +2,7 @@ import { IMemoryDb } from 'pg-mem';
 import { DataSource } from 'typeorm';
 import SnakeNamingStrategy from 'typeorm-naming-strategy';
 
-export const initializeDataSource = async (
-  db: IMemoryDb,
-): Promise<DataSource> => {
+export const initializeDataSource = async (db: IMemoryDb): Promise<DataSource> => {
   const dataSource: DataSource = await db.adapters.createTypeormDataSource({
     type: 'postgres',
     entities: [__dirname + '/../../src/**/*.entity{.ts,.js}'],

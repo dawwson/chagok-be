@@ -28,6 +28,8 @@ import { ExpenseUpdateRequest } from './dto/request/expense-update.request';
 import { ExpenseUpdateResponse } from './dto/response/expense-update.response';
 import { ExpenseShowRequest } from './dto/request/expense-show.request';
 import { ExpenseShowResponse } from './dto/response/expense-show.reponse';
+import { ExpenseStatsResponse } from './dto/response/expense-stats.response';
+
 import { GetExpenseDetailResponseData } from '../dto/get-expense-detail-response-data.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -67,26 +69,16 @@ export class ExpenseController {
   }
 
   @Get('statistics')
-  async getExpenseStatistics(@Req() req: RequestWithUser) {
-    // 지난달, 이번달 카테고리별 지출 합계
-    const monthStatisticsByCategory = await this.expenseStatsService.compareLastMonthWithThisMonth(req.user.id);
+  async showExpenseStats(@Req() req: RequestWithUser) {
+    const userId = req.user.id;
 
-    // 7일 전, 오늘 카테고리별 지출 합계
-    const weekStatisticsByCategory = await this.expenseStatsService.compareLastWeekWithThisWeek(req.user.id);
-    return {
-      comparedToLastMonth: monthStatisticsByCategory.map((statistic) => ({
-        ...statistic,
-        // string -> number로 변환
-        lastMonthAmount: Number(statistic.lastMonthAmount),
-        thisMonthAmount: Number(statistic.thisMonthAmount),
-      })),
-      comparedToLastWeek: weekStatisticsByCategory.map((statistic) => ({
-        ...statistic,
-        // string -> number로 변환
-        lastWeekAmount: Number(statistic.lastWeekAmount),
-        thisWeekAmount: Number(statistic.thisWeekAmount),
-      })),
-    };
+    // 지난달, 이번달 카테고리별 지출 합계
+    const monthlyExpenseByCategory = await this.expenseStatsService.getMonthlyExpenseByCategory(userId);
+
+    // 저번부, 이번주 카테고리별 지출 합계
+    const weeklyExpenseByCategory = await this.expenseStatsService.getWeeklyExpenseByCategory(userId);
+
+    return ExpenseStatsResponse.from(monthlyExpenseByCategory, weeklyExpenseByCategory);
   }
 
   @UseGuards(OwnExpenseGuard)

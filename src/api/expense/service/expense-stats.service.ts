@@ -1,87 +1,79 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
+import * as dayjs from 'dayjs';
+import * as isoWeek from 'dayjs/plugin/isoWeek';
 
-import { Expense } from '../../../entity/expense.entity';
-import { Category } from '../../../entity/category.entity';
-import { CategoryName } from '../../../shared/enum/category-name.enum';
+import { ExpenseFindMonthlyOutput, ExpenseFindMonthlyRawResult } from './dto/output/expense-find-monthly-output';
+import { ExpenseFindWeeklyOutput, ExpenseFindWeeklyRawResult } from './dto/output/expense-find-weekly-output';
 
+dayjs.extend(isoWeek);
+
+// NOTE: 한국 시간대만 지원합니다.
 @Injectable()
 export class ExpenseStatsService {
-  constructor(
-    @InjectRepository(Expense)
-    private readonly expenseRepo: Repository<Expense>,
-    @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
-  compareLastMonthWithThisMonth(userId: string): Promise<
-    {
-      categoryId: number;
-      categoryName: CategoryName;
-      lastMonthAmount: string;
-      thisMonthAmount: string;
-    }[]
-  > {
-    return (
-      this.categoryRepo
-        .createQueryBuilder('c')
-        .select('c.id', 'categoryId')
-        .addSelect('c.name', 'categoryName')
-        // 지난 달 지출 합계
-        .addSelect(
-          // NOTE: 지난 달에 해당하는 지출만 집계에 포함시킵니다.
-          // COALESCE : NULL -> 0으로 변환
-          'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(MONTH FROM e.expenseDate) = EXTRACT(MONTH FROM CURRENT_DATE) - 1), 0)',
-          'lastMonthAmount',
-        )
-        // 이번 달 지출 합계
-        .addSelect(
-          // NOTE: 이번 달에 해당하는 지출만 집계에 포함시킵니다.
-          // COALESCE : NULL -> 0으로 변환
-          'COALESCE(SUM(amount) FILTER(WHERE EXTRACT(MONTH FROM expense_date) = EXTRACT(MONTH FROM CURRENT_DATE)), 0)',
-          'thisMonthAmount',
-        )
-        // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
-        .leftJoin('expenses', 'e', 'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false', { userId })
-        .groupBy('c.id')
-        .orderBy('c.id', 'ASC')
-        .getRawMany()
+  async getMonthlyExpenseByCategory(userId: string) {
+    const now = dayjs();
+    const lastMonthStart = now.startOf('month').subtract(1, 'month').toISOString();
+    const lastMonthEnd = now.startOf('month').subtract(1, 'month').endOf('month').toISOString();
+    const thisMonthStart = now.startOf('month').toISOString();
+    const thisMonthEnd = now.endOf('month').toISOString();
+
+    const rawResults: ExpenseFindMonthlyRawResult[] = await this.dataSource.query(
+      `
+      SELECT
+        c.id AS category_id,
+        c.name AS category_name,
+        COALESCE(
+          SUM(e.amount) FILTER ( WHERE e.expense_date BETWEEN '${lastMonthStart}' AND '${lastMonthEnd}' ), 0) AS last_month_expense,
+        COALESCE(
+          SUM(e.amount) FILTER ( WHERE e.expense_date BETWEEN '${thisMonthStart}' AND '${thisMonthEnd}' ), 0) AS this_month_expense
+      FROM
+        categories c
+          LEFT JOIN expenses e ON e.category_id = c.id
+          AND e.user_id = '${userId}'
+          AND e.is_excluded = FALSE
+      GROUP BY
+        c.id
+      ORDER BY
+        c.id ASC`,
     );
+
+    return ExpenseFindMonthlyOutput.from(rawResults);
   }
 
-  compareLastWeekWithThisWeek(userId: string): Promise<
-    {
-      categoryId: number;
-      categoryName: CategoryName;
-      lastWeekAmount: string;
-      thisWeekAmount: string;
-    }[]
-  > {
-    return (
-      this.categoryRepo
-        .createQueryBuilder('c')
-        // 지난주 오늘 지출 합계
-        .select('c.id', 'categoryId')
-        .addSelect('c.name', 'categoryName')
-        .addSelect(
-          // NOTE: 지난 주 오늘(7일 전)에 해당하는 row만 집계에 포함시킵니다.
-          // COALESCE : NULL -> 0으로 변환
-          "COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM e.expenseDate) = EXTRACT(DAY FROM CURRENT_DATE - interval '7 days')), 0)",
-          'lastWeekAmount',
-        )
-        // 오늘 지출 합계
-        .addSelect(
-          // NOTE: 오늘에 해당하는 row만 집계에 포함시킵니다.
-          // COALESCE : NULL -> 0으로 변환
-          'COALESCE(SUM(e.amount) FILTER(WHERE EXTRACT(DAY FROM expense_date) = EXTRACT(DAY FROM CURRENT_DATE)), 0)',
-          'thisWeekAmount',
-        )
-        // NOTE: 카테고리 테이블 기준으로 모든 행 보존하면서 조건에 따라 지출 테이블 값을 가져옵니다.
-        .leftJoin('expenses', 'e', 'c.id = e.category_id AND e.userId = :userId AND e.isExcluded = false', { userId })
-        .groupBy('c.id')
-        .orderBy('c.id', 'ASC')
-        .getRawMany()
+  async getWeeklyExpenseByCategory(userId: string) {
+    const now = dayjs();
+    const lastWeekStart = now.startOf('isoWeek').subtract(7, 'day').toISOString();
+    const lastWeekEnd = now.endOf('isoWeek').subtract(7, 'day').toISOString();
+    const thisWeekStart = now.startOf('isoWeek').toISOString();
+    const thisWeekEnd = now.endOf('isoWeek').toISOString();
+
+    const rawResults: ExpenseFindWeeklyRawResult[] = await this.dataSource.query(
+      `
+      SELECT
+	      c.id AS category_id,
+	      c.name AS category_name,
+	      COALESCE(
+		      SUM(e.amount) FILTER (
+			      WHERE e.expense_date BETWEEN '${lastWeekStart}' AND '${lastWeekEnd}'
+		      ), 0) AS last_week_expense,
+	      COALESCE(
+		      SUM(e.amount) FILTER (
+			      WHERE e.expense_date BETWEEN '${thisWeekStart}' AND '${thisWeekEnd}'
+		    ), 0) AS this_week_expense
+      FROM
+	      categories c 
+          LEFT JOIN expenses e ON e.category_id = c.id
+	        AND e.user_id = '${userId}'
+	        AND e.is_excluded = FALSE	
+      GROUP BY
+	      c.id
+      ORDER BY
+	      c.id ASC
+      `,
     );
+    return ExpenseFindWeeklyOutput.from(rawResults);
   }
 }

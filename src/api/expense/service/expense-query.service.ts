@@ -85,8 +85,4 @@ export class ExpenseQueryService {
       .addGroupBy('c.name') //
       .getRawMany();
   }
-
-  async deleteExpenseById(id: number): Promise<void> {
-    await this.expenseRepo.delete({ id });
-  }
 }

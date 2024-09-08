@@ -32,4 +32,8 @@ export class ExpenseService {
       throw new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND);
     }
   }
+
+  async deleteExpenseById(expenseId: number) {
+    await this.expenseRepo.delete({ id: expenseId });
+  }
 }

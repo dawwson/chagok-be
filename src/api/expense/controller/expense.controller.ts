@@ -92,7 +92,7 @@ export class ExpenseController {
   @HttpCode(204)
   @Delete(':id')
   async deleteExpense(@Param('id') id: number) {
-    await this.expenseQueryService.deleteExpenseById(id);
+    await this.expenseService.deleteExpenseById(id);
     return;
   }
 }

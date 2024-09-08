@@ -1,7 +1,6 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
-import { UserCreateInput } from '../../../service/dto/input/user-create.input';
 import { ErrorCode } from '../../../../../shared/enum/error-code.enum';
+import { User } from 'src/entity/user.entity';
 
 export class UserSignUpRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
@@ -12,7 +11,7 @@ export class UserSignUpRequest {
   @IsString({ message: ErrorCode.INVALID_PASSWORD })
   password: string;
 
-  toCreateUserDto(): UserCreateInput {
-    return plainToInstance(UserCreateInput, this);
+  toEntity() {
+    return User.create(this.email, this.password);
   }
 }

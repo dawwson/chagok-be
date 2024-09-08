@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserCreateInput } from './dto/input/user-create.input';
 import { UserVerifyInput } from './dto/input/user-verify.input';
 import { User } from '../../../entity/user.entity';
 import { ErrorCode } from '../../../shared/enum/error-code.enum';
@@ -16,11 +15,9 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
   ) {}
 
-  async createUser(dto: UserCreateInput) {
+  async createUser(user: User) {
     try {
-      // NOTE: @BeforeInsert()가 create() 통해서 실행됨
-      const userToSave = this.userRepo.create(dto);
-      return await this.userRepo.save(userToSave);
+      return await this.userRepo.save(user);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException(ErrorCode.USER_EMAIL_IS_DUPLICATED);

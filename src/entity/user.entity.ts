@@ -1,11 +1,4 @@
-import {
-  BeforeInsert,
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity('users')
@@ -25,8 +18,12 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
   updatedAt?: Date;
 
-  @BeforeInsert()
-  async hashPassword(): Promise<void> {
-    this.password = await bcrypt.hash(this.password, 10);
+  static async create(email: string, password: string) {
+    const user = new User();
+
+    user.email = email;
+    user.password = await bcrypt.hash(password, 10);
+
+    return user;
   }
 }

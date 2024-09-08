@@ -63,7 +63,7 @@ export class BudgetController {
     }
 
     budget = await this.setBudgetService.getBudgetWithCategory(budget.id);
-    return BudgetUpdateResponse.of(budget);
+    return BudgetUpdateResponse.from(budget);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

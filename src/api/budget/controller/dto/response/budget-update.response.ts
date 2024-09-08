@@ -26,7 +26,7 @@ export class BudgetUpdateResponse {
   @Type(() => BudgetByCategory)
   budgetsByCategory: BudgetByCategory;
 
-  static of(budget: Budget) {
+  static from(budget: Budget) {
     return plainToInstance(BudgetUpdateResponse, budget);
   }
 }

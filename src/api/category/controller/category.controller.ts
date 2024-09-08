@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, Controller, Get, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../../../shared/guard/jwt-auth.guard';
 
@@ -6,7 +6,6 @@ import { CategoryService } from '../service/category.service';
 import { CategoryShowResponse } from './dto/response/category-show.response';
 
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

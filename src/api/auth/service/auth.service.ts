@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +8,6 @@ import { UserVerifyInput } from './dto/input/user-verify.input';
 import { User } from '../../../entity/user.entity';
 import { ErrorCode } from '../../../shared/enum/error-code.enum';
 import { UserVerifyOutput } from './dto/output/user-verify.output';
-import { UserCreateOutput } from './dto/output/user-create.output';
 
 @Injectable()
 export class AuthService {
@@ -21,17 +16,11 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
   ) {}
 
-  /**
-   * 사용자를 생성한다.
-   * @param createUserDto
-   * @return 생성된 User 객체
-   */
-  async createUser(dto: UserCreateInput): Promise<UserCreateOutput> {
+  async createUser(dto: UserCreateInput) {
     try {
       // NOTE: @BeforeInsert()가 create() 통해서 실행됨
       const userToSave = this.userRepo.create(dto);
-      const savedUser = await this.userRepo.save(userToSave);
-      return { id: savedUser.id, email: savedUser.email };
+      return await this.userRepo.save(userToSave);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException(ErrorCode.USER_EMAIL_IS_DUPLICATED);

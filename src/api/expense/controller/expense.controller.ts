@@ -10,8 +10,7 @@ import {
   Req,
   Query,
   HttpCode,
-  UseInterceptors,
-  ClassSerializerInterceptor,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { RequestWithUser } from '../../../shared/interface/request-with-user.interface';
@@ -41,11 +40,10 @@ export class ExpenseController {
   ) {}
 
   @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
   async registerExpense(@Req() req: RequestWithUser, @Body() dto: ExpenseRegisterRequest) {
     const expense = await this.expenseService.createExpense(dto.toEntity(req.user.id));
 
-    return new ExpenseRegisterResponse(expense);
+    return ExpenseRegisterResponse.from(expense);
   }
 
   @UseGuards(OwnExpenseGuard)
@@ -89,7 +87,7 @@ export class ExpenseController {
   }
 
   @UseGuards(OwnExpenseGuard)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async deleteExpense(@Param('id') id: number) {
     await this.expenseService.deleteExpenseById(id);

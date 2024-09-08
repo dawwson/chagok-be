@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpStatus,
-  HttpCode,
-  Res,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
@@ -25,15 +18,14 @@ export class AuthController {
   ) {}
 
   @Post('/sign-up')
-  async signUp(@Body() dto: UserSignUpRequest): Promise<UserSignUpResponse> {
-    const userCreateDto = dto.toCreateUserDto();
-    const { id, email } = await this.authService.createUser(userCreateDto);
+  async signUp(@Body() dto: UserSignUpRequest) {
+    const createdUser = await this.authService.createUser(dto.toCreateUserDto());
 
-    return { id, email };
+    return UserSignUpResponse.from(createdUser);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('/sign-in')
+  @HttpCode(HttpStatus.OK)
   async signIn(@Body() dto: UserSignInRequest, @Res() res: Response) {
     const verifyUserDto = dto.toVerifyUserDto();
 
@@ -49,8 +41,7 @@ export class AuthController {
         // NOTE: XSS 차단
         httpOnly: true,
         // NOTE: JWT랑 만료시간 동일하게 설정(ms 단위여서 1000을 곱한다)
-        maxAge:
-          this.configService.get<ServerConfig>('server').jwtExpiresIn * 1000,
+        maxAge: this.configService.get<ServerConfig>('server').jwtExpiresIn * 1000,
       })
       .json({ data: payload });
   }

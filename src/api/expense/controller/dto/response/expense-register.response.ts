@@ -1,57 +1,30 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, plainToInstance } from 'class-transformer';
 import { Expense } from 'src/entity/expense.entity';
 
 @Exclude()
 export class ExpenseRegisterResponse {
-  private readonly _id: number;
-  private readonly _categoryId: number;
-  private readonly _content: string;
-  private readonly _amount: number;
-  private readonly _isExcluded: boolean;
-  private readonly _expenseDate: Date;
-  private readonly _createdAt: Date;
-
-  constructor(expense: Expense) {
-    this._id = expense.id;
-    this._categoryId = expense.categoryId;
-    this._content = expense.content;
-    this._amount = expense.amount;
-    this._isExcluded = expense.isExcluded;
-    this._expenseDate = expense.expenseDate;
-    this._createdAt = expense.createdAt;
-  }
-
-  @Expose() get id() {
-    return this._id;
-  }
+  @Expose()
+  id: number;
 
   @Expose()
-  get categoryId() {
-    return this._categoryId;
-  }
+  categoryId: number;
 
   @Expose()
-  get content() {
-    return this._content;
-  }
+  content: string;
 
   @Expose()
-  get amount() {
-    return this._amount;
-  }
+  amount: number;
 
   @Expose()
-  get expenseDate() {
-    return this._expenseDate;
-  }
+  isExcluded: boolean;
 
   @Expose()
-  get isExcluded() {
-    return this._isExcluded;
-  }
+  expenseDate: Date;
 
   @Expose()
-  get createdAt() {
-    return this._createdAt;
+  createdAt: Date;
+
+  static from(expense: Expense) {
+    return plainToInstance(ExpenseRegisterResponse, expense);
   }
 }

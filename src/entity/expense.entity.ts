@@ -14,39 +14,39 @@ import { Category } from './category.entity';
 @Entity('expenses')
 @Check(`"amount" > 0`)
 export class Expense {
-  @PrimaryGeneratedColumn({ name: 'id' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ name: 'user_id' })
+  @Column()
   userId: string;
 
   @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @Column({ name: 'category_id' })
+  @Column()
   categoryId: number;
 
-  @Column({ name: 'content', type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   content: string;
 
-  @Column({ name: 'amount', type: 'integer' })
+  @Column({ type: 'integer' })
   amount: number;
 
-  @Column({ name: 'is_excluded', type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: false })
   isExcluded: boolean;
 
-  @Column({ name: 'expense_date', type: 'timestamp with time zone' })
+  @Column({ type: 'timestamp with time zone' })
   expenseDate: Date;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone', nullable: true })
+  @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
   updatedAt?: Date;
 
   constructor(

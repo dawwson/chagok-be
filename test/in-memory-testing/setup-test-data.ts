@@ -1,8 +1,8 @@
 import { DataSource, Repository } from 'typeorm';
 
-import { User } from '../../src/entity/user.entity';
-import { Category } from '../../src/entity/category.entity';
-import { Expense } from '../../src/entity/expense.entity';
+import { User } from '@src/entity/user.entity';
+import { Category } from '@src/entity/category.entity';
+import { Expense } from '@src/entity/expense.entity';
 
 import { testCategories, testExpenses, testUsers } from './test-data';
 
@@ -11,7 +11,17 @@ export const setupTestData = async (datasource: DataSource) => {
   const categoryRepo: Repository<Category> = datasource.getRepository(Category);
   const expenseRepo: Repository<Expense> = datasource.getRepository(Expense);
 
-  await userRepo.save(userRepo.create(testUsers));
+  const hashedUsers = [];
+
+  for (const testUser of testUsers) {
+    const hashedUser = await User.create(testUser.email, testUser.password);
+    hashedUsers.push({
+      id: testUser.id,
+      ...hashedUser,
+    });
+  }
+
+  await userRepo.save(hashedUsers);
   await categoryRepo.save(testCategories);
   await expenseRepo.save(testExpenses);
 };

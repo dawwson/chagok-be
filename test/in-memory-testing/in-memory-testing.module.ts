@@ -3,17 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
-import { AuthModule } from '../../src/api/auth/auth.module';
-import { CategoryModule } from '../../src/api/category/category.module';
-import { BudgetModule } from '../../src/api/budget/budget.module';
-import { ExpenseModule } from '../../src/api/expense/expense.module';
-import dbConfig from '../../src/config/db.config';
-import serverConfig from '../../src/config/server.config';
-import {
-  HttpExceptionFilter,
-  QueryFailedFilter,
-} from '../../src/shared/filter/custom-exception.filter';
-import { TransformInterceptor } from '../../src/shared/interceptor/transform.interceptor';
+import { AuthModule } from '@src/api/auth/auth.module';
+import { CategoryModule } from '@src/api/category/category.module';
+import { BudgetModule } from '@src/api/budget/budget.module';
+import { ExpenseModule } from '@src/api/expense/expense.module';
+import dbConfig from '@src/config/db.config';
+import serverConfig from '@src/config/server.config';
+import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from '@src/shared/filter/custom-exception.filter';
+import { TransformInterceptor } from '@src/shared/interceptor/transform.interceptor';
 
 @Module({
   imports: [
@@ -37,6 +34,11 @@ import { TransformInterceptor } from '../../src/shared/interceptor/transform.int
           transform: true, // DTO 클래스로 자동 형변환
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
+    },
+    // NOTE: 필터 우선순위는 역순입니다!!
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
     },
     {
       provide: APP_FILTER,

@@ -21,11 +21,11 @@ export const ErrorMessage: Record<ErrorCode, string> = {
 
   // 401
   [ErrorCode.AUTH_INVALID_TOKEN]: '유효하지 않은 토큰입니다.',
+  [ErrorCode.USER_EMAIL_DO_NOT_EXIST]: '존재하지 않는 이메일입니다.',
   [ErrorCode.USER_PASSWORD_IS_WRONG]: '비밀번호가 일치하지 않습니다.',
 
   // 404
   [ErrorCode.USER_NOT_FOUND]: '존재하지 않는 사용자입니다.',
-  [ErrorCode.USER_EMAIL_DO_NOT_EXIST]: '존재하지 않는 이메일입니다.',
   [ErrorCode.EXPENSE_NOT_FOUND]: '지출이 존재하지 않습니다.',
   [ErrorCode.CATEGORY_NOT_FOUND]: '카테고리가 존재하지 않습니다.',
 

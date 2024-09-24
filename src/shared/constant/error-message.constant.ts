@@ -6,6 +6,8 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.OUT_OF_RANGE]: '파라미터가 유효 범위를 벗어났습니다.',
   [ErrorCode.INVALID_EMAIL]: '유효하지 않은 email 입니다.',
   [ErrorCode.INVALID_PASSWORD]: '유효하지 않은 password 입니다.',
+  [ErrorCode.INVALID_NICKNAME_TYPE]: '유효하지 않은 nickname 형식입니다.',
+  [ErrorCode.INVALID_NICKNAME_LENGTH]: 'nickname은 최소 2글자 입니다.',
   [ErrorCode.INVALID_YEAR]: '유효하지 않은 year 형식입니다.',
   [ErrorCode.INVALID_MONTH]: '유효하지 않은 month 형식입니다.',
   [ErrorCode.INVALID_TOTAL_AMOUNT]: '유효하지 않은 totalAmount 입니다.',

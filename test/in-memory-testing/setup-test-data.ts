@@ -14,7 +14,7 @@ export const setupTestData = async (datasource: DataSource) => {
   const hashedUsers = [];
 
   for (const testUser of testUsers) {
-    const hashedUser = await User.create(testUser.email, testUser.password);
+    const hashedUser = await User.create(testUser.email, testUser.password, testUser.nickname);
     hashedUsers.push({
       id: testUser.id,
       ...hashedUser,

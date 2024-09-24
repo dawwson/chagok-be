@@ -54,6 +54,7 @@ describe('/auth (POST)', () => {
       const testUserInfo = {
         email: 'success@gmail.com',
         password: 'test_password',
+        nickname: 'success',
       };
 
       // when
@@ -68,6 +69,7 @@ describe('/auth (POST)', () => {
         data: {
           id: expect.any(String),
           email: testUserInfo.email,
+          nickname: testUserInfo.nickname,
         },
       });
     });
@@ -77,6 +79,7 @@ describe('/auth (POST)', () => {
       const testUserInfo = {
         email: testUsers[0].email,
         password: testUsers[0].password,
+        nickname: testUsers[0].nickname,
       };
 
       // when

@@ -9,6 +9,9 @@ export class UserSignUpResponse {
   @Expose()
   email: string;
 
+  @Expose()
+  nickname: string;
+
   static from(user: User) {
     return plainToInstance(UserSignUpResponse, user);
   }

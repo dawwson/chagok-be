@@ -12,6 +12,7 @@ export interface DbConfig {
 export interface ServerConfig {
   nodeEnv: NodeEnv;
   port: number;
+  domain: string;
   jwtSecret: string;
   jwtExpiresIn: number;
 }

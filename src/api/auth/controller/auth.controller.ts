@@ -42,6 +42,8 @@ export class AuthController {
         httpOnly: true,
         // NOTE: JWT랑 만료시간 동일하게 설정(ms 단위여서 1000을 곱한다)
         maxAge: this.configService.get<ServerConfig>('server').jwtExpiresIn * 1000,
+        // 서드파티 쿠키로 허용
+        sameSite: 'none',
       })
       .json({ data: payload });
   }

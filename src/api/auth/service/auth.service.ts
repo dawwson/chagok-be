@@ -37,10 +37,10 @@ export class AuthService {
       throw new UnauthorizedException(ErrorCode.USER_EMAIL_DO_NOT_EXIST);
     }
 
-    const isMatch = await bcrypt.compare(dto.password, user.password);
-    if (!isMatch) {
+    const isMatched = await bcrypt.compare(dto.password, user.password);
+    if (!isMatched) {
       throw new UnauthorizedException(ErrorCode.USER_PASSWORD_IS_WRONG);
     }
-    return { id: user.id, email: user.email };
+    return { id: user.id, nickname: user.nickname };
   }
 }

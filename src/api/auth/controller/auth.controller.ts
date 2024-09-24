@@ -30,10 +30,10 @@ export class AuthController {
     const verifyUserDto = dto.toVerifyUserDto();
 
     // 사용자 검증
-    const { id, email } = await this.authService.verifyUser(verifyUserDto);
+    const { id, nickname } = await this.authService.verifyUser(verifyUserDto);
 
     // accessToken 발급(JWT)
-    const payload = { id, email };
+    const payload = { id, nickname };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return res

@@ -94,23 +94,23 @@ describe('/auth (POST)', () => {
   describe('POST /auth/sign-in', () => {
     test('로그인 성공', async () => {
       // given
-      const testUserInfo = {
-        email: testUsers[0].email,
-        password: testUsers[0].password,
-      };
+      const testUser = testUsers[0];
 
       // when
       const res = await request(app.getHttpServer()) //
         .post('/auth/sign-in') //
-        .send(testUserInfo);
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        });
 
       // then
       expect(res.statusCode).toBe(200);
       expect(res.headers['set-cookie'][0]).toContain('accessToken=');
       expect(res.body).toEqual({
         data: {
-          id: expect.any(String),
-          email: testUserInfo.email,
+          id: testUser.id,
+          nickname: testUser.nickname,
         },
       });
     });

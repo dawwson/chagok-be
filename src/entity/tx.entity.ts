@@ -18,7 +18,7 @@ import { PaymentMethod } from '@src/shared/enum/payment-method.enum';
 @Check(`"amount" > 0`)
 export class Tx {
   @PrimaryGeneratedColumn()
-  txId: number;
+  id: number;
 
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({ name: 'user_id' })

@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: { id: string; email: string }) {
     // NOTE: 여기서부터는 JWT가 유효하다고 가정합니다.
-    const user = await this.userRepo.findOneBy({ userId: payload.id });
+    const user = await this.userRepo.findOneBy({ id: payload.id });
     if (!user) {
       throw new UnauthorizedException(ErrorCode.USER_NOT_FOUND);
     }

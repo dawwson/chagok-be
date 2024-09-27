@@ -41,7 +41,7 @@ export class BudgetController {
     @Body() body: BudgetUpdateRequestBody,
   ) {
     let budget = await this.setBudgetService.findBudget({
-      userId: req.user.userId,
+      userId: req.user.id,
       year: param.year,
       month: param.month,
     });
@@ -55,7 +55,7 @@ export class BudgetController {
       await this.setBudgetService.updateBudget(updateBudgetInput);
     } else {
       const createBudgetInput = new CreateBudgetInput();
-      createBudgetInput.userId = req.user.userId;
+      createBudgetInput.userId = req.user.id;
       createBudgetInput.year = param.year;
       createBudgetInput.month = param.month;
       createBudgetInput.budgetsByCategory = body.budgetsByCategory;
@@ -75,7 +75,7 @@ export class BudgetController {
     @Query() query: BudgetRecommendRequestQuery,
   ) {
     const budgetRecommendInput = new BudgetRecommendInput();
-    budgetRecommendInput.userId = req.user.userId;
+    budgetRecommendInput.userId = req.user.id;
     budgetRecommendInput.year = param.year;
     budgetRecommendInput.month = param.month;
     budgetRecommendInput.totalAmount = query.totalAmount;

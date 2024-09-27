@@ -21,7 +21,7 @@ export class OwnExpenseGuard implements CanActivate {
     const user = request.user;
     const expenseId = parseInt(request.params.id);
 
-    const isOwnExpense = await this.expenseLib.isOwnExpense(expenseId, user.userId);
+    const isOwnExpense = await this.expenseLib.isOwnExpense(expenseId, user.id);
 
     if (!isOwnExpense) {
       // NOTE: 보안 상의 이유로 403이 아니라 404로 응답합니다.

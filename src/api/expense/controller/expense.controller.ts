@@ -41,7 +41,7 @@ export class ExpenseController {
 
   @Post()
   async registerExpense(@Req() req: RequestWithUser, @Body() dto: ExpenseRegisterRequest) {
-    const expense = await this.expenseService.createExpense(dto.toEntity(req.user.id));
+    const expense = await this.expenseService.createExpense(dto.toEntity(req.user.userId));
 
     return ExpenseRegisterResponse.from(expense);
   }
@@ -57,7 +57,7 @@ export class ExpenseController {
 
   @Get()
   async showExpenses(@Req() req: RequestWithUser, @Query() dto: ExpenseShowRequest) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const expenses = await this.expenseQueryService.getExpensesBy(userId, dto);
     const expensesByCategory = await this.expenseQueryService.getExpensesByCatogory(userId, dto);
@@ -67,7 +67,7 @@ export class ExpenseController {
 
   @Get('statistics')
   async showExpenseStats(@Req() req: RequestWithUser) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     // 지난달, 이번달 카테고리별 지출 합계
     const monthlyExpenseByCategory = await this.expenseStatsService.getMonthlyExpenseByCategory(userId);

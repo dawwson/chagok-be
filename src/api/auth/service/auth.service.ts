@@ -41,6 +41,6 @@ export class AuthService {
     if (!isMatched) {
       throw new UnauthorizedException(ErrorCode.USER_PASSWORD_IS_WRONG);
     }
-    return { id: user.id, nickname: user.nickname };
+    return { id: user.userId, nickname: user.nickname };
   }
 }

@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  userId: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
@@ -12,7 +12,7 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 100 })
   nickname: string;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })

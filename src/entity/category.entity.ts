@@ -12,7 +12,4 @@ export class Category {
 
   @Column({ type: 'varchar', length: 20 })
   type: TxType;
-
-  @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
 }

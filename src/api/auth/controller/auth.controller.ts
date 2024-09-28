@@ -59,7 +59,7 @@ export class AuthController {
       })
       .json({ data: payload });
   }
-  /*
+
   // 로그아웃
   @UseGuards(JwtAuthGuard)
   @Post('/sign-out')
@@ -72,8 +72,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Delete('/account')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteAccount(@Req() req: RequestWithUser) {
+  async deleteAccount(@Req() req: RequestWithUser) {
+    await this.authService.deleteUser(req.user.id);
     return;
   }
-    */
 }

@@ -10,6 +10,13 @@ import { User } from '@src/entity/user.entity';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { ServerConfig } from '@src/shared/interface/config.interface';
 
+interface Payload {
+  id: string;
+  nickname: string;
+  iat: number;
+  exp: number;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -27,15 +34,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { id: string; email: string }) {
+  async validate(payload: Payload) {
     // NOTE: 여기서부터는 JWT가 유효하다고 가정합니다.
     const user = await this.userRepo.findOneBy({ id: payload.id });
     if (!user) {
       throw new UnauthorizedException(ErrorCode.USER_NOT_FOUND);
     }
 
-    // password만 삭제 후 request의 user에 붙여서 전달
-    delete user.password;
-    return user;
+    // request의 user에 담아서 전달
+    return {
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+    };
   }
 }

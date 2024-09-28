@@ -16,10 +16,12 @@ import { AuthController } from './controller/auth.controller';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
+        const { jwtSecret, jwtExpiresIn } = configService.get<ServerConfig>('server');
+
         return {
-          secret: configService.get<ServerConfig>('server').jwtSecret,
+          secret: jwtSecret,
           signOptions: {
-            expiresIn: configService.get<ServerConfig>('server').jwtExpiresIn,
+            expiresIn: `${jwtExpiresIn}s`, // 단위: 초
           },
         };
       },

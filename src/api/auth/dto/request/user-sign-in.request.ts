@@ -1,7 +1,7 @@
 import { IsDefined, IsEmail, IsString } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
-import { UserVerifyInput } from '@src/api/auth/service/dto/input/user-verify.input';
+import { UserVerifyInput } from '@src/api/auth/dto/input/user-verify.input';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class UserSignInRequest {

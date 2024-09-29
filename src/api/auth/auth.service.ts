@@ -26,11 +26,6 @@ export class AuthService {
     }
   }
 
-  /**
-   * 이메일과 비밀번호 확인 후 사용자의 일부 정보를 반환한다.
-   * @param dto UserVerifyInput
-   * @returns UserVerifyOutput
-   */
   async verifyUser(dto: UserVerifyInput): Promise<UserVerifyOutput> {
     const user = await this.userRepo.findOneBy({ email: dto.email });
     if (!user) {
@@ -42,5 +37,9 @@ export class AuthService {
       throw new UnauthorizedException(ErrorCode.USER_PASSWORD_IS_WRONG);
     }
     return { id: user.id, nickname: user.nickname };
+  }
+
+  async deleteUser(userId: string) {
+    this.userRepo.delete({ id: userId });
   }
 }

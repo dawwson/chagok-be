@@ -1,148 +1,186 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
 
-import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
-import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
-import { setupTestData } from '@test/in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
-import { testUsers } from '@test/in-memory-testing/test-data';
+import { User } from '@src/entity/user.entity';
+import { clearDatabase, createTestApp, getRepository, setupDatabase } from '@test/utils/utils';
+import { testUsers } from '@test/utils/test-data';
 
-describe('/auth (POST)', () => {
+const API_URL = '/auth';
+
+describe('POST /auth', () => {
   let app: INestApplication;
-  let dataSource: DataSource;
-  let memoryDb: IMemoryDb;
-  let backup: IBackup;
 
   beforeAll(async () => {
-    // 1. DB 설정
-    memoryDb = setupMemoryDb();
-    // 2. 연결 설정된 dataSource를 가져옴
-    dataSource = await initializeDataSource(memoryDb);
-    // 3. 테스트에 필요한 데이터 생성
-    await setupTestData(dataSource);
-
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [InMemoryTestingModule],
-    })
-      .overrideProvider(DataSource)
-      .useValue(dataSource)
-      .compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
-
-    // NOTE: datasource initialize 한 시점의 데이터를 백업합니다.
-    backup = memoryDb.backup();
+    await setupDatabase();
+    app = await createTestApp();
   });
 
   afterEach(async () => {
-    // NOTE: 매 테스트 종료 후 백업한 데이터로 ROLLBACK 합니다.
-    backup.restore();
+    clearDatabase();
   });
 
   afterAll(async () => {
-    // NOTE: 모든 테스트 종료 후 앱을 종료합니다.(+ connection closed)
     await app.close();
   });
 
-  describe('POST /auth/sign-up', () => {
-    test('회원가입 성공', async () => {
+  describe('/sign-up', () => {
+    test('(201) 회원 가입 성공', async () => {
       // given
-      const testUserInfo = {
-        email: 'success@gmail.com',
-        password: 'test_password',
-        nickname: 'success',
+      const user = {
+        email: 'new@email.com',
+        password: 'new_password',
+        nickname: 'new_user',
       };
-
-      // when
-      const res = await request(app.getHttpServer())
-        .post('/auth/sign-up') //
-        .send(testUserInfo) //
-        .expect(201);
-
-      // then
-      expect(res.statusCode).toBe(201);
-      expect(res.body).toEqual({
-        data: {
-          id: expect.any(String),
-          email: testUserInfo.email,
-          nickname: testUserInfo.nickname,
-        },
-      });
-    });
-
-    test('회원가입 실패 - 이미 존재하는 이메일', async () => {
-      // given
-      const testUserInfo = {
-        email: testUsers[0].email,
-        password: testUsers[0].password,
-        nickname: testUsers[0].nickname,
-      };
-
-      // when
-      await request(app.getHttpServer())
-        .post('/auth/sign-up')
-        .send(testUserInfo)
-        // then
-        .expect(409);
-    });
-  });
-
-  describe('POST /auth/sign-in', () => {
-    test('로그인 성공', async () => {
-      // given
-      const testUser = testUsers[0];
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post('/auth/sign-in') //
+        .post(`${API_URL}/sign-up`) //
         .send({
-          email: testUser.email,
-          password: testUser.password,
+          email: user.email,
+          password: user.password,
+          nickname: user.nickname,
         });
 
       // then
-      expect(res.statusCode).toBe(200);
-      expect(res.headers['set-cookie'][0]).toContain('accessToken=');
+      expect(res.status).toBe(201);
       expect(res.body).toEqual({
         data: {
-          id: testUser.id,
-          nickname: testUser.nickname,
+          id: expect.any(String),
+          email: user.email,
+          nickname: user.nickname,
+        },
+      });
+
+      const found = await getRepository(User).findOneBy({ id: res.body.data.id });
+      expect(found).toEqual({
+        id: res.body.data.id,
+        email: user.email,
+        password: expect.any(String),
+        nickname: user.nickname,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+
+    test('(409) 회원가입 실패: 이미 사용 중인 이메일', async () => {
+      // given
+      const user = {
+        email: testUsers[0].email,
+        password: 'new_password',
+        nickname: 'new_user',
+      };
+
+      // when
+      const res = await request(app.getHttpServer()) //
+        .post(`${API_URL}/sign-up`) //
+        .send({
+          email: user.email,
+          password: user.password,
+          nickname: user.nickname,
+        });
+
+      // then
+      expect(res.status).toBe(409);
+    });
+  });
+
+  describe('/sign-in', () => {
+    test('(200) 사용자1로 로그인 성공', async () => {
+      // given
+      const user = testUsers[0];
+
+      // when
+      const res = await request(app.getHttpServer()) //
+        .post(`${API_URL}/sign-in`) //
+        .send({
+          email: user.email,
+          password: user.password,
+        });
+
+      // then
+      expect(res.status).toBe(200);
+      expect(res.get('Set-Cookie')[0]).toContain('accessToken=');
+      expect(res.body).toEqual({
+        data: {
+          id: user.id,
+          nickname: user.nickname,
         },
       });
     });
 
-    test('로그인 실패 - 존재하지 않는 이메일', async () => {
+    test('(401) 로그인 실패: 존재하지 않는 이메일', async () => {
       // given
-      const testUserInfo = {
-        email: 'do_not_exist@gmail.com',
+      const user = {
+        email: 'fail@email.com',
         password: testUsers[0].password,
       };
 
       // when
-      await request(app.getHttpServer())
-        .post('/auth/sign-in')
-        .send(testUserInfo)
-        // then
-        .expect(401);
+      const res = await request(app.getHttpServer()) //
+        .post(`${API_URL}/sign-in`) //
+        .send({
+          email: user.email,
+          password: user.password,
+        });
+
+      // then
+      expect(res.status).toBe(401);
     });
 
-    test('로그인 실패 - 비밀번호 틀림', async () => {
+    test('(401) 로그인 실패: 비밀번호 불일치', async () => {
       // given
-      const testUserInfo = {
+      const user = {
         email: testUsers[0].email,
         password: 'wrong_password',
       };
 
       // when
-      await request(app.getHttpServer())
-        .post('/auth/sign-in')
-        .send(testUserInfo)
-        // then
+      const res = await request(app.getHttpServer()) //
+        .post(`${API_URL}/sign-in`) //
+        .send({
+          email: user.email,
+          password: user.password,
+        });
+
+      // then
+      expect(res.status).toBe(401);
+    });
+  });
+
+  describe('/sign-out', () => {
+    test('로그인 전: (401) 유효하지 않은 토큰', async () => {
+      await request(app.getHttpServer()) //
+        .post('/auth/sign-out') //
         .expect(401);
+    });
+
+    describe('사용자1 로그인 후:', () => {
+      let agent: request.SuperAgentTest;
+      const currentUser = testUsers[0];
+
+      beforeAll(async () => {
+        const res = await request(app.getHttpServer())
+          .post('/auth/sign-in')
+          .send({
+            email: currentUser.email,
+            password: currentUser.password,
+          })
+          .expect(200);
+
+        agent = request.agent(app.getHttpServer());
+        agent.set('Cookie', res.get('Set-Cookie'));
+      });
+
+      test('(204) 로그아웃 성공', async () => {
+        // given
+
+        // when
+        const res = await agent.post(`${API_URL}/sign-out`);
+
+        // then
+        expect(res.status).toBe(204);
+        expect(res.get('Set-Cookie')[0]).toBe('accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+      });
     });
   });
 });

@@ -71,9 +71,9 @@ export class AuthController {
   // 회원탈퇴
   @UseGuards(JwtAuthGuard)
   @Delete('/account')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteAccount(@Req() req: RequestWithUser) {
+  async deleteAccount(@Req() req: RequestWithUser, @Res() res: Response) {
     await this.authService.deleteUser(req.user.id);
-    return;
+    res.clearCookie(COOKIE_NAME);
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 }

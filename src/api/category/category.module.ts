@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Category } from '@src/entity/category.entity';
 
-import { CategoryController } from './controller/category.controller';
+import { CategoryController } from './category.controller';
 import { CategoryService } from './service/category.service';
 import { CategoryLib } from './service/category.lib';
 

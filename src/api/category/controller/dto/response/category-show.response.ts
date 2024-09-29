@@ -1,7 +1,8 @@
 import { Exclude, Expose, plainToInstance } from 'class-transformer';
 
 import { Category } from '@src/entity/category.entity';
-import { CategoryName } from '@src/shared/enum/category-name.enum';
+import { ExpenseCategoryName, IncomeCategoryName } from '@src/shared/enum/category-name.enum';
+import { TxType } from '@src/shared/enum/tx-type.enum';
 
 @Exclude()
 export class CategoryShowResponse {
@@ -9,7 +10,10 @@ export class CategoryShowResponse {
   id: number;
 
   @Expose()
-  name: CategoryName;
+  name: IncomeCategoryName | ExpenseCategoryName;
+
+  @Expose()
+  type: TxType;
 
   static from(categories: Category[]) {
     return plainToInstance(CategoryShowResponse, categories);

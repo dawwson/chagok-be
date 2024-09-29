@@ -11,7 +11,7 @@ export class CategoryService {
     private readonly categoryRepo: Repository<Category>,
   ) {}
 
-  getCategories(): Promise<Category[]> {
+  getCategories() {
     return this.categoryRepo.find();
   }
 }

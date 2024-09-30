@@ -21,6 +21,18 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE]: 'minAmount와 maxAmount는 함께 포함되어야 합니다.',
   [ErrorCode.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX]: 'minAmount는 maxAmount보다 작아야 합니다.',
 
+  // tx
+  [ErrorCode.TX_INVALID_TX_TYPE]: '"txType"의 타입을 확인해주세요.',
+  [ErrorCode.TX_INVALID_TX_METHOD]: '"txMethod"의 타입을 확인해주세요.',
+  [ErrorCode.TX_INVALID_AMOUNT]: '"amount"의 타입을 확인해주세요.',
+  [ErrorCode.TX_INVALID_DATE]: '"date"의 타입을 확인해주세요.',
+  [ErrorCode.TX_INVALID_DESCRIPTION]: '"description"의 타입을 확인해주세요.',
+  [ErrorCode.TX_INVALID_IS_EXCLUDED]: '"isExcluded"의 타입을 확인해주세요.',
+  [ErrorCode.TX_AMOUNT_OUT_OF_RANGE]: '"amount"의 범위를 확인해주세요."',
+  [ErrorCode.TX_DESCRIPTION_OUT_OF_LENGTH]: '"description"의 길이를 확인해주세요."',
+  // category
+  [ErrorCode.CATEGORY_INVALID_ID]: '"categoryId"의 타입을 확인해주세요.',
+
   // 401
   [ErrorCode.AUTH_INVALID_TOKEN]: '유효하지 않은 토큰입니다.',
   [ErrorCode.USER_EMAIL_DO_NOT_EXIST]: '존재하지 않는 이메일입니다.',

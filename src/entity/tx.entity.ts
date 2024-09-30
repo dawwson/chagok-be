@@ -46,7 +46,7 @@ export class Tx {
   @Column({ type: 'timestamp with time zone' })
   date: Date;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, default: '' })
   description?: string;
 
   @Column({ type: 'boolean', default: null, nullable: true })
@@ -80,7 +80,7 @@ class Builder {
     return this;
   }
 
-  type(txType: TxType) {
+  txType(txType: TxType) {
     this.transaction.txType = txType;
     return this;
   }

@@ -35,10 +35,10 @@ export class Tx {
   categoryId: number;
 
   @Column({ type: 'varchar', length: 20 })
-  type: TxType;
+  txType: TxType;
 
   @Column({ type: 'varchar', length: 20 })
-  method: TxMethod;
+  txMethod: TxMethod;
 
   @Column({ type: 'integer' })
   amount: number;
@@ -80,13 +80,13 @@ class Builder {
     return this;
   }
 
-  type(type: TxType) {
-    this.transaction.type = type;
+  type(txType: TxType) {
+    this.transaction.txType = txType;
     return this;
   }
 
-  method(method: TxMethod) {
-    this.transaction.method = method;
+  txMethod(txMethod: TxMethod) {
+    this.transaction.txMethod = txMethod;
     return this;
   }
 

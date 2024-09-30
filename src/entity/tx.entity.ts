@@ -12,7 +12,7 @@ import {
 import { User } from './user.entity';
 import { Category } from './category.entity';
 import { TxType } from '@src/shared/enum/tx-type.enum';
-import { PaymentMethod } from '@src/shared/enum/payment-method.enum';
+import { TxMethod } from '@src/shared/enum/tx-method.enum';
 
 @Entity('txs')
 @Check(`"amount" > 0`)
@@ -38,7 +38,7 @@ export class Tx {
   type: TxType;
 
   @Column({ type: 'varchar', length: 20 })
-  paymentMethod: PaymentMethod;
+  method: TxMethod;
 
   @Column({ type: 'integer' })
   amount: number;
@@ -85,8 +85,8 @@ class Builder {
     return this;
   }
 
-  paymentMethod(paymentMethod: PaymentMethod) {
-    this.transaction.paymentMethod = paymentMethod;
+  method(method: TxMethod) {
+    this.transaction.method = method;
     return this;
   }
 

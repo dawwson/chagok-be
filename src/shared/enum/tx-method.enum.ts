@@ -1,4 +1,4 @@
-export enum PaymentMethod {
+export enum TxMethod {
   CASH = 'cash',
   DEBIT_CARD = 'debit card',
   CREDIT_CARD = 'credit card',

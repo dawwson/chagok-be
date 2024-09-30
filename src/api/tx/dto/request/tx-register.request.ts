@@ -47,10 +47,9 @@ export class TxRegisterRequest {
   @MaxLength(100, { message: ErrorCode.TX_DESCRIPTION_OUT_OF_LENGTH })
   description?: string;
 
-  @ValidateIf((o) => o.txType === TxType.EXPENSE)
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsBoolean({ message: ErrorCode.TX_INVALID_IS_EXCLUDED })
-  isExcluded?: boolean;
+  isExcluded: boolean;
 
   toEntity(userId: string) {
     return Tx.builder()
@@ -61,7 +60,7 @@ export class TxRegisterRequest {
       .amount(this.amount)
       .date(this.date)
       .description(this.description)
-      .isExcluded(this.txType === TxType.INCOME ? null : this.isExcluded)
+      .isExcluded(this.isExcluded)
       .build();
   }
 }

@@ -49,8 +49,8 @@ export class Tx {
   @Column({ type: 'varchar', length: 100, default: '' })
   description?: string;
 
-  @Column({ type: 'boolean', default: null, nullable: true })
-  isExcluded?: boolean;
+  @Column({ type: 'boolean', default: false })
+  isExcluded: boolean;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;

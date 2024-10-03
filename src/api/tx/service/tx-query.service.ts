@@ -24,8 +24,8 @@ export class TxQueryService {
       .select() // tx 모든 컬럼 포함
       .leftJoinAndSelect('tx.category', 'category') // category 모든 컬럼 포함해서 left join
       .where('tx.userId = :userId', { userId })
-      .andWhere('tx.date >= :startDate AND tx.date < :endDate', { startDate, endDate })
-      .orderBy('tx.date', 'DESC') // 날짜순
+      .andWhere('tx.date >= :startDate AND tx.date <= :endDate', { startDate, endDate })
+      .orderBy('tx.date', 'DESC') // 날짜 오래된 순
       .getMany();
   }
 
@@ -38,7 +38,7 @@ export class TxQueryService {
       .addSelect(`SUM(CASE WHEN tx.tx_type = '${TxType.EXPENSE}' THEN tx.amount ELSE 0 END)`, 'totalExpense')
       .where('tx.userId = :userId', { userId })
       .andWhere('tx.isExcluded = false')
-      .andWhere('tx.date >= :startDate AND tx.date < :endDate', { startDate, endDate })
+      .andWhere('tx.date >= :startDate AND tx.date <= :endDate', { startDate, endDate })
       .getRawMany();
 
     return result[0];

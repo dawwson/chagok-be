@@ -34,7 +34,7 @@ export class TxController {
   @Get()
   async showTxs(@Req() req: RequestWithUser, @Query() dto: TxShowRequest) {
     const userId = req.user.id;
-    const txs = await this.txQueryService.getTxsByDate(userId, dto);
+    const txs = await this.txQueryService.getTxs(userId, dto);
 
     return TxShowResponse.from(txs);
   }

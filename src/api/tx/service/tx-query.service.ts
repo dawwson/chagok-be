@@ -16,7 +16,7 @@ export class TxQueryService {
     private readonly txRepo: Repository<Tx>,
   ) {}
 
-  getTxsByDate(userId: string, dto: TxFindInput) {
+  getTxs(userId: string, dto: TxFindInput) {
     const { startDate, endDate } = dto;
 
     return this.txRepo

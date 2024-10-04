@@ -9,7 +9,6 @@ import {
   Max,
   MaxLength,
   Min,
-  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request-with-user.interface';
 
 import { TxRegisterRequest } from './dto/request/tx-register.request';
 import { TxRegisterResponse } from './dto/response/tx-register.response';
@@ -9,9 +9,11 @@ import { TxShowRequest } from './dto/request/tx-show.request';
 import { TxShowResponse } from './dto/response/tx-show.reponse';
 import { TxSumRequest } from './dto/request/tx-sum.request';
 import { TxSumResponse } from './dto/response/tx-sum.reponse';
+import { TxShowDetailResponse } from './dto/response/tx-show-detail.response';
 
 import { TxService } from './service/tx.service';
 import { TxQueryService } from './service/tx-query.service';
+import { OwnTxGuard } from './guard/own-tx.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('txs')
@@ -43,5 +45,12 @@ export class TxController {
     const sum = await this.txQueryService.calculateSum(userId, dto);
 
     return TxSumResponse.from(sum.totalIncome, sum.totalExpense);
+  }
+
+  @UseGuards(OwnTxGuard)
+  @Get('/:id')
+  showTx(@Req() req: RequestWithTx) {
+    const tx = req.tx;
+    return TxShowDetailResponse.from(tx);
   }
 }

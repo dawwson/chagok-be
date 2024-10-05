@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { CategoryLib } from '@src/api/category/service/category.lib';
 import { Tx } from '@src/entity/tx.entity';
 
+import { TxUpdateInput } from '../dto/input/tx-update.input';
+
 @Injectable()
 export class TxService {
   constructor(
@@ -18,7 +20,10 @@ export class TxService {
     return this.txRepo.save(tx);
   }
 
-  updateTx(tx: Tx) {}
+  async updateTx(txId: number, dto: TxUpdateInput) {
+    await this.categoryLib.validateCategoryId(dto.categoryId);
+    await this.txRepo.update(txId, dto);
+  }
 
   deleteTx(txId: number) {}
 }

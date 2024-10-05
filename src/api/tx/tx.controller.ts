@@ -5,6 +5,8 @@ import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request-wi
 
 import { TxRegisterRequest } from './dto/request/tx-register.request';
 import { TxRegisterResponse } from './dto/response/tx-register.response';
+import { TxUpdateRequest } from './dto/request/tx-update.request';
+import { TxUpdateResponse } from './dto/response/tx-update.response';
 import { TxShowRequest } from './dto/request/tx-show.request';
 import { TxShowResponse } from './dto/response/tx-show.reponse';
 import { TxSumRequest } from './dto/request/tx-sum.request';
@@ -29,6 +31,15 @@ export class TxController {
     const newTx = await this.txService.createTx(dto.toEntity(userId));
 
     return TxRegisterResponse.from(newTx);
+  }
+
+  @UseGuards(OwnTxGuard)
+  @Put('/:id')
+  async updateTx(@Param('id') txId: number, @Body() dto: TxUpdateRequest) {
+    await this.txService.updateTx(txId, dto);
+    const tx = await this.txQueryService.getTx(txId);
+
+    return TxUpdateResponse.from(tx);
   }
 
   @Get()

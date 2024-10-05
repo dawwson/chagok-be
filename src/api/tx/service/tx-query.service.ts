@@ -16,6 +16,10 @@ export class TxQueryService {
     private readonly txRepo: Repository<Tx>,
   ) {}
 
+  getTx(txId: number) {
+    return this.txRepo.findOneBy({ id: txId });
+  }
+
   getTxs(userId: string, dto: TxFindInput) {
     const { startDate, endDate } = dto;
 

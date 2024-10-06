@@ -5,10 +5,13 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { AuthModule } from '@src/api/auth/auth.module';
 import { CategoryModule } from '@src/api/category/category.module';
-import { BudgetModule } from '@src/api/budget/budget.module';
-import { ExpenseModule } from '@src/api/expense/expense.module';
+// import { BudgetModule } from '@src/api/budget/budget.module';
+// import { ExpenseModule } from '@src/api/expense/expense.module';
+import { TxModule } from '@src/api/tx/tx.module';
+
 import dbConfig from '@src/config/db.config';
 import serverConfig from '@src/config/server.config';
+
 import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from '@src/shared/filter/custom-exception.filter';
 import { TransformInterceptor } from '@src/shared/interceptor/transform.interceptor';
 
@@ -23,8 +26,9 @@ import { TransformInterceptor } from '@src/shared/interceptor/transform.intercep
     TypeOrmModule.forRoot(),
     AuthModule,
     CategoryModule,
-    BudgetModule,
-    ExpenseModule,
+    TxModule,
+    // BudgetModule,
+    // ExpenseModule,
   ],
   providers: [
     {

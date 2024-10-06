@@ -1,7 +1,10 @@
 import { User } from '@src/entity/user.entity';
 import { Category } from '@src/entity/category.entity';
-import { CategoryName } from '@src/shared/enum/category-name.enum';
-import { Expense } from '@src/entity/expense.entity';
+import { Tx } from '@src/entity/tx.entity';
+
+import { IncomeCategoryName, ExpenseCategoryName } from '@src/shared/enum/category-name.enum';
+import { TxType } from '@src/shared/enum/tx-type.enum';
+import { TxMethod } from '@src/shared/enum/tx-method.enum';
 
 export const testUsers: User[] = [
   // 사용자 1
@@ -20,6 +23,49 @@ export const testUsers: User[] = [
   },
 ] as User[];
 
+export const testCategories: Category[] = [
+  ...Object.keys(IncomeCategoryName).map((key, i) => {
+    const c = new Category();
+    c.id = i + 1;
+    c.name = IncomeCategoryName[key];
+    c.type = TxType.INCOME;
+    return c;
+  }),
+  ...Object.keys(ExpenseCategoryName).map((key, i) => {
+    const c = new Category();
+    c.id = i + 1;
+    c.name = ExpenseCategoryName[key];
+    c.type = TxType.EXPENSE;
+    return c;
+  }),
+];
+
+export const testTxs: Tx[] = [
+  // income 1
+  {
+    id: 1,
+    userId: testUsers[0].id,
+    categoryId: testCategories[0].id,
+    txType: TxType.INCOME,
+    txMethod: TxMethod.BANK_TRANSFER,
+    amount: 3000000,
+    date: new Date(),
+    description: '급여',
+    isExcluded: false,
+  },
+  // expense 1
+  {
+    id: 2,
+    userId: testUsers[0].id,
+    categoryId: testCategories[0].id,
+    txType: TxType.EXPENSE,
+    txMethod: TxMethod.CREDIT_CARD,
+    amount: 5000,
+    date: new Date(),
+    description: '커피',
+    isExcluded: false,
+  },
+] as Tx[];
 /*
 export const testCategories: Category[] = Object.values(CategoryName).map(
   (name, index) => ({ id: index + 1, name }) as Category,

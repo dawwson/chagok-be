@@ -1,9 +1,13 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import { newDb, DataType, IBackup } from 'pg-mem';
 import { v4 } from 'uuid';
-import { testUsers } from './test-data';
+
 import { User } from '@src/entity/user.entity';
+import { Category } from '@src/entity/category.entity';
+import { Tx } from '@src/entity/tx.entity';
+
+import { testCategories, testTxs, testUsers } from './test-data';
 
 const memoryDb = newDb({
   autoCreateForeignKeyIndices: true,
@@ -52,8 +56,6 @@ export const createDataSource = async () => {
 };
 
 export const setupTestData = async (dataSource: DataSource) => {
-  const userRepo: Repository<User> = dataSource.getRepository(User);
-
   const hashedUsers = [];
 
   for (const testUser of testUsers) {
@@ -64,7 +66,9 @@ export const setupTestData = async (dataSource: DataSource) => {
     });
   }
 
-  await userRepo.save(hashedUsers);
+  await dataSource.getRepository(User).save(hashedUsers);
+  await dataSource.getRepository(Category).save(testCategories);
+  await dataSource.getRepository(Tx).save(testTxs);
 };
 
 let backup: IBackup;

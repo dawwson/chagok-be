@@ -25,5 +25,7 @@ export class TxService {
     await this.txRepo.update(txId, dto);
   }
 
-  deleteTx(txId: number) {}
+  async deleteTx(txId: number) {
+    await this.txRepo.delete({ id: txId });
+  }
 }

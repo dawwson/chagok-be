@@ -1,4 +1,17 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request-with-user.interface';
@@ -63,5 +76,13 @@ export class TxController {
   showTx(@Req() req: RequestWithTx) {
     const tx = req.tx;
     return TxShowDetailResponse.from(tx);
+  }
+
+  @UseGuards(OwnTxGuard)
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteTx(@Param('id') txId: number) {
+    await this.txService.deleteTx(txId);
+    return;
   }
 }

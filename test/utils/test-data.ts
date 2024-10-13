@@ -41,7 +41,7 @@ export const testCategories: Category[] = [
 ];
 
 export const testTxs: Tx[] = [
-  // income 1
+  // 사용자 1의 내역
   {
     id: 1,
     userId: testUsers[0].id,
@@ -53,10 +53,10 @@ export const testTxs: Tx[] = [
     description: '급여',
     isExcluded: false,
   },
-  // expense 1
+  // 사용자 2의 내역
   {
     id: 2,
-    userId: testUsers[0].id,
+    userId: testUsers[1].id,
     categoryId: testCategories[0].id,
     txType: TxType.EXPENSE,
     txMethod: TxMethod.CREDIT_CARD,

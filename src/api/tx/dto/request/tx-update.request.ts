@@ -19,7 +19,7 @@ export class TxUpdateRequest {
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsNumber({}, { message: ErrorCode.TX_INVALID_AMOUNT })
-  @Min(10, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 10원 이상
+  @Min(1, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 0원 초과
   @Max(2000000000, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 20억 이하
   amount: number;
 
@@ -29,6 +29,6 @@ export class TxUpdateRequest {
   description: string;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsBoolean({ message: ErrorCode.INVALID_IS_EXCLUDED })
+  @IsBoolean({ message: ErrorCode.TX_INVALID_IS_EXCLUDED })
   isExcluded: boolean;
 }

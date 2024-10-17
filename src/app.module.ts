@@ -6,11 +6,11 @@ import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as path from 'path';
 
 import { AuthModule } from './api/auth/auth.module';
-import { CategoryModule } from './api/category/category.module';
 import { BudgetModule } from './api/budget/budget.module';
-import { ExpenseModule } from './api/expense/expense.module';
+import { CategoryModule } from './api/category/category.module';
 import { TxModule } from './api/tx/tx.module';
-import { StatModule } from './api/stat/stat.module';
+// import { StatModule } from './api/stat/stat.module';
+// import { ExpenseModule } from './api/expense/expense.module';
 
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
@@ -51,11 +51,11 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
       },
     }),
     AuthModule,
-    CategoryModule,
     BudgetModule,
-    ExpenseModule,
+    CategoryModule,
     TxModule,
-    StatModule,
+    // StatModule,
+    // ExpenseModule, // TODO: 삭제
   ],
   providers: [
     {

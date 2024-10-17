@@ -1,39 +1,60 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Param,
-  Put,
-  Query,
-  Req,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
 
-import { BudgetUpdateRequestBody, BudgetUpdateRequestParam } from './dto/request/budget-update.request';
-import { BudgetRecommendRequestParam, BudgetRecommendRequestQuery } from './dto/request/budget-recommend.request';
-import { BudgetUpdateResponse } from './dto/response/budget-update.response';
-import { BudgetRecommendResponse } from './dto/response/budget-recommend.response';
+import { BudgetCreateRequest } from './dto/request/budget-create.request';
+import { BudgetCreateResponse } from './dto/response/budget-create.response';
+import { BudgetFindRequest } from './dto/request/budget-find.request';
+import { BudgetFindResponse } from './dto/response/budget-find.response';
+import { OwnBudgetGuard } from './guard/own-budget.guard';
+import { BudgetService } from './service/budget.service';
 
-import { CreateBudgetInput } from '../service/dto/input/budget-create.input';
-import { UpdateBudgetInput } from '../service/dto/input/budget-update.input';
-import { BudgetRecommendInput } from '../service/dto/input/budget-recommend.input';
-import { SetBudgetService } from '../service/set-budget.service';
-import { RecommendBudgetService } from '../service/recommend-budget.service';
+import { CategoryLib } from '../category/service/category.lib';
 
 @UseGuards(JwtAuthGuard)
 @Controller('budgets')
 export class BudgetController {
   constructor(
-    private readonly setBudgetService: SetBudgetService,
-    private readonly recommendBudgetService: RecommendBudgetService,
+    private readonly budgetService: BudgetService,
+    private readonly categoryLib: CategoryLib,
   ) {}
 
-  // TODO: 생성, 수정 API 분리
+  @Post()
+  async registerBudget(@Req() req: RequestWithUser, @Body() dto: BudgetCreateRequest) {
+    const userId = req.user.id;
+    const budget = await this.budgetService.createBudget({ userId, ...dto });
+
+    return BudgetCreateResponse.from(budget);
+  }
+
+  // TODO: 🚧 예산 수정
+  @UseGuards(OwnBudgetGuard)
+  @Put(':id')
+  updateBudget(@Req() req: RequestWithUser, @Param('id') budgetId: number, @Body() dto) {
+    return 'update budget';
+  }
+
+  @Get(':year/:month')
+  async findBudget(@Req() req: RequestWithUser, @Param() { year, month }: BudgetFindRequest) {
+    const userId = req.user.id;
+    const budget = await this.budgetService.getOwnBudgetByYearAndMonth(userId, year, month);
+
+    if (!budget) {
+      const categories = await this.categoryLib.getExpenseCategories();
+      return BudgetFindResponse.emptyBudgetFrom(year, month, categories);
+    }
+
+    return BudgetFindResponse.from(budget);
+  }
+
+  // TODO: 🚧 예산 추천
+  @Get(':year/:month/recommendation')
+  recommendBudget() {
+    return 'recommend budget';
+  }
+
+  /*
   @Put(':year/:month')
   async setMonthlyBudget(
     @Req() req: RequestWithUser,
@@ -88,4 +109,5 @@ export class BudgetController {
       .budgetsByCategory(budgetsByCategory)
       .build();
   }
+      */
 }

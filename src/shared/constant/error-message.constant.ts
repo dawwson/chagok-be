@@ -27,6 +27,7 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.BUDGET_INVALID_BUDGETS]: '"budgets"의 타입을 확인해주세요.',
   [ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE]: '"amount"의 타입/범위를 확인해주세요.',
   [ErrorCode.BUDGET_BUDGETS_OUT_OF_RANGE]: '"budgets"의 길이를 확인해주세요.',
+  [ErrorCode.BUDGET_TOTAL_AMOUNT_OUT_OF_RANGE]: '총 예산의 범위(1,000,000,000,000)를 초과했습니다.',
 
   // category
   [ErrorCode.CATEGORY_INVALID_ID]: '"categoryId"의 타입을 확인해주세요.',

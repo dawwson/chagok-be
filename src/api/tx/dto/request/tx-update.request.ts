@@ -3,6 +3,7 @@ import { IsBoolean, IsDefined, IsIn, IsNumber, IsString, Max, MaxLength, Min } f
 import { TxType } from '@src/shared/enum/tx-type.enum';
 import { TxMethod } from '@src/shared/enum/tx-method.enum';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
 
 export class TxUpdateRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
@@ -20,7 +21,7 @@ export class TxUpdateRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsNumber({}, { message: ErrorCode.TX_INVALID_AMOUNT })
   @Min(1, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 0원 초과
-  @Max(2000000000, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 20억 이하
+  @Max(BudgetCategory.getMaxAmount(), { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 20억 이하
   amount: number;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

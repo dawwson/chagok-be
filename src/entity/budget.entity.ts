@@ -13,11 +13,11 @@ import {
 import { User } from './user.entity';
 import { BudgetCategory } from './budget-category.entity';
 
-const MAX_AMOUNT = 200000000; // 20억
+const MAX_TOTAL_AMOUNT = 10000000000; // 100억
 
 @Entity('budgets')
 @Unique('UQ_USER_ID_YEAR_MONTH', ['user', 'year', 'month'])
-@Check(`"total_amount" >= 0 AND "total_amount" <= ${MAX_AMOUNT}`)
+@Check(`"total_amount" >= 0 AND "total_amount" < ${MAX_TOTAL_AMOUNT}`)
 export class Budget {
   @PrimaryGeneratedColumn()
   id: number;
@@ -42,7 +42,7 @@ export class Budget {
   @Column({ type: 'smallint' })
   month: number;
 
-  @Column({ type: 'integer' }) // -2147483648 ~ +2147483647
+  @Column({ type: 'bigint' }) // -9223372036854775808 to +9223372036854775807
   totalAmount: number;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
@@ -52,7 +52,7 @@ export class Budget {
   updatedAt: Date;
 
   static maxTotalAmount() {
-    return MAX_AMOUNT;
+    return MAX_TOTAL_AMOUNT;
   }
 
   static builder() {

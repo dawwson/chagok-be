@@ -12,7 +12,7 @@ import {
 import { Budget } from './budget.entity';
 import { Category } from './category.entity';
 
-const MAX_AMOUNT = 200000000; // 20억
+const MAX_AMOUNT = 2000000000; // 20억
 
 @Entity('budget_category')
 @Unique('UQ_BUDGET_ID_CATEGORY_ID', ['budget', 'category'])
@@ -46,6 +46,10 @@ export class BudgetCategory {
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
+
+  static getMaxAmount() {
+    return MAX_AMOUNT;
+  }
 
   static builder() {
     return new Builder();

@@ -16,6 +16,7 @@ import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { TxType } from '@src/shared/enum/tx-type.enum';
 import { TxMethod } from '@src/shared/enum/tx-method.enum';
 import { Tx } from '@src/entity/tx.entity';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
 
 export class TxRegisterRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
@@ -29,7 +30,7 @@ export class TxRegisterRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsNumber({}, { message: ErrorCode.TX_INVALID_AMOUNT })
   @Min(10, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 10원 이상
-  @Max(2000000000, { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 20억 이하
+  @Max(BudgetCategory.getMaxAmount(), { message: ErrorCode.TX_AMOUNT_OUT_OF_RANGE }) // 20억 이하
   amount: number;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })

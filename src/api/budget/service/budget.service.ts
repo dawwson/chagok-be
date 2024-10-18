@@ -36,12 +36,6 @@ export class BudgetService {
       .andWhere('b.month = :month', { month })
       .orderBy('bc.categoryId', 'ASC')
       .getOne();
-    // return this.budgetRepo.findOne({
-    //   where: { userId, year, month },
-    //   relations: ['budgetCategories', 'budgetCategories.category'],
-    // });
-
-    // query: SELECT "Budget"."id" AS "Budget_id", "Budget"."user_id" AS "Budget_user_id", "Budget"."year" AS "Budget_year", "Budget"."month" AS "Budget_month", "Budget"."total_amount" AS "Budget_total_amount", "Budget"."created_at" AS "Budget_created_at", "Budget"."updated_at" AS "Budget_updated_at", "Budget__Budget_budgetCategories"."id" AS "Budget__Budget_budgetCategories_id", "Budget__Budget_budgetCategories"."budget_id" AS "Budget__Budget_budgetCategories_budget_id", "Budget__Budget_budgetCategories"."category_id" AS "Budget__Budget_budgetCategories_category_id", "Budget__Budget_budgetCategories"."amount" AS "Budget__Budget_budgetCategories_amount", "Budget__Budget_budgetCategories"."created_at" AS "Budget__Budget_budgetCategories_created_at", "Budget__Budget_budgetCategories"."updated_at" AS "Budget__Budget_budgetCategories_updated_at", "9aa4f9967660128cbb3a0ed5befb832266421473"."id" AS "9aa4f9967660128cbb3a0ed5befb832266421473_id", "9aa4f9967660128cbb3a0ed5befb832266421473"."name" AS "9aa4f9967660128cbb3a0ed5befb832266421473_name", "9aa4f9967660128cbb3a0ed5befb832266421473"."type" AS "9aa4f9967660128cbb3a0ed5befb832266421473_type" FROM "budgets" "Budget" LEFT JOIN "budget_category" "Budget__Budget_budgetCategories" ON "Budget__Budget_budgetCategories"."budget_id"="Budget"."id"  LEFT JOIN "categories" "9aa4f9967660128cbb3a0ed5befb832266421473" ON "9aa4f9967660128cbb3a0ed5befb832266421473"."id"="Budget__Budget_budgetCategories"."category_id" WHERE ( ("Budget"."user_id" = $1 AND "Budget"."year" = $2 AND "Budget"."month" = $3) ) AND ( "Budget"."id" IN (30) ) -- PARAMETERS: ["f131cfc0-0fb0-4208-804b-1b0f7b8aac38",2024,11]
   }
 
   async createBudget(dto: BudgetCreateInput) {

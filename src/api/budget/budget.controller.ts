@@ -7,6 +7,8 @@ import { BudgetCreateRequest } from './dto/request/budget-create.request';
 import { BudgetCreateResponse } from './dto/response/budget-create.response';
 import { BudgetFindRequest } from './dto/request/budget-find.request';
 import { BudgetFindResponse } from './dto/response/budget-find.response';
+import { BudgetUpdateRequest } from './dto/request/budget-update.request';
+import { BudgetUpdateResponse } from './dto/response/budget-update.response';
 import { OwnBudgetGuard } from './guard/own-budget.guard';
 import { BudgetService } from './service/budget.service';
 
@@ -28,11 +30,13 @@ export class BudgetController {
     return BudgetCreateResponse.from(budget);
   }
 
-  // TODO: 🚧 예산 수정
   @UseGuards(OwnBudgetGuard)
   @Put(':id')
-  updateBudget(@Req() req: RequestWithUser, @Param('id') budgetId: number, @Body() dto) {
-    return 'update budget';
+  async updateBudget(@Param('id') budgetId: number, @Body() dto: BudgetUpdateRequest) {
+    await this.budgetService.updateBudget(budgetId, dto);
+    const budget = await this.budgetService.getBudgetById(budgetId);
+
+    return BudgetUpdateResponse.from(budget);
   }
 
   @Get(':year/:month')

@@ -21,7 +21,7 @@ export class BudgetCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Budget, { nullable: false })
+  @ManyToOne(() => Budget, (budget) => budget.budgetCategories, { nullable: false })
   @JoinColumn({ name: 'budget_id' })
   budget: Budget;
 

@@ -79,7 +79,6 @@ class Builder {
 
   budgetCategories(budgetCategories: BudgetCategory[]) {
     this.budget.budgetCategories = budgetCategories;
-    this.budget.totalAmount = budgetCategories.reduce((acc, bc) => (acc += bc.amount), 0);
     return this;
   }
 
@@ -90,6 +89,11 @@ class Builder {
 
   month(month: number) {
     this.budget.month = month;
+    return this;
+  }
+
+  totalAmount(totalAmount: number) {
+    this.budget.totalAmount = totalAmount;
     return this;
   }
 

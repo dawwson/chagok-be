@@ -1,32 +1,37 @@
-// import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
-// import { Budget } from '@src/entity/budget.entity';
-// import { BudgetMonth } from '@src/shared/enum/budget-month.enum';
+import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
+import { Budget } from '@src/entity/budget.entity';
 
-// @Exclude()
-// class BudgetByCategory {
-//   @Expose({ name: 'categoryId' })
-//   categoryId: number;
+@Exclude()
+export class BudgetUpdateResponse {
+  @Expose()
+  id: number;
 
-//   @Expose({ name: 'amount' })
-//   amount: number;
-// }
+  @Expose()
+  year: number;
 
-// @Exclude()
-// export class BudgetUpdateResponse {
-//   @Expose()
-//   id: number;
+  @Expose()
+  month: number;
 
-//   @Expose()
-//   year: string;
+  @Expose()
+  totalAmount: number;
 
-//   @Expose()
-//   month: BudgetMonth;
+  @Expose({ name: 'budgetCategories' })
+  @Type(() => BudgetByCategory)
+  budgets: BudgetByCategory[];
 
-//   @Expose({ name: 'budgetCategories' })
-//   @Type(() => BudgetByCategory)
-//   budgetsByCategory: BudgetByCategory;
+  @Expose()
+  updatedAt: Date;
 
-//   static from(budget: Budget) {
-//     return plainToInstance(BudgetUpdateResponse, budget);
-//   }
-// }
+  static from(budget: Budget) {
+    return plainToInstance(BudgetUpdateResponse, budget);
+  }
+}
+
+@Exclude()
+class BudgetByCategory {
+  @Expose()
+  categoryId: number;
+
+  @Expose()
+  amount: number;
+}

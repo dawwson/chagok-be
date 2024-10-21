@@ -62,9 +62,16 @@ export class BudgetService {
     try {
       return await this.budgetRepo.save(budget);
     } catch (error) {
+      //
       if (error.code === '23505') {
+        // 23505: duplicate key value
         throw new ConflictException(ErrorCode.BUDGET_IS_DUPLICATED);
       }
+      if (error.code === '23514') {
+        // 23514: violates check constraint
+        throw new BadRequestException(ErrorCode.BUDGET_TOTAL_AMOUNT_OUT_OF_RANGE);
+      }
+      throw error;
     }
   }
 

@@ -12,7 +12,7 @@ import {
 import { Budget } from './budget.entity';
 import { Category } from './category.entity';
 
-const MAX_AMOUNT = 2000000000; // 20억
+const MAX_AMOUNT = 1000000000; // 10억
 
 @Entity('budget_category')
 @Unique('UQ_BUDGET_ID_CATEGORY_ID', ['budget', 'category'])

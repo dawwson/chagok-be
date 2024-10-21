@@ -2,9 +2,9 @@ import { ArrayMaxSize, ArrayMinSize, IsArray, IsDefined, IsNumber, Max, Min, Val
 import { Type } from 'class-transformer';
 import * as dayjs from 'dayjs';
 
-import { Budget } from '@src/entity/budget.entity';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { ExpenseCategoryName } from '@src/shared/enum/category-name.enum';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
 
 export class BudgetCreateRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
@@ -36,6 +36,6 @@ class BudgetByCategory {
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @Min(0, { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
-  @Max(Budget.maxTotalAmount(), { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
+  @Max(BudgetCategory.getMaxAmount(), { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
   amount: number;
 }

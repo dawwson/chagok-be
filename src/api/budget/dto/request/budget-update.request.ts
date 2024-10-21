@@ -4,6 +4,7 @@ import { ArrayMaxSize, ArrayMinSize, IsArray, IsDefined, IsNumber, Max, Min, Val
 import { Budget } from '@src/entity/budget.entity';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { ExpenseCategoryName } from '@src/shared/enum/category-name.enum';
+import { BudgetCategory } from '@src/entity/budget-category.entity';
 
 export class BudgetUpdateRequest {
   // 배열인지 검증
@@ -25,6 +26,6 @@ class BudgetByCategory {
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @Min(0, { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
-  @Max(Budget.maxTotalAmount(), { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
+  @Max(BudgetCategory.getMaxAmount(), { message: ErrorCode.BUDGET_AMOUNT_OUT_OF_RANGE })
   amount: number;
 }

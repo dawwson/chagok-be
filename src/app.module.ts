@@ -15,7 +15,7 @@ import { TxModule } from './api/tx/tx.module';
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
 import { NodeEnv } from './shared/enum/node-env.enum';
-import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from './shared/filter/custom-exception.filter';
+import { AllExceptionFilter, HttpExceptionFilter } from './shared/filter/custom-exception.filter';
 import { TransformInterceptor } from './shared/interceptor/transform.interceptor';
 import { DbConfig, ServerConfig } from './shared/interface/config.interface';
 
@@ -66,7 +66,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
     },
-    // NOTE: 필터 우선순위는 역순입니다!!
+    // NOTE: 필터 우선순위는 역순!!
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
@@ -74,10 +74,6 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: QueryFailedFilter,
     },
     {
       provide: APP_INTERCEPTOR,

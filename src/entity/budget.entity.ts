@@ -51,6 +51,10 @@ export class Budget {
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 
+  static getMaxTotalAmount() {
+    return MAX_TOTAL_AMOUNT;
+  }
+
   static builder() {
     return new Builder();
   }

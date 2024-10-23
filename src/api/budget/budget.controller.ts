@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
@@ -9,6 +9,8 @@ import { BudgetFindRequest } from './dto/request/budget-find.request';
 import { BudgetFindResponse } from './dto/response/budget-find.response';
 import { BudgetUpdateRequest } from './dto/request/budget-update.request';
 import { BudgetUpdateResponse } from './dto/response/budget-update.response';
+import { BudgetRecommendRequestParam, BudgetRecommendRequestQuery } from './dto/request/budget-recommend.request';
+import { BudgetRecommendResponse } from './dto/response/budget-recommend.response';
 import { OwnBudgetGuard } from './guard/own-budget.guard';
 import { BudgetService } from './service/budget.service';
 
@@ -54,44 +56,23 @@ export class BudgetController {
 
   // TODO: 🚧 예산 추천
   @Get(':year/:month/recommendation')
-  recommendBudget() {
-    return 'recommend budget';
+  async recommendBudget(
+    @Req() req: RequestWithUser,
+    @Param() param: BudgetRecommendRequestParam,
+    @Query() query: BudgetRecommendRequestQuery,
+  ) {
+    const userId = req.user.id;
+    const recommendation = await this.budgetService.getBudgetRecommendation({
+      userId,
+      year: param.year,
+      month: param.month,
+      totalAmount: query.totalAmount,
+    });
+
+    return BudgetRecommendResponse.from(param.year, param.month, recommendation);
   }
 
   /*
-  @Put(':year/:month')
-  async setMonthlyBudget(
-    @Req() req: RequestWithUser,
-    @Param() param: BudgetUpdateRequestParam,
-    @Body() body: BudgetUpdateRequestBody,
-  ) {
-    let budget = await this.setBudgetService.findBudget({
-      userId: req.user.id,
-      year: param.year,
-      month: param.month,
-    });
-
-    // 이미 있으면 업데이트, 없으면 새로 생성
-    if (budget) {
-      const updateBudgetInput = new UpdateBudgetInput();
-      updateBudgetInput.budgetId = budget.id;
-      updateBudgetInput.budgetsByCategory = body.budgetsByCategory;
-
-      await this.setBudgetService.updateBudget(updateBudgetInput);
-    } else {
-      const createBudgetInput = new CreateBudgetInput();
-      createBudgetInput.userId = req.user.id;
-      createBudgetInput.year = param.year;
-      createBudgetInput.month = param.month;
-      createBudgetInput.budgetsByCategory = body.budgetsByCategory;
-
-      budget = await this.setBudgetService.createBudget(createBudgetInput);
-    }
-
-    budget = await this.setBudgetService.getBudgetWithCategory(budget.id);
-    return BudgetUpdateResponse.from(budget);
-  }
-
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:year/:month/recommendation')
   async recommendMonthlyBudget(

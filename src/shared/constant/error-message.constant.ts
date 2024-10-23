@@ -10,7 +10,7 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.INVALID_NICKNAME_LENGTH]: 'nickname은 최소 2글자 입니다.',
   // [ErrorCode.INVALID_YEAR]: '유효하지 않은 year 형식입니다.',
   // [ErrorCode.INVALID_MONTH]: '유효하지 않은 month 형식입니다.',
-  [ErrorCode.INVALID_TOTAL_AMOUNT]: '유효하지 않은 totalAmount 입니다.',
+  // [ErrorCode.INVALID_TOTAL_AMOUNT]: '유효하지 않은 totalAmount 입니다.',
   // [ErrorCode.INVALID_CATEGORY_ID]: '유효하지 않은 categoryId 입니다.',
   // [ErrorCode.INVALID_BUDGET_BY_CATEGORY]: '유효하지 않은 budgetByCategory 입니다.',
   // [ErrorCode.INVALID_AMOUNT]: '유효하지 않은 amount 입니다.',

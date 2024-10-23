@@ -1,8 +1,5 @@
 export interface RecommendBudgetOutput {
-  budgetsByCategory: BudgetByCategory[];
-}
-
-export interface BudgetByCategory {
   categoryId: number;
+  categoryName: string;
   amount: number;
 }

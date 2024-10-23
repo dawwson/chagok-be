@@ -54,7 +54,6 @@ export class BudgetController {
     return BudgetFindResponse.from(budget);
   }
 
-  // TODO: 🚧 예산 추천
   @Get(':year/:month/recommendation')
   async recommendBudget(
     @Req() req: RequestWithUser,
@@ -71,28 +70,4 @@ export class BudgetController {
 
     return BudgetRecommendResponse.from(param.year, param.month, recommendation);
   }
-
-  /*
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Get('/:year/:month/recommendation')
-  async recommendMonthlyBudget(
-    @Req() req: RequestWithUser,
-    @Param() param: BudgetRecommendRequestParam,
-    @Query() query: BudgetRecommendRequestQuery,
-  ) {
-    const budgetRecommendInput = new BudgetRecommendInput();
-    budgetRecommendInput.userId = req.user.id;
-    budgetRecommendInput.year = param.year;
-    budgetRecommendInput.month = param.month;
-    budgetRecommendInput.totalAmount = query.totalAmount;
-
-    const { budgetsByCategory } = await this.recommendBudgetService.recommendBudgetByCategory(budgetRecommendInput);
-
-    return BudgetRecommendResponse.builder()
-      .year(param.year)
-      .month(param.month)
-      .budgetsByCategory(budgetsByCategory)
-      .build();
-  }
-      */
 }

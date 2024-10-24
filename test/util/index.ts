@@ -1,15 +1,16 @@
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 
-import { testCategories, testTxs, testUsers } from './data';
+import { testBudgets, testCategories, testTxs, testUsers } from './data';
 import { TestModule } from '@test/util/test.module';
 
 import { User } from '@src/entity/user.entity';
 import { Category } from '@src/entity/category.entity';
 import { Tx } from '@src/entity/tx.entity';
-import { INestApplication } from '@nestjs/common';
+import { Budget } from '@src/entity/budget.entity';
 
 /**
  * 테스트에 필요한 데이터 저장
@@ -25,14 +26,24 @@ export const setupDatabase = async (dataSource: DataSource) => {
     });
   }
 
+  const qr = dataSource.createQueryRunner();
+  await qr.startTransaction();
+
   try {
     await Promise.all([
-      dataSource.getRepository(User).insert(hashedUsers),
-      dataSource.getRepository(Category).insert(testCategories),
+      qr.manager.getRepository(User).insert(hashedUsers),
+      qr.manager.getRepository(Category).insert(testCategories),
     ]);
-    await dataSource.getRepository(Tx).insert(testTxs);
+    await Promise.all([
+      qr.manager.getRepository(Tx).insert(testTxs),
+      qr.manager.getRepository(Budget).save(testBudgets),
+    ]);
+    await qr.commitTransaction();
   } catch (error) {
+    await qr.rollbackTransaction();
     throw error;
+  } finally {
+    await qr.release();
   }
 };
 

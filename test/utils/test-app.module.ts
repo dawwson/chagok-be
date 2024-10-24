@@ -4,15 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { AuthModule } from '@src/api/auth/auth.module';
+import { BudgetModule } from '@src/api/budget/budget.module';
 import { CategoryModule } from '@src/api/category/category.module';
-// import { BudgetModule } from '@src/api/budget/budget.module';
-// import { ExpenseModule } from '@src/api/expense/expense.module';
 import { TxModule } from '@src/api/tx/tx.module';
 
 import dbConfig from '@src/config/db.config';
 import serverConfig from '@src/config/server.config';
 
-import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from '@src/shared/filter/custom-exception.filter';
+import { AllExceptionFilter, HttpExceptionFilter } from '@src/shared/filter/custom-exception.filter';
 import { TransformInterceptor } from '@src/shared/interceptor/transform.interceptor';
 
 @Module({
@@ -25,10 +24,9 @@ import { TransformInterceptor } from '@src/shared/interceptor/transform.intercep
     // NOTE: TypeORM DataSource를 프로바이더로 등록됩니다. 세부 옵션은 initialize-data-source.ts에서 설정합니다.
     TypeOrmModule.forRoot(),
     AuthModule,
+    BudgetModule,
     CategoryModule,
     TxModule,
-    // BudgetModule,
-    // ExpenseModule,
   ],
   providers: [
     {
@@ -39,7 +37,7 @@ import { TransformInterceptor } from '@src/shared/interceptor/transform.intercep
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
     },
-    // NOTE: 필터 우선순위는 역순입니다!!
+    // NOTE: 필터 우선순위는 역순!!
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
@@ -47,10 +45,6 @@ import { TransformInterceptor } from '@src/shared/interceptor/transform.intercep
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: QueryFailedFilter,
     },
     {
       provide: APP_INTERCEPTOR,

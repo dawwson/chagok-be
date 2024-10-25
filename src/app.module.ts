@@ -39,7 +39,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
           username: dbConfig.username,
           password: dbConfig.password,
           database: dbConfig.database,
-          synchronize: dbConfig.synchronize,
+          synchronize: serverConfig.nodeEnv === NodeEnv.DEV,
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),

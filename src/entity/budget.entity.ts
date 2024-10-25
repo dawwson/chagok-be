@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { BudgetCategory } from './budget-category.entity';
+import { NumberTransformer } from './transformer/number.transformer';
 
 const MAX_TOTAL_AMOUNT = 10000000000; // 100억
 
@@ -42,7 +43,10 @@ export class Budget {
   @Column({ type: 'smallint' })
   month: number;
 
-  @Column({ type: 'bigint' }) // -9223372036854775808 to +9223372036854775807
+  @Column({
+    type: 'bigint', // -9223372036854775808 to +9223372036854775807
+    transformer: new NumberTransformer(),
+  })
   totalAmount: number;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })

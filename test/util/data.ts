@@ -37,7 +37,7 @@ const incomeCategories = Object.keys(IncomeCategoryName).map((key, i) => {
 
 export const expenseCategories = Object.keys(ExpenseCategoryName).map((key, i) => {
   const c = new Category();
-  c.id = i + 1;
+  c.id = incomeCategories.length + i + 1;
   c.name = ExpenseCategoryName[key];
   c.type = TxType.EXPENSE;
   return c;

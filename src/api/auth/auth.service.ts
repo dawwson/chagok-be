@@ -40,6 +40,7 @@ export class AuthService {
   }
 
   async deleteUser(userId: string) {
+    // FIXME: 연관된 데이터도 같이 삭제 => 테스트 코드 통과 확인 필요!!
     this.userRepo.delete({ id: userId });
   }
 }

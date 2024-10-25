@@ -6,16 +6,15 @@ import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as path from 'path';
 
 import { AuthModule } from './api/auth/auth.module';
-import { CategoryModule } from './api/category/category.module';
 import { BudgetModule } from './api/budget/budget.module';
-import { ExpenseModule } from './api/expense/expense.module';
+import { CategoryModule } from './api/category/category.module';
 import { TxModule } from './api/tx/tx.module';
-import { StatModule } from './api/stat/stat.module';
+// import { StatModule } from './api/stat/stat.module';
 
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
 import { NodeEnv } from './shared/enum/node-env.enum';
-import { AllExceptionFilter, HttpExceptionFilter, QueryFailedFilter } from './shared/filter/custom-exception.filter';
+import { AllExceptionFilter, HttpExceptionFilter } from './shared/filter/custom-exception.filter';
 import { TransformInterceptor } from './shared/interceptor/transform.interceptor';
 import { DbConfig, ServerConfig } from './shared/interface/config.interface';
 
@@ -40,7 +39,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
           username: dbConfig.username,
           password: dbConfig.password,
           database: dbConfig.database,
-          synchronize: dbConfig.synchronize,
+          synchronize: serverConfig.nodeEnv === NodeEnv.DEV,
           entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
           logging: serverConfig.nodeEnv === NodeEnv.DEV,
           namingStrategy: new SnakeNamingStrategy(),
@@ -51,11 +50,10 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
       },
     }),
     AuthModule,
-    CategoryModule,
     BudgetModule,
-    ExpenseModule,
+    CategoryModule,
     TxModule,
-    StatModule,
+    // StatModule,
   ],
   providers: [
     {
@@ -66,7 +64,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
     },
-    // NOTE: 필터 우선순위는 역순입니다!!
+    // NOTE: 필터 우선순위는 역순!!
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
@@ -74,10 +72,6 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: QueryFailedFilter,
     },
     {
       provide: APP_INTERCEPTOR,

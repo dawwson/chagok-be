@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Category } from '@src/entity/category.entity';
 import { Budget } from '@src/entity/budget.entity';
 
-import { BudgetController } from './controller/budget.controller';
-import { SetBudgetService } from './service/set-budget.service';
-import { RecommendBudgetService } from './service/recommend-budget.service';
+import { BudgetController } from './budget.controller';
+import { BudgetService } from './service/budget.service';
+import { BudgetLib } from './service/budget.lib';
+import { CategoryLib } from '../category/service/category.lib';
+import { Category } from '@src/entity/category.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, Budget])],
+  imports: [TypeOrmModule.forFeature([Budget, Category])],
   controllers: [BudgetController],
-  providers: [SetBudgetService, RecommendBudgetService],
+  providers: [BudgetService, BudgetLib, CategoryLib],
+  exports: [BudgetLib],
 })
 export class BudgetModule {}

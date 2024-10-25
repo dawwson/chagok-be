@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { StatService } from './service/stat.service';
-import { StatController } from './controller/stat.controller';
+import { StatService } from './stat.service';
+import { StatController } from './stat.controller';
 
 @Module({
   controllers: [StatController],

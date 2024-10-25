@@ -1,104 +1,151 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
-import * as cookieParser from 'cookie-parser';
+import { DataSource } from 'typeorm';
+import * as dayjs from 'dayjs';
 
-import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
-import { setupTestData } from '@test/in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
-import { testCategories, testUsers } from '@test/in-memory-testing/test-data';
+import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
+import { expenseCategories, testBudgets, testUsers } from '@test/util/data';
 
-describe('/budgets (GET)', () => {
+const API_URL = '/budgets';
+
+describe(`GET ${API_URL}`, () => {
   let app: INestApplication;
   let dataSource: DataSource;
-  let memoryDb: IMemoryDb;
-  let backup: IBackup;
 
   beforeAll(async () => {
-    // 1. DB 설정
-    memoryDb = setupMemoryDb();
-    // 2. 연결 설정된 dataSource를 가져옴
-    dataSource = await initializeDataSource(memoryDb);
-    // 3. 테스트에 필요한 데이터 생성
-    await setupTestData(dataSource);
+    app = await createTestApp();
+    dataSource = app.get(DataSource);
+  });
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [InMemoryTestingModule],
-    })
-      .overrideProvider(DataSource)
-      .useValue(dataSource)
-      .compile();
-
-    app = moduleFixture.createNestApplication();
-    app.use(cookieParser());
-    await app.init();
-
-    // NOTE: datasource initialize 한 시점의 데이터를 백업합니다.
-    backup = memoryDb.backup();
+  beforeEach(async () => {
+    await setupDatabase(dataSource);
   });
 
   afterEach(async () => {
-    // NOTE: 매 테스트 종료 후 백업한 데이터로 ROLLBACK 합니다.
-    backup.restore();
+    await clearDatabase(dataSource);
   });
 
   afterAll(async () => {
-    // NOTE: 모든 테스트 종료 후 앱을 종료합니다.(+ connection closed)
     await app.close();
   });
 
-  describe('테스트 사용자 1로 로그인 후', () => {
-    let agent: request.SuperAgentTest;
-
-    beforeAll(async () => {
-      const res = await request(app.getHttpServer())
-        .post('/auth/sign-in')
-        .send({
-          email: testUsers[0].email,
-          password: testUsers[0].password,
-        })
-        .expect(200);
-
-      // Cookie 헤더에 JWT를 유지하여 사용할 agent 생성
-      agent = request.agent(app.getHttpServer());
-      agent.set('Cookie', res.get('Set-Cookie'));
+  describe('/{year}/{month}', () => {
+    describe('로그인 전 :', () => {
+      test('로그인 전 : (401) 유효하지 않은 토큰', async () => {
+        return request(app.getHttpServer()).get(`${API_URL}/2024/10`).expect(401);
+      });
     });
 
-    describe('GET /budgets/recommendation', () => {
-      test('월별 예산 추천 성공(200)', async () => {
+    describe('로그인 후 : (사용자 1)', () => {
+      let agent: request.SuperAgentTest;
+      const currentUser = testUsers[0];
+
+      beforeAll(async () => {
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
+      });
+
+      test('(200) 예산 조회 성공 : 해당 연도/월에 예산이 있는 경우', async () => {
         // given
-        const testYear = '2023';
-        const testMonth = '11';
-        const testTotalAmount = 1000000;
+        const testBudget = testBudgets[0];
+
+        // when
+        const res = await agent.get(`${API_URL}/${testBudget.year}/${testBudget.month}`);
+
+        // then
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual({
+          id: testBudget.id,
+          year: testBudget.year,
+          month: testBudget.month,
+          budgets: expect.any(Array<{ categoryId: number; categoryName: string; amount: number }>),
+        });
+        expect(res.body.data.budgets).toHaveLength(expenseCategories.length);
+      });
+
+      test('(200) 예산 조회 성공 : 해당 연도/월에 예산이 없는 경우', async () => {
+        // given
+        const testYear = 2000;
+        const testMonth = 1;
+
+        // when
+        const res = await agent.get(`${API_URL}/${testYear}/${testMonth}`);
+
+        // then
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual({
+          id: null,
+          year: testYear,
+          month: testMonth,
+          budgets: expect.any(Array<{ categoryId: number; categoryName: string; amount: number }>),
+        });
+        expect(res.body.data.budgets).toHaveLength(expenseCategories.length);
+        res.body.data.budgets.forEach((b) => expect(b.amount).toBe(0));
+      });
+    });
+  });
+
+  describe('/{year}/{month}/recommendation', () => {
+    describe('로그인 전 :', () => {
+      test('(401) 유효하지 않은 토큰', async () => {
+        return request(app.getHttpServer()).get(`${API_URL}/2024/10/recommendation`).expect(401);
+      });
+    });
+
+    describe('로그인 후 : (사용자 1)', () => {
+      let agent: request.SuperAgentTest;
+      const currentUser = testUsers[0];
+
+      beforeAll(async () => {
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
+      });
+
+      test('(200) 예산 추천 성공 : 직전 6개월 동안에 등록된 예산이 없는 경우', async () => {
+        // given
+        const testBudget = testBudgets[0];
+
+        const oneYearLater = dayjs(`${testBudget.year}-${testBudget.month}-01`).add(1, 'year');
+        const testYear = oneYearLater.year();
+        const testMonth = oneYearLater.month() + 1;
 
         // when
         const res = await agent
-          .get(`/budgets/${testYear}/${testMonth}/recommendation`)
-          .query({ totalAmount: testTotalAmount })
-          .expect(200);
+          .get(`${API_URL}/${testYear}/${testMonth}/recommendation`)
+          .query({ totalAmount: 1000000 });
 
         // then
-        expect(res.body).toEqual({
-          data: {
-            year: testYear,
-            month: testMonth,
-            budgetsByCategory: expect.any(Array),
-          },
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual({
+          year: testYear,
+          month: testMonth,
+          budgets: [],
         });
-        // 모든 카테고리에 대한 예산이 나오는지 확인
-        expect(res.body.data.budgetsByCategory).toHaveLength(testCategories.length);
-        // 카테고리별 예산의 합이 설정한 총 예산과 일치하는지 확인
-        expect(res.body.data.budgetsByCategory.reduce((acc, { amount }) => (acc += amount), 0)).toBe(testTotalAmount);
+      });
 
-        res.body.data.budgetsByCategory.forEach((budgetByCategory) => {
-          expect(budgetByCategory).toEqual({
-            categoryId: expect.any(Number),
-            amount: expect.any(Number),
-          });
+      test('(200) 예산 추천 성공 : 직전 6개월 동안에 등록된 예산이 있는 경우', async () => {
+        // given
+        const testBudget = testBudgets[0];
+
+        const oneMonthLater = dayjs(`${testBudget.year}-${testBudget.month}-01`).add(1, 'month');
+        const testYear = oneMonthLater.year();
+        const testMonth = oneMonthLater.month() + 1;
+
+        // when
+        const res = await agent
+          .get(`${API_URL}/${testYear}/${testMonth}/recommendation`)
+          .query({ totalAmount: 1000000 });
+
+        // then
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual({
+          year: testYear,
+          month: testMonth,
+          budgets: expect.any(Array<{ categoryId: number; categoryName: string; amount: number }>),
         });
+        expect(res.body.data.budgets).toHaveLength(expenseCategories.length);
       });
     });
   });

@@ -1,106 +1,113 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { IBackup, IMemoryDb } from 'pg-mem';
 import * as request from 'supertest';
-import * as cookieParser from 'cookie-parser';
+import { DataSource } from 'typeorm';
 
-import { setupMemoryDb } from '@test/in-memory-testing/setup-memory-db';
-import { initializeDataSource } from '@test/in-memory-testing/initialize-data-source';
-import { setupTestData } from '@test/in-memory-testing/setup-test-data';
-import { InMemoryTestingModule } from '@test/in-memory-testing/in-memory-testing.module';
-import { testCategories, testUsers } from '@test/in-memory-testing/test-data';
+import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
+import { expenseCategories, testBudgets, testUsers } from '@test/util/data';
 
-describe('/budgets (PUT)', () => {
+import { ErrorCode } from '@src/shared/enum/error-code.enum';
+
+const API_URL = '/budgets';
+
+describe(`PUT ${API_URL}`, () => {
   let app: INestApplication;
   let dataSource: DataSource;
-  let memoryDb: IMemoryDb;
-  let backup: IBackup;
 
   beforeAll(async () => {
-    // 1. DB 설정
-    memoryDb = setupMemoryDb();
-    // 2. 연결 설정된 dataSource를 가져옴
-    dataSource = await initializeDataSource(memoryDb);
-    // 3. 테스트에 필요한 데이터 생성
-    await setupTestData(dataSource);
+    app = await createTestApp();
+    dataSource = app.get(DataSource);
+  });
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [InMemoryTestingModule],
-    })
-      .overrideProvider(DataSource)
-      .useValue(dataSource)
-      .compile();
-
-    app = moduleFixture.createNestApplication();
-    app.use(cookieParser());
-    await app.init();
-
-    // NOTE: datasource initialize 한 시점의 데이터를 백업합니다.
-    backup = memoryDb.backup();
+  beforeEach(async () => {
+    await setupDatabase(dataSource);
   });
 
   afterEach(async () => {
-    // NOTE: 매 테스트 종료 후 백업한 데이터로 ROLLBACK 합니다.
-    backup.restore();
+    await clearDatabase(dataSource);
   });
 
   afterAll(async () => {
-    // NOTE: 모든 테스트 종료 후 앱을 종료합니다.(+ connection closed)
     await app.close();
   });
 
-  describe('테스트 사용자 1로 로그인 후', () => {
-    let agent: request.SuperAgentTest;
-
-    beforeAll(async () => {
-      const res = await request(app.getHttpServer())
-        .post('/auth/sign-in')
-        .send({
-          email: testUsers[0].email,
-          password: testUsers[0].password,
-        })
-        .expect(200);
-
-      // Cookie 헤더에 JWT를 유지하여 사용할 agent 생성
-      agent = request.agent(app.getHttpServer());
-      agent.set('Cookie', res.get('Set-Cookie'));
-    });
-
-    describe('PUT /budgets/{year}/{month}', () => {
-      test('월별 예산 설정 성공(200)', async () => {
+  describe('/', () => {
+    describe('로그인 전 :', () => {
+      test('(401) 유효하지 않은 토큰', async () => {
         // given
-        const testYear = '2023';
-        const testMonth = '11';
-        const testBudgetsByCategory = [
-          {
-            categoryId: testCategories[0].id,
-            amount: 500000,
-          },
-          {
-            categoryId: testCategories[1].id,
-            amount: 2000000,
-          },
-        ];
+        const testBudget = testBudgets[0];
 
         // when
-        const res = await agent
-          .put(`/budgets/${testYear}/${testMonth}`)
-          .send({
-            budgetsByCategory: testBudgetsByCategory,
-          })
-          .expect(200);
+        const res = await request(app.getHttpServer()).put(`${API_URL}/${testBudget.id}`);
 
         // then
+        expect(res.status).toBe(401);
+      });
+    });
+
+    describe('로그인 후 : (사용자 1)', () => {
+      let agent: request.SuperAgentTest;
+      const currentUser = testUsers[0];
+
+      beforeAll(async () => {
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
+      });
+
+      test('(201) 예산 수정 성공', async () => {
+        // given
+        const testBudget = testBudgets[0];
+        const budgetsToUpdate = expenseCategories.map((c, index) => ({ categoryId: c.id, amount: index }));
+
+        // when
+        const res = await agent.put(`${API_URL}/${testBudget.id}`).send({
+          budgets: budgetsToUpdate,
+        });
+
+        // then
+        expect(res.status).toBe(200);
         expect(res.body.data).toEqual({
           id: expect.any(Number),
-          year: testYear,
-          month: testMonth,
-          // NOTE: arrayContaining() -> 배열에 특정 배열을 포함하고 있는지 검사
-          budgetsByCategory: expect.arrayContaining(testBudgetsByCategory),
+          year: testBudget.year,
+          month: testBudget.month,
+          totalAmount: budgetsToUpdate.reduce((acc, { amount }) => (acc += amount), 0),
+          budgets: budgetsToUpdate,
+          updatedAt: expect.any(String),
         });
-        // 모든 카테고리별 예산을 가지고 있는지 확인
-        expect(res.body.data.budgetsByCategory).toHaveLength(testCategories.length);
+        expect(res.body.data.budgets).toHaveLength(expenseCategories.length);
+      });
+
+      test('(400) 실패 : 예산의 총액이 서버에서 정의한 범위를 벗어남', async () => {
+        // given
+        const testBudget = testBudgets[0];
+        const budgetsToUpdate = expenseCategories.map((c) => ({ categoryId: c.id, amount: 1000000000 }));
+
+        // when
+        const res = await agent.put(`${API_URL}/${testBudget.id}`).send({
+          budgets: budgetsToUpdate,
+        });
+
+        // then
+        expect(res.status).toBe(400);
+        expect(res.body.errorCode).toBe(ErrorCode.BUDGET_TOTAL_AMOUNT_OUT_OF_RANGE);
+      });
+
+      test('(404) 실패 : categoryId가 지출 카테고리가 아닌 경우', async () => {
+        // given
+        const testBudget = testBudgets[0];
+
+        // 유효하지 않은 categoryId로 변경
+        const budgetsToUpdate = expenseCategories.map((c) => ({ categoryId: c.id, amount: 100000 }));
+        budgetsToUpdate[0].categoryId = 9999;
+
+        // when
+        const res = await agent.put(`${API_URL}/${testBudget.id}`).send({
+          budgets: budgetsToUpdate,
+        });
+
+        // then
+        expect(res.status).toBe(404);
+        expect(res.body.errorCode).toBe(ErrorCode.CATEGORY_NOT_FOUND);
       });
     });
   });

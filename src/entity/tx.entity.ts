@@ -12,7 +12,7 @@ import {
 import { User } from './user.entity';
 import { Category } from './category.entity';
 import { TxType } from '@src/shared/enum/tx-type.enum';
-import { PaymentMethod } from '@src/shared/enum/payment-method.enum';
+import { TxMethod } from '@src/shared/enum/tx-method.enum';
 
 @Entity('txs')
 @Check(`"amount" > 0`)
@@ -35,10 +35,10 @@ export class Tx {
   categoryId: number;
 
   @Column({ type: 'varchar', length: 20 })
-  type: TxType;
+  txType: TxType;
 
   @Column({ type: 'varchar', length: 20 })
-  paymentMethod: PaymentMethod;
+  txMethod: TxMethod;
 
   @Column({ type: 'integer' })
   amount: number;
@@ -46,11 +46,11 @@ export class Tx {
   @Column({ type: 'timestamp with time zone' })
   date: Date;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, default: '' })
   description?: string;
 
-  @Column({ type: 'boolean', default: null, nullable: true })
-  isExcluded?: boolean;
+  @Column({ type: 'boolean', default: false })
+  isExcluded: boolean;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
@@ -80,13 +80,13 @@ class Builder {
     return this;
   }
 
-  type(type: TxType) {
-    this.transaction.type = type;
+  txType(txType: TxType) {
+    this.transaction.txType = txType;
     return this;
   }
 
-  paymentMethod(paymentMethod: PaymentMethod) {
-    this.transaction.paymentMethod = paymentMethod;
+  txMethod(txMethod: TxMethod) {
+    this.transaction.txMethod = txMethod;
     return this;
   }
 

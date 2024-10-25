@@ -2,6 +2,7 @@
 .env.dev
 .env.stage
 .env.prod
+.env.test
 
 # docker-compose db 볼륨 바인딩 경로
 /database
@@ -41,3 +42,5 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+test.js

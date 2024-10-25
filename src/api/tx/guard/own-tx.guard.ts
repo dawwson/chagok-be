@@ -20,11 +20,6 @@ export class OwnTxGuard implements CanActivate {
       throw new ForbiddenException(ErrorCode.TX_FORBIDDEN);
     }
 
-    // const isOwnExpense = await this.txLib.isOwnTx(txId, user.id);
-
-    // if (!isOwnExpense) {
-    //   throw new ForbiddenException(ErrorCode.TX_FORBIDDEN);
-    // }
     request.tx = tx;
     return true;
   }

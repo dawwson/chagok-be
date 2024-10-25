@@ -40,7 +40,7 @@ describe(`POST ${API_URL}`, () => {
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post(`${API_URL}/sign-up`) //
+        .post(`${API_URL}/sign-up`)
         .send({
           email: user.email,
           password: user.password,
@@ -78,7 +78,7 @@ describe(`POST ${API_URL}`, () => {
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post(`${API_URL}/sign-up`) //
+        .post(`${API_URL}/sign-up`)
         .send({
           email: user.email,
           password: user.password,
@@ -97,7 +97,7 @@ describe(`POST ${API_URL}`, () => {
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post(`${API_URL}/sign-in`) //
+        .post(`${API_URL}/sign-in`)
         .send({
           email: user.email,
           password: user.password,
@@ -123,7 +123,7 @@ describe(`POST ${API_URL}`, () => {
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post(`${API_URL}/sign-in`) //
+        .post(`${API_URL}/sign-in`)
         .send({
           email: user.email,
           password: user.password,
@@ -142,7 +142,7 @@ describe(`POST ${API_URL}`, () => {
 
       // when
       const res = await request(app.getHttpServer()) //
-        .post(`${API_URL}/sign-in`) //
+        .post(`${API_URL}/sign-in`)
         .send({
           email: user.email,
           password: user.password,

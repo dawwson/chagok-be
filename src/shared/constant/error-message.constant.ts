@@ -8,18 +8,6 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.INVALID_PASSWORD]: '유효하지 않은 password 입니다.',
   [ErrorCode.INVALID_NICKNAME_TYPE]: '유효하지 않은 nickname 형식입니다.',
   [ErrorCode.INVALID_NICKNAME_LENGTH]: 'nickname은 최소 2글자 입니다.',
-  // [ErrorCode.INVALID_YEAR]: '유효하지 않은 year 형식입니다.',
-  // [ErrorCode.INVALID_MONTH]: '유효하지 않은 month 형식입니다.',
-  // [ErrorCode.INVALID_TOTAL_AMOUNT]: '유효하지 않은 totalAmount 입니다.',
-  // [ErrorCode.INVALID_CATEGORY_ID]: '유효하지 않은 categoryId 입니다.',
-  // [ErrorCode.INVALID_BUDGET_BY_CATEGORY]: '유효하지 않은 budgetByCategory 입니다.',
-  // [ErrorCode.INVALID_AMOUNT]: '유효하지 않은 amount 입니다.',
-  // [ErrorCode.INVALID_CONTENT]: '유효하지 않은 content 입니다.',
-  // [ErrorCode.INVALID_DATE]: '유효하지 않은 날짜 형식입니다.',
-  // [ErrorCode.INVALID_IS_EXCLUDED]: '유효하지 않은 isExcluded 입니다.',
-  // [ErrorCode.EMPTY_CONTENT]: 'content가 비어있습니다.',
-  // [ErrorCode.EXPENSE_MIN_MAX_AMOUNT_EXCLUSIVE]: 'minAmount와 maxAmount는 함께 포함되어야 합니다.',
-  // [ErrorCode.EXPENSE_MIN_AMOUNT_MORE_THAN_MAX]: 'minAmount는 maxAmount보다 작아야 합니다.',
 
   // budget
   [ErrorCode.BUDGET_YEAR_OUT_OF_RANGE]: '"year"의 타입/범위를 확인해주세요.',

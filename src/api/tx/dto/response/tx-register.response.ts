@@ -36,15 +36,3 @@ export class TxRegisterResponse {
     return plainToInstance(TxRegisterResponse, tx);
   }
 }
-
-// userId: 'f131cfc0-0fb0-4208-804b-1b0f7b8aac38',
-//   categoryId: 1,
-//   txType: 'income',
-//   txMethod: 'credit card',
-//   amount: 6800,
-//   date: 2024-09-30T04:22:17.531Z,
-//   description: '',
-//   isExcluded: null,
-//   id: 5,
-//   createdAt: 2024-09-30T08:04:48.103Z,
-//   updatedAt: 2024-09-30T08:04:48.103Z

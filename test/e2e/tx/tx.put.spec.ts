@@ -1,22 +1,28 @@
 import { INestApplication } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
-import { clearDatabase, createTestApp, getRepository, setupDatabase } from '@test/utils/utils';
-import { testTxs, testUsers } from '@test/utils/test-data';
 import { Tx } from '@src/entity/tx.entity';
+import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
+import { testTxs, testUsers } from '@test/util/data';
 
 const API_URL = '/txs';
 
 describe(`PUT ${API_URL}`, () => {
   let app: INestApplication;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
-    await setupDatabase();
     app = await createTestApp();
+    dataSource = app.get(DataSource);
+  });
+
+  beforeEach(async () => {
+    await setupDatabase(dataSource);
   });
 
   afterEach(async () => {
-    clearDatabase();
+    await clearDatabase(dataSource);
   });
 
   afterAll(async () => {
@@ -35,16 +41,9 @@ describe(`PUT ${API_URL}`, () => {
       const currentUser = testUsers[0];
 
       beforeAll(async () => {
-        const res = await request(app.getHttpServer())
-          .post('/auth/sign-in')
-          .send({
-            email: currentUser.email,
-            password: currentUser.password,
-          })
-          .expect(200);
-
-        agent = request.agent(app.getHttpServer());
-        agent.set('Cookie', res.get('Set-Cookie'));
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
       });
 
       test('(200) 내역 수정 성공', async () => {
@@ -71,7 +70,7 @@ describe(`PUT ${API_URL}`, () => {
           updatedAt: expect.any(String),
         });
 
-        const found = await getRepository(Tx).findOneBy({ id: res.body.data.id });
+        const found = await dataSource.getRepository(Tx).findOneBy({ id: res.body.data.id });
         expect(found.description).toBe(testTx.description);
       });
 

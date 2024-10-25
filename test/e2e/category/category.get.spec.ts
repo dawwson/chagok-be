@@ -1,23 +1,29 @@
 import { INestApplication } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
-import { clearDatabase, createTestApp, setupDatabase } from '@test/utils/utils';
-import { testUsers } from '@test/utils/test-data';
 import { ExpenseCategoryName, IncomeCategoryName } from '@src/shared/enum/category-name.enum';
 import { TxType } from '@src/shared/enum/tx-type.enum';
+import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
+import { testUsers } from '@test/util/data';
 
 const API_URL = '/categories';
 
 describe(`GET ${API_URL}`, () => {
   let app: INestApplication;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
-    await setupDatabase();
     app = await createTestApp();
+    dataSource = app.get(DataSource);
+  });
+
+  beforeEach(async () => {
+    await setupDatabase(dataSource);
   });
 
   afterEach(async () => {
-    clearDatabase();
+    await clearDatabase(dataSource);
   });
 
   afterAll(async () => {
@@ -36,16 +42,9 @@ describe(`GET ${API_URL}`, () => {
       const currentUser = testUsers[0];
 
       beforeAll(async () => {
-        const res = await request(app.getHttpServer())
-          .post('/auth/sign-in')
-          .send({
-            email: currentUser.email,
-            password: currentUser.password,
-          })
-          .expect(200);
-
-        agent = request.agent(app.getHttpServer());
-        agent.set('Cookie', res.get('Set-Cookie'));
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
       });
 
       test('(200) 카테고리 목록 조회 성공', async () => {

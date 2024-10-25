@@ -1,22 +1,28 @@
 import { INestApplication } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
 import { User } from '@src/entity/user.entity';
-import { clearDatabase, createTestApp, getRepository, setupDatabase } from '@test/utils/utils';
-import { testUsers } from '@test/utils/test-data';
+import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
+import { testUsers } from '@test/util/data';
 
 const API_URL = '/auth';
 
-describe('POST /auth', () => {
+describe(`POST ${API_URL}`, () => {
   let app: INestApplication;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
-    await setupDatabase();
     app = await createTestApp();
+    dataSource = app.get(DataSource);
+  });
+
+  beforeEach(async () => {
+    await setupDatabase(dataSource);
   });
 
   afterEach(async () => {
-    clearDatabase();
+    await clearDatabase(dataSource);
   });
 
   afterAll(async () => {
@@ -51,7 +57,7 @@ describe('POST /auth', () => {
         },
       });
 
-      const found = await getRepository(User).findOneBy({ id: res.body.data.id });
+      const found = await dataSource.getRepository(User).findOneBy({ id: res.body.data.id });
       expect(found).toEqual({
         id: res.body.data.id,
         email: user.email,
@@ -148,27 +154,20 @@ describe('POST /auth', () => {
   });
 
   describe('/sign-out', () => {
-    test('로그인 전: (401) 유효하지 않은 토큰', async () => {
-      await request(app.getHttpServer()) //
-        .post('/auth/sign-out') //
-        .expect(401);
+    describe('로그인 전 : ', () => {
+      test('(401) 유효하지 않은 토큰', async () => {
+        return request(app.getHttpServer()).post(`${API_URL}/sign-out`).expect(401);
+      });
     });
 
-    describe('사용자1 로그인 후:', () => {
+    describe('로그인 후 : (사용자 1)', () => {
       let agent: request.SuperAgentTest;
       const currentUser = testUsers[0];
 
       beforeAll(async () => {
-        const res = await request(app.getHttpServer())
-          .post('/auth/sign-in')
-          .send({
-            email: currentUser.email,
-            password: currentUser.password,
-          })
-          .expect(200);
-
-        agent = request.agent(app.getHttpServer());
-        agent.set('Cookie', res.get('Set-Cookie'));
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
       });
 
       test('(204) 로그아웃 성공', async () => {

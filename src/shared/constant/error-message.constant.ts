@@ -32,6 +32,9 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.TX_INVALID_START_DATE]: '"startDate"의 타입을 확인해주세요.',
   [ErrorCode.TX_INVALID_END_DATE]: '"endDate"의 타입를 확인해주세요.',
 
+  // stat
+  [ErrorCode.STAT_INVALID_VIEW]: '"view"의 타입을 확인해주세요.',
+
   // 401
   [ErrorCode.AUTH_INVALID_TOKEN]: '유효하지 않은 토큰입니다.',
   [ErrorCode.USER_EMAIL_DO_NOT_EXIST]: '존재하지 않는 이메일입니다.',

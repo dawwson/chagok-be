@@ -9,7 +9,7 @@ import { AuthModule } from './api/auth/auth.module';
 import { BudgetModule } from './api/budget/budget.module';
 import { CategoryModule } from './api/category/category.module';
 import { TxModule } from './api/tx/tx.module';
-// import { StatModule } from './api/stat/stat.module';
+import { StatModule } from './api/stat/stat.module';
 
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
@@ -53,7 +53,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
     BudgetModule,
     CategoryModule,
     TxModule,
-    // StatModule,
+    StatModule,
   ],
   providers: [
     {

@@ -1,10 +1,10 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 import { User } from '@src/entity/user.entity';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { comparePassword } from '@src/util/encrypt';
 
 import { UserVerifyInput } from './dto/input/user-verify.input';
 import { UserVerifyOutput } from './dto/output/user-verify.output';
@@ -32,7 +32,7 @@ export class AuthService {
       throw new UnauthorizedException(ErrorCode.USER_EMAIL_DO_NOT_EXIST);
     }
 
-    const isMatched = await bcrypt.compare(dto.password, user.password);
+    const isMatched = await comparePassword(dto.password, user.password);
     if (!isMatched) {
       throw new UnauthorizedException(ErrorCode.USER_PASSWORD_IS_WRONG);
     }

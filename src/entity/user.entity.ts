@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { encryptPassword } from '@src/util/encrypt';
 
 @Entity('users')
 export class User {
@@ -25,7 +25,7 @@ export class User {
     const user = new User();
 
     user.email = email;
-    user.password = await bcrypt.hash(password, 10);
+    user.password = await encryptPassword(password);
     user.nickname = nickname;
 
     return user;

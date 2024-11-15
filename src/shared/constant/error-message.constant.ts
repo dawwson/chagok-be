@@ -20,6 +20,9 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   // category
   [ErrorCode.CATEGORY_INVALID_ID]: '"categoryId"의 타입을 확인해주세요.',
 
+  // stat
+  [ErrorCode.STAT_INVALID_VIEW]: '"view"의 타입을 확인해주세요.',
+
   // tx
   [ErrorCode.TX_INVALID_TX_TYPE]: '"txType"의 타입을 확인해주세요.',
   [ErrorCode.TX_INVALID_TX_METHOD]: '"txMethod"의 타입을 확인해주세요.',
@@ -32,8 +35,9 @@ export const ErrorMessage: Record<ErrorCode, string> = {
   [ErrorCode.TX_INVALID_START_DATE]: '"startDate"의 타입을 확인해주세요.',
   [ErrorCode.TX_INVALID_END_DATE]: '"endDate"의 타입를 확인해주세요.',
 
-  // stat
-  [ErrorCode.STAT_INVALID_VIEW]: '"view"의 타입을 확인해주세요.',
+  // user
+  [ErrorCode.USER_INVALID_NICKNAME]: '"nickname"의 타입을 확인해주세요.',
+  [ErrorCode.USER_NICKNAME_OUT_OF_RANGE]: '"nickname"의 길이를 확인해주세요.',
 
   // 401
   [ErrorCode.AUTH_INVALID_TOKEN]: '유효하지 않은 토큰입니다.',

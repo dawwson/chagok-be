@@ -8,6 +8,7 @@ export class UserSignUpRequest {
   @IsEmail({}, { message: ErrorCode.INVALID_EMAIL })
   email: string;
 
+  // TODO: 비밀번호 규칙 추가
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsString({ message: ErrorCode.INVALID_PASSWORD })
   password: string;

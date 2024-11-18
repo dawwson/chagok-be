@@ -23,7 +23,10 @@ export class Budget {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    onDelete: 'CASCADE', // NOTE: user 삭제 시 budget 삭제
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -33,7 +36,7 @@ export class Budget {
   // 양방향 : Budget -> BudgetCategory
   @OneToMany(() => BudgetCategory, (budgetCategory) => budgetCategory.budget, {
     // eager: true, // budget 조회할 때 budgetCategory를 자동 load
-    cascade: ['insert'], // budget 삽입할 때 budgetCategory를 자동 insert
+    cascade: ['insert'], // NOTE: budget 삽입할 때 budgetCategory를 자동 insert
   })
   budgetCategories: BudgetCategory[];
 

@@ -11,6 +11,7 @@ import { CategoryModule } from './api/category/category.module';
 import { StatModule } from './api/stat/stat.module';
 import { TxModule } from './api/tx/tx.module';
 import { UserModule } from './api/user/user.module';
+import { BatchModule } from './batch/batch.module';
 
 import dbConfig from './config/db.config';
 import serverConfig from './config/server.config';
@@ -50,6 +51,8 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
         };
       },
     }),
+    BatchModule,
+    // === API 모듈 ===
     AuthModule,
     BudgetModule,
     CategoryModule,

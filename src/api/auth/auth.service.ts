@@ -8,6 +8,7 @@ import { comparePassword } from '@src/util/encrypt';
 
 import { UserVerifyInput } from './dto/input/user-verify.input';
 import { UserVerifyOutput } from './dto/output/user-verify.output';
+import { UserDeleteInput } from './dto/input/user-delete.input';
 
 @Injectable()
 export class AuthService {
@@ -39,8 +40,14 @@ export class AuthService {
     return { id: user.id, nickname: user.nickname };
   }
 
-  async deleteUser(userId: string) {
-    // FIXME: 연관된 데이터도 같이 삭제 => 테스트 코드 통과 확인 필요!!
-    this.userRepo.delete({ id: userId });
+  async deleteUser(dto: UserDeleteInput) {
+    const { userId, email } = dto;
+
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (user.email !== email) {
+      throw new UnauthorizedException(ErrorCode.USER_EMAIL_DO_NOT_EXIST);
+    }
+
+    this.userRepo.softDelete({ id: userId });
   }
 }

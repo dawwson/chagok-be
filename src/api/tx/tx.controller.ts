@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
-import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request.interface';
 
 import { TxRegisterRequest } from './dto/request/tx-register.request';
 import { TxRegisterResponse } from './dto/response/tx-register.response';

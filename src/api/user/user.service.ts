@@ -6,7 +6,7 @@ import { User } from '@src/entity/user.entity';
 
 import { UserUpdateProfileInput } from './dto/input/user-update-profile.input';
 import { UserUpdatePasswordInput } from './dto/input/user-update-password.input';
-import { comparePassword, encryptPassword } from '@src/util/encrypt';
+import { comparePassword, encryptPassword } from '@src/shared/util/encrypt.util';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 @Injectable()

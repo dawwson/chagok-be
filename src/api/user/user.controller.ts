@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithUser } from '@src/shared/interface/request.interface';
 
 import { UserService } from './user.service';
 import { UserShowResponse } from './dto/response/user-show.response';

@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { encryptPassword } from '@src/util/encrypt';
+import { encryptPassword } from '@src/shared/util/encrypt.util';
 
 @Entity('users')
 export class User {

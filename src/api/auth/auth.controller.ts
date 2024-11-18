@@ -5,7 +5,7 @@ import { Response } from 'express';
 
 import { AuthService } from '@src/api/auth/auth.service';
 import { ServerConfig } from '@src/shared/interface/config.interface';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithUser } from '@src/shared/interface/request.interface';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
 import { UserSignUpRequest } from './dto/request/user-sign-up.request';

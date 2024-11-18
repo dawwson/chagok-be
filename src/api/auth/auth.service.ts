@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { User } from '@src/entity/user.entity';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
-import { comparePassword } from '@src/util/encrypt';
+import { comparePassword } from '@src/shared/util/encrypt.util';
 
 import { UserVerifyInput } from './dto/input/user-verify.input';
 import { UserVerifyOutput } from './dto/output/user-verify.output';

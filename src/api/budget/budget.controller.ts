@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithUser } from '@src/shared/interface/request.interface';
 
 import { BudgetCreateRequest } from './dto/request/budget-create.request';
 import { BudgetCreateResponse } from './dto/response/budget-create.response';

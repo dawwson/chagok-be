@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithUser } from '@src/shared/interface/request.interface';
 
 import { StatExpenseRequestParam, StatExpenseRequestQuery } from './dto/request/stat-expense.request';
 import { StatExpenseResponse } from './dto/response/stat-expense.response';

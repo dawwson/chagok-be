@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from '@src/entity/user.entity';
-
-import { UserUpdateProfileInput } from './dto/input/user-update-profile.input';
-import { UserUpdatePasswordInput } from './dto/input/user-update-password.input';
-import { comparePassword, encryptPassword } from '@src/shared/util/encrypt.util';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { comparePassword, encryptPassword } from '@src/shared/util/encrypt.util';
+
+import { UserUpdateProfileInput } from '../dto/input/user-update-profile.input';
+import { UserUpdatePasswordInput } from '../dto/input/user-update-password.input';
 
 @Injectable()
 export class UserService {

@@ -3,10 +3,10 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Req, UseGuards } fr
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 
-import { UserService } from './user.service';
 import { UserShowResponse } from './dto/response/user-show.response';
 import { UserUpdateProfileRequest } from './dto/request/user-update-profile.request';
 import { UserUpdatePasswordRequest } from './dto/request/user-update-password.request';
+import { UserService } from './service/user.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')

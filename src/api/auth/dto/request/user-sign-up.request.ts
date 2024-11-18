@@ -5,17 +5,22 @@ import { User } from '@src/entity/user.entity';
 
 export class UserSignUpRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsEmail({}, { message: ErrorCode.INVALID_EMAIL })
+  @IsEmail(
+    {
+      allow_utf8_local_part: false,
+    },
+    { message: ErrorCode.USER_INVALID_EMAIL },
+  )
   email: string;
 
   // TODO: 비밀번호 규칙 추가
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsString({ message: ErrorCode.INVALID_PASSWORD })
+  @IsString({ message: ErrorCode.USER_INVALID_PASSWORD })
   password: string;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsString({ message: ErrorCode.INVALID_NICKNAME_TYPE })
-  @MinLength(2, { message: ErrorCode.INVALID_NICKNAME_LENGTH })
+  @MinLength(2, { message: ErrorCode.USER_NICKNAME_OUT_OF_RANGE })
+  @IsString({ message: ErrorCode.USER_INVALID_NICKNAME })
   nickname: string;
 
   toEntity() {

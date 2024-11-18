@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { encryptPassword } from '@src/util/encrypt';
 
 @Entity('users')
@@ -18,8 +18,11 @@ export class User {
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
-  updatedAt?: Date;
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp with time zone' })
+  deletedAt?: Date;
 
   static async create(email: string, password: string, nickname: string) {
     const user = new User();

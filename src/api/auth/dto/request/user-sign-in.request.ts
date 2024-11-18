@@ -6,11 +6,11 @@ import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 export class UserSignInRequest {
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsEmail({}, { message: ErrorCode.INVALID_EMAIL })
+  @IsEmail({}, { message: ErrorCode.USER_INVALID_EMAIL })
   email: string;
 
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
-  @IsString({ message: ErrorCode.INVALID_PASSWORD })
+  @IsString({ message: ErrorCode.USER_INVALID_PASSWORD })
   password: string;
 
   toVerifyUserDto() {

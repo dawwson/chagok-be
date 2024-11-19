@@ -10,8 +10,8 @@
     "build": "nest build",
     "start": "node dist/main",
     "start:dev": "npm run prebuild && nest start --watch",
-    "db:up": "docker-compose -f docker-compose.db.yml --env-file .env.dev up -d",
-    "db:down": "docker-compose -f docker-compose.db.yml --env-file .env.dev down",
+    "db:up": "docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d",
+    "db:down": "docker-compose -f docker-compose.dev.yml --env-file .env.dev down",
     "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "test": "jest --config ./test/jest-e2e.json --runInBand"
   },

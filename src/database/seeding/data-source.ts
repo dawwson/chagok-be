@@ -4,15 +4,13 @@ import SnakeNamingStrategy from 'typeorm-naming-strategy';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-import { NodeEnv } from '@src/shared/enum/node-env.enum';
-
 /*
 NOTE :
 1. typeorm-extension 라이브러리의 seed:run 명령어를 통해 data-source로 seeder의 run() 메서드를 실행한다.
 2. seeds의 디폴트 경로는 src/database/seeds 여서, 다른 경로에 둘 경우 seeds 옵션을 설정해줘야 한다.
  */
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenv.config({ path: `.env.dev` });
 
 export default new DataSource({
   type: 'postgres',
@@ -23,6 +21,6 @@ export default new DataSource({
   database: process.env.DB_DATABASE,
   entities: [path.join(__dirname, '../../entity/*.entity{.ts,.js}')],
   seeds: ['src/database/seeding/seeds/**/*{.ts,.js}'],
-  logging: process.env.NODE_ENV === NodeEnv.DEV,
+  logging: true,
   namingStrategy: new SnakeNamingStrategy(),
 } as DataSourceOptions & SeederOptions);

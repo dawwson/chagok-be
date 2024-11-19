@@ -182,4 +182,38 @@ describe(`POST ${API_URL}`, () => {
       });
     });
   });
+
+  describe('/delete-account', () => {
+    describe('로그인 전 : ', () => {
+      test('(401) 유효하지 않은 토큰', async () => {
+        return request(app.getHttpServer()).post(`${API_URL}/delete-account`).expect(401);
+      });
+    });
+
+    describe('로그인 후 : (사용자 1)', () => {
+      let agent: request.SuperAgentTest;
+      const currentUser = testUsers[0];
+
+      beforeAll(async () => {
+        await setupDatabase(dataSource);
+        agent = await createAuthorizedAgent(app, currentUser);
+        await clearDatabase(dataSource);
+      });
+
+      test('(204) 회원 탈퇴 성공', async () => {
+        // given
+        const email = currentUser.email;
+
+        // when
+        const res = await agent.post(`${API_URL}/delete-account`).send({ email });
+
+        // then
+        expect(res.status).toBe(204);
+        expect(res.get('Set-Cookie')[0]).toBe('accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+
+        const found = await dataSource.getRepository(User).findOneBy({ id: currentUser.id });
+        expect(found).toBeNull();
+      });
+    });
+  });
 });

@@ -23,7 +23,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.dev', '.env.stage', '.env.prod'],
+      envFilePath: ['.env.dev', '.env.prod'],
       load: [dbConfig, serverConfig],
       isGlobal: true,
     }),

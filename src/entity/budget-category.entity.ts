@@ -21,7 +21,10 @@ export class BudgetCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Budget, (budget) => budget.budgetCategories, { nullable: false })
+  @ManyToOne(() => Budget, (budget) => budget.budgetCategories, {
+    nullable: false,
+    onDelete: 'CASCADE', // NOTE: budget 삭제 시 budget_category 삭제
+  })
   @JoinColumn({ name: 'budget_id' })
   budget: Budget;
 

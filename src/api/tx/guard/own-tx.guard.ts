@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 
 import { TxLib } from '../service/tx.lib';
-import { RequestWithTx } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithTx } from '@src/shared/interface/request.interface';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 @Injectable()

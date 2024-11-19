@@ -20,7 +20,10 @@ export class Tx {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    onDelete: 'CASCADE', // NOTE: user 삭제시 tx 삭제
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

@@ -1,16 +1,17 @@
-import { Controller, Post, Body, HttpStatus, HttpCode, Res, Delete, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode, Res, Req, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
 import { AuthService } from '@src/api/auth/auth.service';
 import { ServerConfig } from '@src/shared/interface/config.interface';
-import { RequestWithUser } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithUser } from '@src/shared/interface/request.interface';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
 import { UserSignUpRequest } from './dto/request/user-sign-up.request';
-import { UserSignInRequest } from './dto/request/user-sign-in.request';
 import { UserSignUpResponse } from './dto/response/user-sign-up.response';
+import { UserSignInRequest } from './dto/request/user-sign-in.request';
+import { UserDeleteRequest } from './dto/request/user-delete.request';
 
 const COOKIE_NAME = 'accessToken';
 
@@ -70,10 +71,16 @@ export class AuthController {
 
   // 회원탈퇴
   @UseGuards(JwtAuthGuard)
-  @Delete('/account')
-  async deleteAccount(@Req() req: RequestWithUser, @Res() res: Response) {
-    await this.authService.deleteUser(req.user.id);
+  @Post('/delete-account')
+  async deleteAccount(
+    @Req() req: RequestWithUser, //
+    @Body() dto: UserDeleteRequest, //
+    @Res() res: Response, //
+  ) {
+    await this.authService.deleteUser({ userId: req.user.id, email: dto.email });
+
     res.clearCookie(COOKIE_NAME);
+
     return res.status(HttpStatus.NO_CONTENT).send();
   }
 }

@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { encryptPassword } from '@src/shared/util/encrypt.util';
 
 @Entity('users')
 export class User {
@@ -18,14 +18,17 @@ export class User {
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone', nullable: true })
-  updatedAt?: Date;
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp with time zone' })
+  deletedAt?: Date;
 
   static async create(email: string, password: string, nickname: string) {
     const user = new User();
 
     user.email = email;
-    user.password = await bcrypt.hash(password, 10);
+    user.password = await encryptPassword(password);
     user.nickname = nickname;
 
     return user;

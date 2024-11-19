@@ -8,8 +8,9 @@ import * as path from 'path';
 import { AuthModule } from '@src/api/auth/auth.module';
 import { BudgetModule } from '@src/api/budget/budget.module';
 import { CategoryModule } from '@src/api/category/category.module';
-import { TxModule } from '@src/api/tx/tx.module';
 import { StatModule } from '@src/api/stat/stat.module';
+import { TxModule } from '@src/api/tx/tx.module';
+import { UserModule } from '@src/api/user/user.module';
 
 import dbConfig from '@src/config/db.config';
 import serverConfig from '@src/config/server.config';
@@ -47,8 +48,9 @@ import { DbConfig } from '@src/shared/interface/config.interface';
     AuthModule,
     BudgetModule,
     CategoryModule,
-    TxModule,
     StatModule,
+    TxModule,
+    UserModule,
   ],
   providers: [
     {

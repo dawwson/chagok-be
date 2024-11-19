@@ -2,13 +2,12 @@ import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as request from 'supertest';
 
-import { User } from '@src/entity/user.entity';
 import { clearDatabase, createAuthorizedAgent, createTestApp, setupDatabase } from '@test/util';
 import { testUsers } from '@test/util/data';
 
-const API_URL = '/auth';
+const API_URL = '/users';
 
-describe(`DELETE ${API_URL}`, () => {
+describe(`GET ${API_URL}`, () => {
   let app: INestApplication;
   let dataSource: DataSource;
 
@@ -29,10 +28,10 @@ describe(`DELETE ${API_URL}`, () => {
     await app.close();
   });
 
-  describe('/account', () => {
+  describe('/', () => {
     describe('로그인 전 : ', () => {
       test('(401) 유효하지 않은 토큰', async () => {
-        return request(app.getHttpServer()).delete(`${API_URL}/account`).expect(401);
+        return request(app.getHttpServer()).get(`${API_URL}`).expect(401);
       });
     });
 
@@ -46,18 +45,19 @@ describe(`DELETE ${API_URL}`, () => {
         await clearDatabase(dataSource);
       });
 
-      test.skip('(204) 회원 탈퇴 성공', async () => {
+      test('(200) 사용자 조회 성공', async () => {
         // given
 
         // when
-        const res = await agent.delete(`${API_URL}/account`);
+        const res = await agent.get(`${API_URL}`);
 
         // then
-        expect(res.status).toBe(204);
-        expect(res.get('Set-Cookie')[0]).toBe('accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
-
-        const found = await dataSource.getRepository(User).findOne({ where: { id: currentUser.id } });
-        expect(found).toBeNull();
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual({
+          id: currentUser.id,
+          email: currentUser.email,
+          nickname: currentUser.nickname,
+        });
       });
     });
   });

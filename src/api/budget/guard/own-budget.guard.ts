@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 
-import { RequestWithBudget } from '@src/shared/interface/request-with-user.interface';
+import { RequestWithBudget } from '@src/shared/interface/request.interface';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { BudgetLib } from '../service/budget.lib';
 

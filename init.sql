@@ -1,2 +1,4 @@
--- 프로젝트 데이터베이스 생성
-CREATE DATABASE budget_keeper;
+-- dev 데이터베이스 생성
+CREATE DATABASE chagok_dev;
+-- test 데이터베이스 생성
+CREATE DATABASE chagok_test;

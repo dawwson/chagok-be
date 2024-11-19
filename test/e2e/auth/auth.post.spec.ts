@@ -65,6 +65,7 @@ describe(`POST ${API_URL}`, () => {
         nickname: user.nickname,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        deletedAt: null,
       });
     });
 
@@ -211,8 +212,22 @@ describe(`POST ${API_URL}`, () => {
         expect(res.status).toBe(204);
         expect(res.get('Set-Cookie')[0]).toBe('accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
 
-        const found = await dataSource.getRepository(User).findOneBy({ id: currentUser.id });
-        expect(found).toBeNull();
+        const found = await dataSource
+          .getRepository(User)
+          .findOne({ withDeleted: true, where: { id: currentUser.id } });
+
+        expect(found.deletedAt).toBeDefined();
+      });
+
+      test('(401) 실패 : 이메일 불일치', async () => {
+        // given
+        const invalidEmail = 'invalid@email.com';
+
+        // when
+        const res = await agent.post(`${API_URL}/delete-account`).send({ email: invalidEmail });
+
+        // then
+        expect(res.status).toBe(401);
       });
     });
   });

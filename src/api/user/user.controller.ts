@@ -7,6 +7,7 @@ import { UserShowResponse } from './dto/response/user-show.response';
 import { UserUpdateProfileRequest } from './dto/request/user-update-profile.request';
 import { UserUpdatePasswordRequest } from './dto/request/user-update-password.request';
 import { UserService } from './service/user.service';
+import { UserUpdateProfileResponse } from './dto/response/user-update-profile.response';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -22,12 +23,14 @@ export class UserController {
   }
 
   @Patch('profile')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async updateUserProfile(@Req() req: RequestWithUser, @Body() dto: UserUpdateProfileRequest) {
     const userId = req.user.id;
-    console.log(dto);
+
     await this.userService.updateUserProfile({ userId, ...dto });
-    return;
+
+    const updatedUser = await this.userService.getUserById(userId);
+
+    return UserUpdateProfileResponse.from(updatedUser);
   }
 
   @Patch('password')

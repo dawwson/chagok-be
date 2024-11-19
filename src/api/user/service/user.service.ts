@@ -22,7 +22,6 @@ export class UserService {
 
   async updateUserProfile(dto: UserUpdateProfileInput) {
     const { userId, ...rest } = dto;
-    console.log({ ...rest });
 
     await this.userRepo.update(userId, { ...rest });
   }

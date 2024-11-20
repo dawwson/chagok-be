@@ -38,7 +38,9 @@
     "typeorm": "^0.3.17",
     "typeorm-extension": "^3.1.1",
     "typeorm-naming-strategy": "^2.0.4",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",

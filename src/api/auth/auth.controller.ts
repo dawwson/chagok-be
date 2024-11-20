@@ -12,6 +12,7 @@ import { UserSignUpRequest } from './dto/request/user-sign-up.request';
 import { UserSignUpResponse } from './dto/response/user-sign-up.response';
 import { UserSignInRequest } from './dto/request/user-sign-in.request';
 import { UserDeleteRequest } from './dto/request/user-delete.request';
+import { UserSignInResponse } from './dto/response/user-sign-in.response';
 
 const COOKIE_NAME = 'accessToken';
 
@@ -37,28 +38,27 @@ export class AuthController {
   // 로그인
   @Post('/sign-in')
   @HttpCode(HttpStatus.OK)
-  async signIn(@Body() dto: UserSignInRequest, @Res() res: Response) {
-    const verifyUserDto = dto.toVerifyUserDto();
-
-    // 사용자 검증
-    const { id, nickname } = await this.authService.verifyUser(verifyUserDto);
+  async signIn(@Body() dto: UserSignInRequest, @Res({ passthrough: true }) res: Response) {
+    const verifiedUser = await this.authService.verifyUser(dto.toVerifyUserDto());
 
     // accessToken 발급(JWT)
-    const payload = { id, nickname };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync({
+      id: verifiedUser.id,
+      nickname: verifiedUser.nickname,
+    });
 
-    return res
-      .cookie(COOKIE_NAME, accessToken, {
-        // XSS 차단
-        httpOnly: true,
-        // JWT랑 만료시간 동일하게 설정(단위: 밀리초 -> 1000을 곱한다)
-        maxAge: this.cookieExpires * 1000,
-        // 서드파티 쿠키로 허용
-        sameSite: 'none',
-        // HTTPS에서만 쿠키 전송
-        secure: true,
-      })
-      .json({ data: payload });
+    res.cookie(COOKIE_NAME, accessToken, {
+      // XSS 차단
+      httpOnly: true,
+      // JWT랑 만료시간 동일하게 설정(단위: 밀리초 -> 1000을 곱한다)
+      maxAge: this.cookieExpires * 1000,
+      // 서드파티 쿠키로 허용
+      sameSite: 'none',
+      // HTTPS에서만 쿠키 전송
+      secure: true,
+    });
+
+    return UserSignInResponse.from(verifiedUser);
   }
 
   // 로그아웃

@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter as NestExceptionFilter, HttpException } from '@nestjs/common';
 import { Response } from 'express';
 import { ErrorMessage } from '../constant/error-message.constant';
 
@@ -9,7 +9,7 @@ interface HttpExceptionResponse {
 }
 
 @Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
+export class HttpExceptionFilter implements NestExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
@@ -39,22 +39,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorCode,
       detail,
       timestamp,
-    });
-  }
-}
-
-@Catch()
-export class AllExceptionFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const res = ctx.getResponse<Response>();
-    const req = ctx.getRequest<Request>();
-
-    res.status(500).json({
-      path: `${req.method} ${req.url}`,
-      errorCode: 'INTERNAL_SERVER_ERROR',
-      detail: exception.message,
-      timestamp: new Date().toISOString(),
     });
   }
 }

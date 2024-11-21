@@ -14,7 +14,8 @@ import { UserModule } from '@src/api/user/user.module';
 
 import dbConfig from '@src/config/db.config';
 import serverConfig from '@src/config/server.config';
-import { AllExceptionFilter, HttpExceptionFilter } from '@src/shared/filter/custom-exception.filter';
+import { AllExceptionFilter } from '@src/shared/filter/all-exception.filter';
+import { HttpExceptionFilter } from '@src/shared/filter/http-exception.filter';
 import { TransformInterceptor } from '@src/shared/interceptor/transform.interceptor';
 import { DbConfig } from '@src/shared/interface/config.interface';
 
@@ -53,6 +54,12 @@ import { DbConfig } from '@src/shared/interface/config.interface';
     UserModule,
   ],
   providers: [
+    // === Interceptor ===
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    // === Pipe ===
     {
       provide: APP_PIPE,
       useFactory: () =>
@@ -61,18 +68,16 @@ import { DbConfig } from '@src/shared/interface/config.interface';
           whitelist: true, // DTO 클래스에 없는 속성 제거
         }),
     },
-    // NOTE: 필터 우선순위는 역순!!
+    // === Filter ===
     {
+      // 실행 순서 : 2
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
     },
     {
+      // 실행 순서 : 1
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
     },
   ],
 })

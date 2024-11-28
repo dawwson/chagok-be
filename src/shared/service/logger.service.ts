@@ -5,9 +5,6 @@ import * as winstonDaily from 'winston-daily-rotate-file';
 const LOG_DIR = `${process.cwd()}/logs`;
 
 // TODO: cls-rtracer로 request id를 넣어볼까?
-// https://velog.io/@hopsprings2/Node.js-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%EC%97%90%EC%84%9C-Request-ID-%EC%B6%94%EC%A0%81%ED%95%98%EA%B8%B0
-// 없으면 공란이나 anonymous
-
 export class LoggerService implements NestLoggerService {
   private logger: winston.Logger;
 
@@ -16,22 +13,19 @@ export class LoggerService implements NestLoggerService {
   }
 
   private createLogger(context?: string) {
-    const { combine, timestamp, printf, colorize, simple } = winston.format;
+    const { combine, timestamp, printf, colorize } = winston.format;
     const environment = process.env.NODE_ENV;
 
     const logger = winston.createLogger({
       level: 'info', // 기본 로그 레벨 설정
       format: combine(
-        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        printf(({ timestamp, level, message }) =>
-          JSON.stringify({
-            timestamp,
-            level,
-            context,
-            requestId: 'some request id',
-            detail: typeof message === 'string' ? message : JSON.stringify(message),
-          }),
-        ),
+        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
+        printf((info) => {
+          const { timestamp, level, message, ...meta } = info;
+          const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+
+          return `${timestamp} APP[${context}]: ${level.toUpperCase()}: ${message}${metaString}`;
+        }),
       ),
       transports: [
         new winstonDaily({
@@ -59,13 +53,14 @@ export class LoggerService implements NestLoggerService {
       logger.add(
         new winston.transports.Console({
           format: combine(
-            timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+            timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
+            printf((info) => {
+              const { timestamp, level, message, ...meta } = info;
+              const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+
+              return `${timestamp} [${context}]: ${level.toUpperCase()}: ${message}${metaString}`;
+            }),
             colorize({ all: true }),
-            // simple(),
-            printf(
-              ({ timestamp, level, message }) =>
-                `${timestamp} [${level}] ${context ? `[${context}]` : ''}:\n${message}`,
-            ),
           ),
         }),
       );
@@ -75,22 +70,22 @@ export class LoggerService implements NestLoggerService {
   }
 
   // level 0 : error
-  error(message: any, trace?: string): void {
-    this.logger.error(message, { trace });
+  error(message: string, meta?: Record<string, any>): void {
+    this.logger.error(message, meta);
   }
 
   // level 1 : warn
-  warn(message: any): void {
-    this.logger.warn(message);
+  warn(message: string, meta?: Record<string, any>): void {
+    this.logger.warn(message, meta);
   }
 
   // level 2 : info
-  log(message: any): void {
-    this.logger.info(message);
+  log(message: string, meta?: Record<string, any>): void {
+    this.logger.info(message, meta);
   }
 
   // level 5 : debug
-  debug(message: any): void {
-    this.logger.debug(message);
+  debug(message: string, meta?: Record<string, any>): void {
+    this.logger.debug(message, meta);
   }
 }

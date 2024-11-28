@@ -39,6 +39,7 @@ export class AuthController {
   @Post('/sign-in')
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() dto: UserSignInRequest, @Res({ passthrough: true }) res: Response) {
+    throw new Error('✅ TEST');
     const verifiedUser = await this.authService.verifyUser(dto.toVerifyUserDto());
 
     // accessToken 발급(JWT)

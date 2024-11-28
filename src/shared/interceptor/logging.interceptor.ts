@@ -8,7 +8,7 @@ import { LoggerService } from '../service/logger.service';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new LoggerService('Request');
+  private readonly logger = new LoggerService(LoggingInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // pre-controller
@@ -25,10 +25,10 @@ export class LoggingInterceptor implements NestInterceptor {
       .pipe(
         tap({
           next: () => {
-            this.logger.log({
-              userId: user?.id || 'unidentified',
+            this.logger.log('REQUEST_COMPLETED', {
               method,
               url,
+              userId: user?.id || 'anonymous',
               status: statusCode,
               responseTime: `${Date.now() - startTime}ms`,
             });

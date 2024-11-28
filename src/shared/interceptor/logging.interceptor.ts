@@ -25,7 +25,7 @@ export class LoggingInterceptor implements NestInterceptor {
       .pipe(
         tap({
           next: () => {
-            this.logger.log('REQUEST_COMPLETED', {
+            this.logger.log('Request completed.', {
               method,
               url,
               userId: user?.id || 'anonymous',

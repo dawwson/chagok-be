@@ -29,13 +29,13 @@ export class LoggerService implements NestLoggerService {
       ),
       transports: [
         new winstonDaily({
-          level: 'info', // error, warn, info
+          level: 'debug', // error, warn, info, debug
           datePattern: 'YYYY-MM-DD',
           dirname: LOG_DIR,
           filename: '%DATE%.log',
-          maxSize: '20m',
-          maxFiles: '30d',
-          zippedArchive: true,
+          maxSize: '20m', // 각 로그 파일의 최대 크기: 20MB
+          maxFiles: '30d', // 30일 동안의 로그 파일만 유지
+          zippedArchive: true, // maxSize 초과시 압축
         }),
         new winstonDaily({
           level: 'error', // error

@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { UserLib } from '@src/api/user/service/user.lib';
-import { LoggerService } from '@src/shared/service/logger.service';
+import { LoggerService } from '@src/logger/logger.service';
 
 @Injectable()
 export class TaskService {
-  private readonly logger = new LoggerService(TaskService.name);
-
-  constructor(private readonly userLib: UserLib) {}
+  constructor(
+    private readonly userLib: UserLib,
+    private readonly logger: LoggerService,
+  ) {
+    this.logger.setContext(TaskService.name);
+  }
 
   /**
    * 매일 12:00 AM - 탈퇴 처리된 사용자 데이터 일괄 삭제

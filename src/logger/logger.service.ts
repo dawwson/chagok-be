@@ -1,21 +1,37 @@
-import { LoggerService as NestLoggerService } from '@nestjs/common';
+import { Injectable, LoggerService as NestLoggerService, Scope } from '@nestjs/common';
 import * as winston from 'winston';
 import * as winstonDaily from 'winston-daily-rotate-file';
+import * as fs from 'fs';
 
-import { NodeEnv } from '../enum/node-env.enum';
-
-const LOG_DIR = `${process.cwd()}/logs`;
+import { NodeEnv } from '../shared/enum/node-env.enum';
+import { ConfigService } from '@nestjs/config';
+import { ServerConfig } from '@src/shared/interface/config.interface';
 
 // TODO: cls-rtracer로 request id를 넣어볼까?
+@Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService implements NestLoggerService {
   private logger: winston.Logger;
-  private env = process.env.NODE_ENV;
+  private env: NodeEnv;
+  private logDir: string;
+  private context: string;
 
-  constructor(context?: string) {
-    this.logger = this.createLogger(context);
+  constructor(private readonly configService: ConfigService) {
+    const { nodeEnv, logDir } = this.configService.get<ServerConfig>('server');
+
+    this.env = nodeEnv;
+    this.logDir = logDir;
+
+    if (!fs.existsSync(this.logDir)) {
+      fs.mkdirSync(this.logDir, { recursive: true });
+    }
+    this.logger = this.createLogger();
   }
 
-  private createLogger(context?: string) {
+  setContext(context: string) {
+    this.context = context;
+  }
+
+  private createLogger() {
     const { combine, timestamp, printf, colorize } = winston.format;
 
     return winston.createLogger({
@@ -26,7 +42,7 @@ export class LoggerService implements NestLoggerService {
           const { timestamp, level, message, ...meta } = info;
           const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
 
-          return `${timestamp} APP[${context}]: ${level.toUpperCase()}: ${message}${metaString}`;
+          return `${timestamp} APP[${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
         }),
       ),
       transports: [
@@ -34,7 +50,7 @@ export class LoggerService implements NestLoggerService {
         new winstonDaily({
           level: 'debug', // error, warn, info, debug
           datePattern: 'YYYY-MM-DD',
-          dirname: LOG_DIR,
+          dirname: this.logDir,
           filename: '%DATE%.log',
           maxSize: '20m', // 각 로그 파일의 최대 크기: 20MB
           maxFiles: '30d', // 30일 동안의 로그 파일만 유지
@@ -44,7 +60,7 @@ export class LoggerService implements NestLoggerService {
         new winstonDaily({
           level: 'error', // error
           datePattern: 'YYYY-MM-DD',
-          dirname: LOG_DIR + '/error',
+          dirname: this.logDir + '/error',
           filename: '%DATE%.error.log',
           maxSize: '20m',
           maxFiles: '30d',
@@ -59,7 +75,7 @@ export class LoggerService implements NestLoggerService {
               const { timestamp, level, message, ...meta } = info;
               const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
 
-              return `${timestamp} [${context}]: ${level.toUpperCase()}: ${message}${metaString}`;
+              return `${timestamp} [${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
             }),
             colorize({ all: true }),
           ),

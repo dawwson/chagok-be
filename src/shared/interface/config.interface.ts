@@ -6,7 +6,6 @@ export interface DbConfig {
   username: string;
   password: string;
   database: string;
-  synchronize: boolean;
 }
 
 export interface ServerConfig {
@@ -15,4 +14,5 @@ export interface ServerConfig {
   domain: string;
   jwtSecret: string;
   jwtExpiresIn: number;
+  logDir: string;
 }

@@ -1,12 +1,14 @@
 import { ArgumentsHost, Catch, ExceptionFilter as NestExceptionFilter } from '@nestjs/common';
 import { Response } from 'express';
 
-import { LoggerService } from '../service/logger.service';
+import { LoggerService } from '../../logger/logger.service';
 import { RequestWithUser } from '../interface/request.interface';
 
 @Catch()
 export class AllExceptionFilter implements NestExceptionFilter {
-  private readonly logger = new LoggerService(AllExceptionFilter.name);
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setContext(AllExceptionFilter.name);
+  }
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

@@ -4,11 +4,13 @@ import { tap } from 'rxjs/operators';
 import { Response } from 'express';
 
 import { RequestWithUser } from '../interface/request.interface';
-import { LoggerService } from '../service/logger.service';
+import { LoggerService } from '../../logger/logger.service';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new LoggerService(LoggingInterceptor.name);
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setContext(LoggingInterceptor.name);
+  }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // pre-controller

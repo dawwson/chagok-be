@@ -2,18 +2,14 @@ import { ArgumentsHost, Catch, ExceptionFilter as NestExceptionFilter, HttpExcep
 import { Response } from 'express';
 
 import { ErrorMessage } from '../constant/error-message.constant';
-import { LoggerService } from '../service/logger.service';
+import { LoggerService } from '../../logger/logger.service';
 import { RequestWithUser } from '../interface/request.interface';
-
-interface HttpExceptionResponse {
-  message: string[] | string;
-  error: string;
-  statusCode: number;
-}
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements NestExceptionFilter {
-  private readonly logger = new LoggerService(HttpExceptionFilter.name);
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setContext(HttpExceptionFilter.name);
+  }
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

@@ -21,7 +21,7 @@ export class LoggerService implements NestLoggerService {
     this.env = nodeEnv;
     this.logDir = logDir;
 
-    if (!fs.existsSync(this.logDir)) {
+    if (this.env !== NodeEnv.TEST && !fs.existsSync(this.logDir)) {
       fs.mkdirSync(this.logDir, { recursive: true });
     }
     this.logger = this.createLogger();

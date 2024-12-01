@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
+import { DB_CONFIG_TOKEN } from './db.constant';
 
-export default registerAs('db', () => {
+export default registerAs(DB_CONFIG_TOKEN, () => {
   return {
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT),

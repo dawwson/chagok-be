@@ -13,15 +13,19 @@ import { TxModule } from './api/tx/tx.module';
 import { UserModule } from './api/user/user.module';
 import { BatchModule } from './batch/batch.module';
 import { LoggerModule } from './logger/logger.module';
+import { NotificationModule } from './notification/notification.module';
 
-import dbConfig from './config/db.config';
-import serverConfig from './config/server.config';
-import { NodeEnv } from './shared/enum/node-env.enum';
+import dbConfig from './config/db/db.config';
+import { DbConfig } from './config/db/db.type';
+import { DB_CONFIG_TOKEN } from './config/db/db.constant';
+import serverConfig from './config/server/server.config';
+import { NodeEnv, ServerConfig } from './config/server/server.type';
+import { SERVER_CONFIG_TOKEN } from './config/server/server.constant';
+
 import { AllExceptionFilter } from './shared/filter/all-exception.filter';
 import { HttpExceptionFilter } from './shared/filter/http-exception.filter';
 import { TransformInterceptor } from './shared/interceptor/transform.interceptor';
 import { LoggingInterceptor } from './shared/interceptor/logging.interceptor';
-import { DbConfig, ServerConfig } from './shared/interface/config.interface';
 
 @Module({
   imports: [
@@ -34,8 +38,8 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const serverConfig = configService.get<ServerConfig>('server');
-        const dbConfig = configService.get<DbConfig>('db');
+        const serverConfig = configService.get<ServerConfig>(SERVER_CONFIG_TOKEN);
+        const dbConfig = configService.get<DbConfig>(DB_CONFIG_TOKEN);
 
         return {
           type: 'postgres',
@@ -56,6 +60,7 @@ import { DbConfig, ServerConfig } from './shared/interface/config.interface';
     }),
     BatchModule,
     LoggerModule,
+    NotificationModule,
     // === API 모듈 ===
     AuthModule,
     BudgetModule,

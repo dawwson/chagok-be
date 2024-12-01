@@ -4,7 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
 import { AuthService } from '@src/api/auth/auth.service';
-import { ServerConfig } from '@src/shared/interface/config.interface';
+import { ServerConfig } from '@src/config/server/server.type';
+import { SERVER_CONFIG_TOKEN } from '@src/config/server/server.constant';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
@@ -25,7 +26,7 @@ export class AuthController {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.cookieExpires = this.configService.get<ServerConfig>('server').jwtExpiresIn;
+    this.cookieExpires = this.configService.get<ServerConfig>(SERVER_CONFIG_TOKEN).jwtExpiresIn;
   }
 
   // 회원가입

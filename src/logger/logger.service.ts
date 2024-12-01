@@ -1,11 +1,11 @@
 import { Injectable, LoggerService as NestLoggerService, Scope } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as winston from 'winston';
 import * as winstonDaily from 'winston-daily-rotate-file';
 import * as fs from 'fs';
 
-import { NodeEnv } from '../shared/enum/node-env.enum';
-import { ConfigService } from '@nestjs/config';
-import { ServerConfig } from '@src/shared/interface/config.interface';
+import { NodeEnv, ServerConfig } from '@src/config/server/server.type';
+import { SERVER_CONFIG_TOKEN } from '@src/config/server/server.constant';
 
 // TODO: cls-rtracer로 request id를 넣어볼까?
 @Injectable({ scope: Scope.TRANSIENT })
@@ -16,7 +16,7 @@ export class LoggerService implements NestLoggerService {
   private context: string;
 
   constructor(private readonly configService: ConfigService) {
-    const { nodeEnv, logDir } = this.configService.get<ServerConfig>('server');
+    const { nodeEnv, logDir } = this.configService.get<ServerConfig>(SERVER_CONFIG_TOKEN);
 
     this.env = nodeEnv;
     this.logDir = logDir;

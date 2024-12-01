@@ -21,7 +21,7 @@ export class LoggerService implements NestLoggerService {
     this.env = nodeEnv;
     this.logDir = logDir;
 
-    if (this.env !== NodeEnv.TEST && !fs.existsSync(this.logDir)) {
+    if (nodeEnv !== NodeEnv.TEST && !fs.existsSync(this.logDir)) {
       fs.mkdirSync(this.logDir, { recursive: true });
     }
     this.logger = this.createLogger();
@@ -33,19 +33,10 @@ export class LoggerService implements NestLoggerService {
 
   private createLogger() {
     const { combine, timestamp, printf, colorize } = winston.format;
+    const transports = [];
 
-    return winston.createLogger({
-      level: 'info', // 기본 로그 레벨 설정
-      format: combine(
-        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
-        printf((info) => {
-          const { timestamp, level, message, ...meta } = info;
-          const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-
-          return `${timestamp} APP[${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
-        }),
-      ),
-      transports: [
+    if (this.env !== NodeEnv.TEST) {
+      transports.push(
         // 로그 파일 저장
         new winstonDaily({
           level: 'debug', // error, warn, info, debug
@@ -55,7 +46,6 @@ export class LoggerService implements NestLoggerService {
           maxSize: '20m', // 각 로그 파일의 최대 크기: 20MB
           maxFiles: '30d', // 30일 동안의 로그 파일만 유지
           zippedArchive: true, // maxSize 초과시 압축
-          silent: this.env === NodeEnv.TEST,
         }),
         new winstonDaily({
           level: 'error', // error
@@ -65,7 +55,6 @@ export class LoggerService implements NestLoggerService {
           maxSize: '20m',
           maxFiles: '30d',
           zippedArchive: true,
-          silent: this.env === NodeEnv.TEST,
         }),
         // 로그 콘솔 출력
         new winston.transports.Console({
@@ -79,9 +68,23 @@ export class LoggerService implements NestLoggerService {
             }),
             colorize({ all: true }),
           ),
-          silent: this.env !== NodeEnv.DEV, // dev 환경에서만 출력
+          silent: this.env === NodeEnv.PROD, // 프로덕션 환경에서는 콘솔 출력 X
         }),
-      ],
+      );
+    }
+
+    return winston.createLogger({
+      level: 'info', // 기본 로그 레벨 설정
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
+        printf((info) => {
+          const { timestamp, level, message, ...meta } = info;
+          const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+
+          return `${timestamp} APP[${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
+        }),
+      ),
+      transports,
     });
   }
 

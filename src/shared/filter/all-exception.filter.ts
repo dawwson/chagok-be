@@ -3,10 +3,14 @@ import { Response } from 'express';
 
 import { LoggerService } from '../../logger/logger.service';
 import { RequestWithUser } from '../interface/request.interface';
+import { NotificationService } from '@src/notification/notification.service';
 
 @Catch()
 export class AllExceptionFilter implements NestExceptionFilter {
-  constructor(private readonly logger: LoggerService) {
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly notificationService: NotificationService,
+  ) {
     this.logger.setContext(AllExceptionFilter.name);
   }
 
@@ -28,6 +32,16 @@ export class AllExceptionFilter implements NestExceptionFilter {
       userId: req?.user?.id || 'anonymous',
       status: res.status,
       trace: exception.stack,
+    });
+
+    this.notificationService.reportError({
+      method: req.method,
+      url: req.url,
+      status: 500,
+      timestamp: new Date().toISOString(),
+      userId: req?.user?.id || 'anonymous',
+      trace: exception.stack,
+      context: AllExceptionFilter.name,
     });
   }
 }

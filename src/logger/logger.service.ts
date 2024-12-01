@@ -33,29 +33,19 @@ export class LoggerService implements NestLoggerService {
 
   private createLogger() {
     const { combine, timestamp, printf, colorize } = winston.format;
-    const transports = [];
 
-    if (this.env !== NodeEnv.TEST) {
-      transports.push(
-        // 로그 파일 저장
-        new winstonDaily({
-          level: 'debug', // error, warn, info, debug
-          datePattern: 'YYYY-MM-DD',
-          dirname: this.logDir,
-          filename: '%DATE%.log',
-          maxSize: '20m', // 각 로그 파일의 최대 크기: 20MB
-          maxFiles: '30d', // 30일 동안의 로그 파일만 유지
-          zippedArchive: true, // maxSize 초과시 압축
+    const logger = winston.createLogger({
+      level: 'info', // 기본 로그 레벨 설정
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
+        printf((info) => {
+          const { timestamp, level, message, ...meta } = info;
+          const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+
+          return `${timestamp} APP[${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
         }),
-        new winstonDaily({
-          level: 'error', // error
-          datePattern: 'YYYY-MM-DD',
-          dirname: this.logDir + '/error',
-          filename: '%DATE%.error.log',
-          maxSize: '20m',
-          maxFiles: '30d',
-          zippedArchive: true,
-        }),
+      ),
+      transports: [
         // 로그 콘솔 출력
         new winston.transports.Console({
           format: combine(
@@ -68,24 +58,38 @@ export class LoggerService implements NestLoggerService {
             }),
             colorize({ all: true }),
           ),
-          silent: this.env === NodeEnv.PROD, // 프로덕션 환경에서는 콘솔 출력 X
+          silent: this.env !== NodeEnv.DEV, // dev 환경에서만 출력
+        }),
+      ],
+    });
+
+    // dev, prod 환경에서만 로그 파일 저장
+    if (this.env !== NodeEnv.TEST) {
+      logger.add(
+        new winstonDaily({
+          level: 'debug', // error, warn, info, debug
+          datePattern: 'YYYY-MM-DD',
+          dirname: this.logDir,
+          filename: '%DATE%.log',
+          maxSize: '20m', // 각 로그 파일의 최대 크기: 20MB
+          maxFiles: '30d', // 30일 동안의 로그 파일만 유지
+          zippedArchive: true, // maxSize 초과시 압축
+        }),
+      );
+      logger.add(
+        new winstonDaily({
+          level: 'error', // error
+          datePattern: 'YYYY-MM-DD',
+          dirname: this.logDir + '/error',
+          filename: '%DATE%.error.log',
+          maxSize: '20m',
+          maxFiles: '30d',
+          zippedArchive: true,
         }),
       );
     }
 
-    return winston.createLogger({
-      level: 'info', // 기본 로그 레벨 설정
-      format: combine(
-        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }), // ISO 8601 형식
-        printf((info) => {
-          const { timestamp, level, message, ...meta } = info;
-          const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-
-          return `${timestamp} APP[${this.context}]: ${level.toUpperCase()}: ${message}${metaString}`;
-        }),
-      ),
-      transports,
-    });
+    return logger;
   }
 
   // level 0 : error

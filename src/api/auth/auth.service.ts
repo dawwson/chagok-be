@@ -48,6 +48,8 @@ export class AuthService {
       throw new UnauthorizedException(ErrorCode.USER_EMAIL_DO_NOT_EXIST);
     }
 
-    this.userRepo.softDelete({ id: userId });
+    await this.userRepo.softDelete({ id: userId });
+
+    return;
   }
 }

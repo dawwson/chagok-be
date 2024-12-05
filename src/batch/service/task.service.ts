@@ -45,7 +45,7 @@ export class TaskService {
       processed: pendingUsers.length,
       deleted: deletedUsers.length,
       failed: pendingUsers.length - deletedUsers.length,
-      time: `${duration} seconds`,
+      duration: `${duration} s`,
     });
   }
 }

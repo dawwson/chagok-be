@@ -13,7 +13,7 @@
     "db:up": "docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d",
     "db:down": "docker-compose -f docker-compose.dev.yml --env-file .env.dev down",
     "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
-    "test": "NODE_ENV=test jest --config ./test/jest-e2e.json --runInBand"
+    "test": "NODE_ENV=test jest --config ./jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@nestjs/axios": "^3.1.2",

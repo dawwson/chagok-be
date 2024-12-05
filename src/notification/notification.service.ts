@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
 
 import { SERVER_CONFIG_TOKEN } from '@src/config/server/server.constant';
 import { ServerConfig } from '@src/config/server/server.type';
 import { LoggerService } from '@src/logger/logger.service';
-import { firstValueFrom } from 'rxjs';
-import { AxiosError } from 'axios';
 
 interface ErrorContent {
   method: string;
@@ -21,7 +20,7 @@ interface ErrorContent {
 @Injectable()
 export class NotificationService {
   private webhookUrl: string;
-  private webhookName = '💰 차곡 서버 알림 💰';
+  private readonly webhookName = '💰 차곡 서버 알림 💰';
 
   constructor(
     private readonly configService: ConfigService,
@@ -73,10 +72,14 @@ export class NotificationService {
     };
 
     // 메세지 전송
-    firstValueFrom(
-      this.httpService.post(this.webhookUrl, message), //
-    ).catch((error: AxiosError) => {
-      this.logger.warn(error.message, error.response.data);
-    });
+    try {
+      await this.httpService.axiosRef.post(this.webhookUrl, message);
+
+      this.logger.log('Error Notification is sent to the Discord channel.');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.warn(error.message, error.response.data);
+      }
+    }
   }
 }

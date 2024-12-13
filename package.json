@@ -1,7 +1,7 @@
 {
   "name": "budget-keeper-be",
   "version": "0.0.1",
-  "description": "예산 관리 서비스 <Budget Keeper> REST API 서버",
+  "description": "차곡💰 RESTful API 서버",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -13,7 +13,8 @@
     "db:up": "docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d",
     "db:down": "docker-compose -f docker-compose.dev.yml --env-file .env.dev down",
     "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
-    "test": "NODE_ENV=test jest --config ./jest-e2e.json --runInBand"
+    "test": "NODE_ENV=test jest --config ./jest-e2e.json --runInBand",
+    "test:cov": "jest --coverage"
   },
   "dependencies": {
     "@nestjs/axios": "^3.1.2",
@@ -78,19 +79,19 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "src/**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@src/(.*)$": "<rootDir>/../src/$1",
-      "^@test/(.*)$": "<rootDir>/$1"
+      "^@src/(.*)$": "<rootDir>/src/$1",
+      "^@test/(.*)$": "<rootDir>/test/$1"
     }
   }
 }

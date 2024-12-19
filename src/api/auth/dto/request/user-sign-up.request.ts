@@ -21,7 +21,7 @@ export class UserSignUpRequest {
   @IsString({ message: ErrorCode.USER_INVALID_PASSWORD })
   password: string;
 
-  @ApiProperty({ description: '닉네임 (2자 이상)' })
+  @ApiProperty({ description: '닉네임', minimum: 2 })
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @MinLength(2, { message: ErrorCode.USER_NICKNAME_OUT_OF_RANGE })
   @IsString({ message: ErrorCode.USER_INVALID_NICKNAME })

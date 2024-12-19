@@ -16,7 +16,7 @@ export class UserSignUpResponse {
   @Expose()
   email: string;
 
-  @ApiProperty({ description: '생성된 사용자 닉네임', example: 'es' })
+  @ApiProperty({ description: '생성된 사용자 닉네임', example: 'es', minimum: 2 })
   @Expose()
   nickname: string;
 

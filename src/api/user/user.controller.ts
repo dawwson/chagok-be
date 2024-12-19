@@ -15,7 +15,7 @@ import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decor
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
 import { ErrorMessage } from '@src/shared/constant/error-message.constant';
 
-@ApiHeader({ name: 'Cookie', description: 'accessToken' })
+@ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {

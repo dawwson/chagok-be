@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   // ✅ 회원가입
-  @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록한다.' })
+  @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
   @ApiSuccessResponse({ status: 201, type: UserSignUpResponse })
   @ApiErrorResponse([
     {
@@ -61,7 +61,7 @@ export class AuthController {
   // ✅ 로그인
   @ApiOperation({
     summary: '로그인',
-    description: '이메일과 비밀번호로 로그인한다. 성공시 `Set-Cookie` 헤더에 `JWT`가 저장된다.',
+    description: '이메일과 비밀번호로 로그인한다. 성공시 `Set-Cookie` 헤더에 `JWT`가 저장됩니다.',
   })
   @ApiSuccessResponse({ status: 200, type: UserSignInResponse })
   @ApiErrorResponse([
@@ -115,8 +115,8 @@ export class AuthController {
   }
 
   // ✅ 로그아웃
-  @ApiOperation({ summary: '로그아웃', description: '`cookie`를 만료시켜 로그아웃 처리한다.' })
-  @ApiHeader({ name: 'Cookie', description: 'accessToken' })
+  @ApiOperation({ summary: '로그아웃', description: '`cookie`를 만료시켜 로그아웃 처리합니다.' })
+  @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
   @ApiResponse({
     status: 204,
     description: '성공',
@@ -140,8 +140,8 @@ export class AuthController {
   }
 
   // ✅ 회원탈퇴
-  @ApiOperation({ summary: '회원탈퇴', description: '사용자를 임시 삭제하고 `cookie`를 만료시켜 로그아웃 처리한다.' })
-  @ApiHeader({ name: 'Cookie', description: 'accessToken' })
+  @ApiOperation({ summary: '회원탈퇴', description: '사용자를 임시 삭제하고 `cookie`를 만료시켜 로그아웃 처리합니다.' })
+  @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
   @ApiResponse({
     status: 204,
     description: '성공',

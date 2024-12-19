@@ -9,35 +9,54 @@ class SuccessResponse<T> {
 interface ApiSuccessResponseOption {
   status: number;
   type?: Type<any>;
+  isArray?: boolean;
 }
 
 export const ApiSuccessResponse = (option: ApiSuccessResponseOption) => {
-  const { status, type } = option;
+  const { status, type, isArray = false } = option;
 
-  return type
-    ? applyDecorators(
-        ApiExtraModels(SuccessResponse, type),
-        ApiResponse({
-          status,
-          description: '성공',
-          schema: {
-            allOf: [
-              { $ref: getSchemaPath(SuccessResponse) },
-              {
-                properties: {
-                  data: {
-                    $ref: getSchemaPath(type),
-                  },
-                },
+  if (!type) {
+    return applyDecorators(
+      ApiResponse({
+        status,
+        description: '성공',
+      }),
+    );
+  }
+
+  const schema = isArray
+    ? {
+        allOf: [
+          { $ref: getSchemaPath(SuccessResponse) },
+          {
+            properties: {
+              data: {
+                type: 'array',
+                items: { $ref: getSchemaPath(type) },
               },
-            ],
+            },
           },
-        }),
-      )
-    : applyDecorators(
-        ApiResponse({
-          status,
-          description: '성공',
-        }),
-      );
+        ],
+      }
+    : {
+        allOf: [
+          { $ref: getSchemaPath(SuccessResponse) },
+          {
+            properties: {
+              data: {
+                $ref: getSchemaPath(type),
+              },
+            },
+          },
+        ],
+      };
+
+  return applyDecorators(
+    ApiExtraModels(SuccessResponse, type),
+    ApiResponse({
+      status,
+      description: '성공',
+      schema,
+    }),
+  );
 };

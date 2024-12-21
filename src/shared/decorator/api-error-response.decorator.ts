@@ -1,6 +1,7 @@
-import { applyDecorators, Type } from '@nestjs/common';
+import { applyDecorators } from '@nestjs/common';
 import { ApiExtraModels, ApiProperty, ApiResponse, getSchemaPath } from '@nestjs/swagger';
-import { timestamp } from 'rxjs';
+
+import { ErrorMessage } from '../constant/error-message.constant';
 
 class ErrorResponse {
   @ApiProperty({ description: '에러 발생 경로' })
@@ -19,18 +20,14 @@ class ErrorResponse {
 interface ApiErrorResponseOption {
   status: number;
   description: string;
-  example: {
-    path: string;
-    errorCode: string;
-    detail: string;
-  };
+  errorCode: string;
 }
 
-export const ApiErrorResponse = (options: ApiErrorResponseOption[]) => {
+export const ApiErrorResponse = (path: string, options: ApiErrorResponseOption[]) => {
   return applyDecorators(
     ApiExtraModels(ErrorResponse),
     ...options.map((option) => {
-      const { status, description, example } = option;
+      const { status, description, errorCode } = option;
 
       return ApiResponse({
         status,
@@ -40,9 +37,9 @@ export const ApiErrorResponse = (options: ApiErrorResponseOption[]) => {
             { $ref: getSchemaPath(ErrorResponse) },
             {
               properties: {
-                path: { example: example.path },
-                errorCode: { example: example.errorCode },
-                detail: { example: example.detail },
+                path: { example: path },
+                errorCode: { example: errorCode },
+                detail: { example: ErrorMessage[errorCode] },
                 timestamp: { example: '2024-09-30T08:24:26.516Z' },
               },
             },

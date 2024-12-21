@@ -8,7 +8,6 @@ import { AuthService } from '@src/api/auth/auth.service';
 import { ServerConfig } from '@src/config/server/server.type';
 import { SERVER_CONFIG_TOKEN } from '@src/config/server/server.constant';
 import { LoggerService } from '@src/logger/logger.service';
-import { ErrorMessage } from '@src/shared/constant/error-message.constant';
 import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
 import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decorator';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
@@ -41,15 +40,11 @@ export class AuthController {
   // ✅ 회원가입
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
   @ApiSuccessResponse({ status: 201, type: UserSignUpResponse })
-  @ApiErrorResponse([
+  @ApiErrorResponse('POST /auth/sign-up', [
     {
       status: 409,
       description: '이미 사용중인 이메일',
-      example: {
-        path: 'POST /auth/sign-up',
-        errorCode: ErrorCode.USER_EMAIL_IS_DUPLICATED,
-        detail: ErrorMessage[ErrorCode.USER_EMAIL_IS_DUPLICATED],
-      },
+      errorCode: ErrorCode.USER_EMAIL_IS_DUPLICATED,
     },
   ])
   @Post('/sign-up')
@@ -64,24 +59,16 @@ export class AuthController {
     description: '이메일과 비밀번호로 로그인한다. 성공시 `Set-Cookie` 헤더에 `JWT`가 저장됩니다.',
   })
   @ApiSuccessResponse({ status: 200, type: UserSignInResponse })
-  @ApiErrorResponse([
+  @ApiErrorResponse('POST /auth/sign-in', [
     {
       status: 401,
       description: '존재하지 않는 이메일',
-      example: {
-        path: 'POST /auth/sign-in',
-        errorCode: ErrorCode.USER_EMAIL_DO_NOT_EXIST,
-        detail: ErrorMessage[ErrorCode.USER_EMAIL_DO_NOT_EXIST],
-      },
+      errorCode: ErrorCode.USER_EMAIL_DO_NOT_EXIST,
     },
     {
       status: 401,
       description: '비밀번호 불일치',
-      example: {
-        path: 'POST /auth/sign-in',
-        errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
-        detail: ErrorMessage[ErrorCode.USER_PASSWORD_IS_WRONG],
-      },
+      errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
     },
   ])
   @Post('/sign-in')

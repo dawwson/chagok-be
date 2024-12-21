@@ -13,7 +13,6 @@ import { UserService } from './service/user.service';
 import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
 import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decorator';
 import { ErrorCode } from '@src/shared/enum/error-code.enum';
-import { ErrorMessage } from '@src/shared/constant/error-message.constant';
 
 @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
@@ -61,15 +60,11 @@ export class UserController {
   // ✅ 사용자 비밀번호 수정
   @ApiOperation({ summary: '사용자 비밀번호 수정', description: '요청을 보낸 사용자의 비밀번호를 수정한다.' })
   @ApiSuccessResponse({ status: 204 })
-  @ApiErrorResponse([
+  @ApiErrorResponse('PATCH /users/password', [
     {
       status: 401,
       description: '비밀번호 불일치',
-      example: {
-        path: 'PATCH /users/password',
-        errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
-        detail: ErrorMessage[ErrorCode.USER_PASSWORD_IS_WRONG],
-      },
+      errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
     },
   ])
   @Patch('password')

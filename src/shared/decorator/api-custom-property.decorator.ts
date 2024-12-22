@@ -1,10 +1,12 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import * as dayjs from 'dayjs';
 
 import { Budget } from '@src/entity/budget.entity';
 import { BudgetCategory } from '@src/entity/budget-category.entity';
 import { Category } from '@src/entity/category.entity';
+import { TxType } from '@src/shared/enum/tx-type.enum';
+import { TxMethod } from '../enum/tx-method.enum';
 
 export const ApiBudgetYear = (options: { description: string }) => {
   const { description } = options;
@@ -58,8 +60,9 @@ export const ApiBudgetTotalAmount = (options: { description: string }) => {
   );
 };
 
-export const ApiCategoryId = () => {
-  return applyDecorators(ApiProperty({ description: '카테고리 고유 식별자', example: 5 }));
+export const ApiCategoryId = (options: { description: string }) => {
+  const { description } = options;
+  return applyDecorators(ApiProperty({ description, example: 5 }));
 };
 
 export const ApiCategoryName = () => {
@@ -73,6 +76,77 @@ export const ApiBudgetCategoryAmount = () => {
       minimum: 0,
       maximum: BudgetCategory.getMaxAmount(),
       example: 100000,
+    }),
+  );
+};
+
+export const ApiTxType = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiProperty({
+      description,
+      enum: TxType,
+      example: TxType.EXPENSE,
+    }),
+  );
+};
+
+export const ApiTxMethod = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiProperty({
+      description,
+      enum: TxMethod,
+      example: TxMethod.CREDIT_CARD,
+    }),
+  );
+};
+
+export const ApiTxAmount = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiProperty({
+      description,
+      minimum: 1,
+      maximum: BudgetCategory.getMaxAmount(),
+      example: 6800,
+    }),
+  );
+};
+
+export const ApiTxDate = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiProperty({
+      description,
+      example: '2024-10-18T07:14:08.521Z',
+    }),
+  );
+};
+
+export const ApiTxDescription = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiPropertyOptional({
+      description,
+      maxLength: 100,
+      example: 'coffee ☕️',
+    }),
+  );
+};
+
+export const ApiTxIsExcluded = (options: { description: string }) => {
+  const { description } = options;
+
+  return applyDecorators(
+    ApiProperty({
+      description,
+      example: false,
     }),
   );
 };

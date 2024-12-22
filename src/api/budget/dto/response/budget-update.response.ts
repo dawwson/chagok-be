@@ -13,7 +13,7 @@ import {
 
 @Exclude()
 class BudgetByCategory {
-  @ApiCategoryId()
+  @ApiCategoryId({ description: '카테고리 고유 식별자' })
   @Expose()
   categoryId: number;
 
@@ -45,7 +45,10 @@ export class BudgetUpdateResponse {
   @Type(() => BudgetByCategory)
   budgets: BudgetByCategory[];
 
-  @ApiProperty({ description: '예산 수정 날짜 (ISO String)', example: '2024-10-18T07:14:08.521Z' })
+  @ApiProperty({
+    description: '예산 수정 날짜 (ISO String)',
+    example: '2024-10-18T07:14:08.521Z',
+  })
   @Expose()
   updatedAt: Date;
 

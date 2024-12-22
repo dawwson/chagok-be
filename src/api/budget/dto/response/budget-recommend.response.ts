@@ -8,7 +8,7 @@ import {
 } from '@src/shared/decorator/api-custom-property.decorator';
 
 class BudgetByCategoryWithName {
-  @ApiCategoryId()
+  @ApiCategoryId({ description: '카테고리 고유 식별자' })
   categoryId: number;
 
   @ApiCategoryName()

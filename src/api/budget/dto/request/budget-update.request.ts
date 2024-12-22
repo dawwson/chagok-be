@@ -11,7 +11,7 @@ import {
 } from '@src/shared/decorator/api-custom-property.decorator';
 
 class BudgetByCategory {
-  @ApiCategoryId()
+  @ApiCategoryId({ description: '카테고리 고유 식별자' })
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsNumber({}, { message: ErrorCode.CATEGORY_INVALID_ID })
   categoryId: number;

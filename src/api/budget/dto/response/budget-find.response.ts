@@ -14,7 +14,7 @@ import {
 
 @Exclude()
 class BudgetByCategoryWithName {
-  @ApiCategoryId()
+  @ApiCategoryId({ description: '카테고리 고유 식별자' })
   @Expose()
   categoryId: number;
 

@@ -36,7 +36,7 @@ export class TxUpdateRequest {
   @IsNumber({}, { message: ErrorCode.CATEGORY_INVALID_ID })
   categoryId: number;
 
-  @ApiTxDescription({ description: '수정할 내역의 세부 내용', required: true })
+  @ApiTxDescription({ description: '수정할 내역의 세부 내용' })
   @IsDefined({ message: ErrorCode.MISSING_PARAMETER })
   @IsString({ message: ErrorCode.TX_INVALID_DESCRIPTION })
   @MaxLength(100, { message: ErrorCode.TX_DESCRIPTION_OUT_OF_LENGTH })

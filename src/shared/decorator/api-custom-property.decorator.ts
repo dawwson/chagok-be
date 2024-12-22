@@ -1,5 +1,5 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import * as dayjs from 'dayjs';
 
 import { Budget } from '@src/entity/budget.entity';
@@ -123,13 +123,16 @@ export const ApiISOString = (options: { description: string }) => {
   return applyDecorators(
     ApiProperty({
       description,
-      example: '2024-10-18T07:14:08.521Z',
+      example: '2024-09-29T15:00:00.000Z',
     }),
   );
 };
 
-export const ApiTxDescription = (options: { description: string; required: boolean }) => {
-  const { description, required } = options;
+/**
+ * @default required: true
+ */
+export const ApiTxDescription = (options: { description: string; required?: boolean }) => {
+  const { description, required = true } = options;
 
   return applyDecorators(
     ApiProperty({

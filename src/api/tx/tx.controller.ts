@@ -12,7 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiHeader, ApiNoContentResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { LoggerService } from '@src/logger/logger.service';
 import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
@@ -64,7 +64,7 @@ export class TxController {
   @ApiSuccessResponse({ status: 200, type: TxUpdateResponse })
   @ApiErrorResponse(ENDPOINTS.TX.UPDATE_TX)
   @UseGuards(OwnTxGuard)
-  @Put('/:id')
+  @Put(':id')
   async updateTx(@Param('id') txId: number, @Body() dto: TxUpdateRequest) {
     await this.txService.updateTx(txId, dto);
     const tx = await this.txQueryService.getTx(txId);
@@ -72,6 +72,15 @@ export class TxController {
     return TxUpdateResponse.from(tx);
   }
 
+  // ✅ 내역 목록 조회
+  @ApiOperation({
+    summary: '내역 목록 조회',
+    description: [
+      '- 지정한 날짜 구간(경계 포함)의 내역을 모두 조회합니다.', //
+      '- 🚧 TODO: [ 카테고리, 지출 금액 구간 ] 필터링 🚧',
+    ].join('\n'),
+  })
+  @ApiSuccessResponse({ status: 200, type: TxShowResponse })
   @Get()
   async showTxs(@Req() req: RequestWithUser, @Query() dto: TxShowRequest) {
     const userId = req.user.id;
@@ -80,7 +89,16 @@ export class TxController {
     return TxShowResponse.from(txs);
   }
 
-  @Get('/sum')
+  // ✅ 내역 합계 조회
+  @ApiOperation({
+    summary: '내역 합계 조회',
+    description: [
+      '- 지정한 날짜 구간(경계 포함)의 수입/지출 합계를 조회합니다.',
+      '- 합계 제외 처리한 내역은 합계에서 제외되지만, 내역 목록 조회 API 응답에는 포함됩니다.',
+    ].join('\n'),
+  })
+  @ApiSuccessResponse({ status: 200, type: TxSumResponse })
+  @Get('sum')
   async showTxsSum(@Req() req: RequestWithUser, @Query() dto: TxSumRequest) {
     const userId = req.user.id;
     const sum = await this.txQueryService.calculateSum(userId, dto);
@@ -88,15 +106,30 @@ export class TxController {
     return TxSumResponse.from(sum.totalIncome, sum.totalExpense);
   }
 
+  // ✅ 내역 상세 조회
+  @ApiOperation({
+    summary: '내역 상세 조회',
+    description: '- 특정 내역을 상세 조회합니다.',
+  })
+  @ApiParam({ name: 'id', description: '조회할 내역의 고유 식별자' })
+  @ApiSuccessResponse({ status: 200, type: TxShowDetailResponse })
   @UseGuards(OwnTxGuard)
-  @Get('/:id')
+  @Get(':id')
   showTx(@Req() req: RequestWithTx) {
     const tx = req.tx;
     return TxShowDetailResponse.from(tx);
   }
 
+  // ✅ 내역 삭제
+  @ApiOperation({
+    summary: '내역 삭제',
+    description: '- 특정 내역을 상세 조회합니다.',
+  })
+  @ApiParam({ name: 'id', description: '조회할 내역의 고유 식별자' })
+  @ApiSuccessResponse({ status: 204 })
+  @ApiErrorResponse(ENDPOINTS.TX.DELETE_TX)
   @UseGuards(OwnTxGuard)
-  @Delete('/:id')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteTx(@Req() req: RequestWithUser, @Param('id') txId: number) {
     await this.txService.deleteTx(txId);

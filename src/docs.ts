@@ -1,6 +1,6 @@
-import { RedocModule, RedocOptions } from '@jozefazz/nestjs-redoc';
+import { RedocModule } from '@jozefazz/nestjs-redoc';
 import { INestApplication } from '@nestjs/common';
-import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const path = 'docs'; // /docs로 접근
 
@@ -10,6 +10,7 @@ const description = [
   '- 회원가입과 로그인을 제외한 모든 요청에는 `Cookie` 헤더로 `JWT`를 포함합니다.',
   '- 모든 엔드포인트에서 요청 파라미터, 경로변수, 본문에 대한 유효성 검사를 진행합니다. 유효하지 않은 데이터일 경우 `400 Bad Request` 로 반환합니다.',
   '- 날짜/시간 데이터는 모두 `UTC` 기준 `ISO string` 으로 주고 받습니다.',
+  '- `tx`는 `transaction` 을 의미합니다.',
 ].join('\n\n');
 
 const config = new DocumentBuilder()
@@ -35,13 +36,11 @@ export const setupSwagger = (app: INestApplication) => {
     return document;
   };
 
-  const options: SwaggerCustomOptions = {
+  SwaggerModule.setup(path, app, documentFactory, {
     swaggerOptions: {
       withCredentials: true, // 요청에 cookie를 포함하여 전송
     },
-  };
-
-  SwaggerModule.setup(path, app, documentFactory, options);
+  });
 };
 
 export const setupRedoc = async (app: INestApplication) => {
@@ -57,11 +56,10 @@ export const setupRedoc = async (app: INestApplication) => {
     { name: 'Stat', description: '통계 API' },
   ];
 
-  const redocOptions: RedocOptions = {
+  await RedocModule.setup(path, app, document, {
     title: 'test',
     sortPropsAlphabetically: false,
     expandResponses: 'all',
-  };
-
-  await RedocModule.setup(path, app, document, redocOptions);
+    requiredPropsFirst: false,
+  });
 };

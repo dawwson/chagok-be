@@ -40,7 +40,7 @@ export class TxRegisterResponse {
   @Expose()
   date: Date;
 
-  @ApiTxDescription({ description: '생성된 내역의 세부 내용 (없으면 빈 문자열)', required: true })
+  @ApiTxDescription({ description: '생성된 내역의 세부 내용 (없으면 빈 문자열)' })
   @Expose()
   description: string;
 

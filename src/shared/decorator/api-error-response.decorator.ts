@@ -93,7 +93,7 @@ export const ENDPOINTS = {
   TX: {
     CREATE_TX: 'POST /txs',
     UPDATE_TX: 'PUT /txs/{id}',
-    // DELETE_TX: 'DELETE /txs/{id}',
+    DELETE_TX: 'DELETE /txs/{id}',
   },
 } as const;
 
@@ -215,6 +215,16 @@ const ErrorResponseExample: Record<Endpoint, ErrorResponseExample> = {
       {
         description: '존재하지 않는 categoryId',
         errorCode: ErrorCode.CATEGORY_NOT_FOUND,
+      },
+    ],
+  },
+  // 내역 삭제
+  'DELETE /txs/{id}': {
+    path: 'DELETE /txs/1',
+    403: [
+      {
+        description: '존재하지 않거나 접근 권한이 없음',
+        errorCode: ErrorCode.TX_FORBIDDEN,
       },
     ],
   },

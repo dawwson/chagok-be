@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiParam } from '@nestjs/swagger';
 
+import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
+import { ApiErrorResponse, ENDPOINTS } from '@src/shared/decorator/api-error-response.decorator';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 
@@ -14,11 +16,7 @@ import { BudgetRecommendRequestParam, BudgetRecommendRequestQuery } from './dto/
 import { BudgetRecommendResponse } from './dto/response/budget-recommend.response';
 import { OwnBudgetGuard } from './guard/own-budget.guard';
 import { BudgetService } from './service/budget.service';
-
 import { CategoryLib } from '../category/service/category.lib';
-import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
-import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decorator';
-import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
@@ -39,23 +37,7 @@ export class BudgetController {
     ].join('\n'),
   })
   @ApiSuccessResponse({ status: 201, type: BudgetCreateResponse })
-  @ApiErrorResponse('POST /budgets', [
-    {
-      status: 400,
-      description: '예산의 총액이 서버에서 정의한 범위를 벗어남',
-      errorCode: ErrorCode.BUDGET_TOTAL_AMOUNT_OUT_OF_RANGE,
-    },
-    {
-      status: 404,
-      description: 'categoryId가 지출 카테고리가 아닌 경우',
-      errorCode: ErrorCode.CATEGORY_NOT_FOUND,
-    },
-    {
-      status: 409,
-      description: '이미 등록된 예산',
-      errorCode: ErrorCode.BUDGET_IS_DUPLICATED,
-    },
-  ])
+  @ApiErrorResponse(ENDPOINTS.BUDGET.CREATE_BUDGET)
   @Post()
   async registerBudget(@Req() req: RequestWithUser, @Body() dto: BudgetCreateRequest) {
     const userId = req.user.id;
@@ -74,18 +56,7 @@ export class BudgetController {
   })
   @ApiParam({ name: 'id', description: '예산 고유 식별자' })
   @ApiSuccessResponse({ status: 200, type: BudgetUpdateResponse })
-  @ApiErrorResponse('PUT /budgets/{id}', [
-    {
-      status: 400,
-      description: '예산의 총액이 서버에서 정의한 범위를 벗어남',
-      errorCode: ErrorCode.BUDGET_TOTAL_AMOUNT_OUT_OF_RANGE,
-    },
-    {
-      status: 404,
-      description: 'categoryId가 지출 카테고리가 아닌 경우',
-      errorCode: ErrorCode.CATEGORY_NOT_FOUND,
-    },
-  ])
+  @ApiErrorResponse(ENDPOINTS.BUDGET.UPDATE_BUDGET)
   @UseGuards(OwnBudgetGuard)
   @Put(':id')
   async updateBudget(@Param('id') budgetId: number, @Body() dto: BudgetUpdateRequest) {

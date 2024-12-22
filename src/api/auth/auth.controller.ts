@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpStatus, HttpCode, Res, Req, UseGuards } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiNoContentResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
@@ -9,8 +9,7 @@ import { ServerConfig } from '@src/config/server/server.type';
 import { SERVER_CONFIG_TOKEN } from '@src/config/server/server.constant';
 import { LoggerService } from '@src/logger/logger.service';
 import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
-import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decorator';
-import { ErrorCode } from '@src/shared/enum/error-code.enum';
+import { ApiErrorResponse, ENDPOINTS } from '@src/shared/decorator/api-error-response.decorator';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 
@@ -40,13 +39,7 @@ export class AuthController {
   // ✅ 회원가입
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
   @ApiSuccessResponse({ status: 201, type: UserSignUpResponse })
-  @ApiErrorResponse('POST /auth/sign-up', [
-    {
-      status: 409,
-      description: '이미 사용중인 이메일',
-      errorCode: ErrorCode.USER_EMAIL_IS_DUPLICATED,
-    },
-  ])
+  @ApiErrorResponse(ENDPOINTS.AUTH.SIGN_UP)
   @Post('/sign-up')
   async signUp(@Body() dto: UserSignUpRequest) {
     const createdUser = await this.authService.createUser(await dto.toEntity());
@@ -58,19 +51,21 @@ export class AuthController {
     summary: '로그인',
     description: '이메일과 비밀번호로 로그인한다. 성공시 `Set-Cookie` 헤더에 `JWT`가 저장됩니다.',
   })
-  @ApiSuccessResponse({ status: 200, type: UserSignInResponse })
-  @ApiErrorResponse('POST /auth/sign-in', [
-    {
-      status: 401,
-      description: '존재하지 않는 이메일',
-      errorCode: ErrorCode.USER_EMAIL_DO_NOT_EXIST,
+  @ApiResponse({
+    status: 200,
+    type: UserSignInResponse,
+    description: '성공',
+    headers: {
+      'Set-Cookie': {
+        schema: {
+          type: 'string',
+          example:
+            'accessToken=`JWT`; Max-Age=`10800`; Path=/; Expires=Sun, 22 Dec 2024 09:17:26 GMT; HttpOnly; Secure; SameSite=None',
+        },
+      },
     },
-    {
-      status: 401,
-      description: '비밀번호 불일치',
-      errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
-    },
-  ])
+  })
+  @ApiErrorResponse(ENDPOINTS.AUTH.SIGN_IN)
   @Post('/sign-in')
   @HttpCode(HttpStatus.OK)
   async signIn(@Req() req: Request, @Body() dto: UserSignInRequest, @Res({ passthrough: true }) res: Response) {
@@ -104,8 +99,7 @@ export class AuthController {
   // ✅ 로그아웃
   @ApiOperation({ summary: '로그아웃', description: '`cookie`를 만료시켜 로그아웃 처리합니다.' })
   @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
-  @ApiResponse({
-    status: 204,
+  @ApiNoContentResponse({
     description: '성공',
     headers: {
       'Set-Cookie': {
@@ -129,8 +123,7 @@ export class AuthController {
   // ✅ 회원탈퇴
   @ApiOperation({ summary: '회원탈퇴', description: '사용자를 임시 삭제하고 `cookie`를 만료시켜 로그아웃 처리합니다.' })
   @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
-  @ApiResponse({
-    status: 204,
+  @ApiNoContentResponse({
     description: '성공',
     headers: {
       'Set-Cookie': {
@@ -138,6 +131,7 @@ export class AuthController {
       },
     },
   })
+  @ApiErrorResponse(ENDPOINTS.AUTH.DELETE_ACCOUNT)
   @UseGuards(JwtAuthGuard)
   @Post('/delete-account')
   async deleteAccount(

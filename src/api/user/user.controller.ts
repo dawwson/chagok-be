@@ -2,6 +2,8 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Req, UseGuards } fr
 import { ApiHeader, ApiOperation } from '@nestjs/swagger';
 
 import { LoggerService } from '@src/logger/logger.service';
+import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
+import { ApiErrorResponse, ENDPOINTS } from '@src/shared/decorator/api-error-response.decorator';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 
@@ -10,9 +12,6 @@ import { UserUpdateProfileRequest } from './dto/request/user-update-profile.requ
 import { UserUpdateProfileResponse } from './dto/response/user-update-profile.response';
 import { UserUpdatePasswordRequest } from './dto/request/user-update-password.request';
 import { UserService } from './service/user.service';
-import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
-import { ApiErrorResponse } from '@src/shared/decorator/api-error-response.decorator';
-import { ErrorCode } from '@src/shared/enum/error-code.enum';
 
 @ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
@@ -60,13 +59,7 @@ export class UserController {
   // ✅ 사용자 비밀번호 수정
   @ApiOperation({ summary: '사용자 비밀번호 수정', description: '요청을 보낸 사용자의 비밀번호를 수정한다.' })
   @ApiSuccessResponse({ status: 204 })
-  @ApiErrorResponse('PATCH /users/password', [
-    {
-      status: 401,
-      description: '비밀번호 불일치',
-      errorCode: ErrorCode.USER_PASSWORD_IS_WRONG,
-    },
-  ])
+  @ApiErrorResponse(ENDPOINTS.USER.UPDATE_PASSWORD)
   @Patch('password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateUserPassword(@Req() req: RequestWithUser, @Body() dto: UserUpdatePasswordRequest) {

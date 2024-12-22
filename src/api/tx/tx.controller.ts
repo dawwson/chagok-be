@@ -12,8 +12,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiHeader, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { LoggerService } from '@src/logger/logger.service';
+import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
+import { ApiErrorResponse, ENDPOINTS } from '@src/shared/decorator/api-error-response.decorator';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithTx, RequestWithUser } from '@src/shared/interface/request.interface';
 
@@ -31,6 +34,7 @@ import { TxService } from './service/tx.service';
 import { TxQueryService } from './service/tx-query.service';
 import { OwnTxGuard } from './guard/own-tx.guard';
 
+@ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
 @Controller('txs')
 export class TxController {
@@ -42,6 +46,10 @@ export class TxController {
     this.logger.setContext(TxController.name);
   }
 
+  // ✅ 내역 생성
+  @ApiOperation({ summary: '내역 생성', description: '- 수입 또는 지출 내역을 생성합니다.' })
+  @ApiSuccessResponse({ status: 201, type: TxRegisterResponse })
+  @ApiErrorResponse(ENDPOINTS.TX.CREATE_TX)
   @Post()
   async registerTx(@Req() req: RequestWithUser, @Body() dto: TxRegisterRequest) {
     const userId = req.user.id;
@@ -50,6 +58,11 @@ export class TxController {
     return TxRegisterResponse.from(newTx);
   }
 
+  // ✅ 내역 수정
+  @ApiOperation({ summary: '내역 수정', description: '- 내역을 수정합니다.' })
+  @ApiParam({ name: 'id', description: '수정할 내역의 고유 식별자' })
+  @ApiSuccessResponse({ status: 200, type: TxUpdateResponse })
+  @ApiErrorResponse(ENDPOINTS.TX.UPDATE_TX)
   @UseGuards(OwnTxGuard)
   @Put('/:id')
   async updateTx(@Param('id') txId: number, @Body() dto: TxUpdateRequest) {

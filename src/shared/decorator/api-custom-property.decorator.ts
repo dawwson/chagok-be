@@ -117,7 +117,7 @@ export const ApiTxAmount = (options: { description: string }) => {
   );
 };
 
-export const ApiTxDate = (options: { description: string }) => {
+export const ApiISOString = (options: { description: string }) => {
   const { description } = options;
 
   return applyDecorators(
@@ -128,14 +128,15 @@ export const ApiTxDate = (options: { description: string }) => {
   );
 };
 
-export const ApiTxDescription = (options: { description: string }) => {
-  const { description } = options;
+export const ApiTxDescription = (options: { description: string; required: boolean }) => {
+  const { description, required } = options;
 
   return applyDecorators(
-    ApiPropertyOptional({
+    ApiProperty({
       description,
       maxLength: 100,
       example: 'coffee ☕️',
+      required,
     }),
   );
 };

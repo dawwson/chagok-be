@@ -1,7 +1,6 @@
 export enum ErrorCode {
   // 400
   MISSING_PARAMETER = 'MISSING_PARAMETER',
-  OUT_OF_RANGE = 'OUT_OF_RANGE',
 
   // 400 - budget
   BUDGET_YEAR_OUT_OF_RANGE = 'BUDGET_YEAR_OUT_OF_RANGE',

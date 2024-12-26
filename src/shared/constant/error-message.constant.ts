@@ -3,7 +3,6 @@ import { ErrorCode } from '../enum/error-code.enum';
 export const ErrorMessage: Record<ErrorCode, string> = {
   // 400
   [ErrorCode.MISSING_PARAMETER]: '필수 파라미터가 지정되지 않았습니다.',
-  [ErrorCode.OUT_OF_RANGE]: '파라미터가 유효 범위를 벗어났습니다.',
 
   // 400 - budget
   [ErrorCode.BUDGET_YEAR_OUT_OF_RANGE]: '"year"의 타입/범위를 확인해주세요.',

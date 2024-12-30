@@ -26,4 +26,16 @@ export class Category {
     category.type = TxType.EXPENSE;
     return category;
   }
+
+  static getCategoryCount() {
+    return Object.keys(IncomeCategoryName).length + Object.keys(ExpenseCategoryName).length;
+  }
+
+  static getIncomeCategoryCount() {
+    return Object.keys(IncomeCategoryName).length;
+  }
+
+  static getExpenseCategoryCount() {
+    return Object.keys(ExpenseCategoryName).length;
+  }
 }

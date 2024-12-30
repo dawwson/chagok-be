@@ -1,6 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Req, UseGuards } from '@nestjs/common';
+import { ApiHeader, ApiOperation } from '@nestjs/swagger';
 
 import { LoggerService } from '@src/logger/logger.service';
+import { ApiSuccessResponse } from '@src/shared/decorator/api-success-response.decorator';
+import { ApiErrorResponse, ENDPOINTS } from '@src/shared/decorator/api-error-response.decorator';
 import { JwtAuthGuard } from '@src/shared/guard/jwt-auth.guard';
 import { RequestWithUser } from '@src/shared/interface/request.interface';
 
@@ -10,6 +13,7 @@ import { UserUpdateProfileResponse } from './dto/response/user-update-profile.re
 import { UserUpdatePasswordRequest } from './dto/request/user-update-password.request';
 import { UserService } from './service/user.service';
 
+@ApiHeader({ name: 'Cookie', description: 'accessToken=`JWT`' })
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
@@ -20,6 +24,9 @@ export class UserController {
     this.logger.setContext(UserController.name);
   }
 
+  // ✅ 사용자 조회
+  @ApiOperation({ summary: '사용자 조회', description: '요청을 보낸 사용자의 정보를 조회한다.' })
+  @ApiSuccessResponse({ status: 200, type: UserShowResponse })
   @Get()
   async getUser(@Req() req: RequestWithUser) {
     const userId = req.user.id;
@@ -28,6 +35,9 @@ export class UserController {
     return UserShowResponse.from(user);
   }
 
+  // ✅ 사용자 프로필 수정
+  @ApiOperation({ summary: '사용자 프로필 수정', description: '요청을 보낸 사용자의 프로필 정보를 수정한다.' })
+  @ApiSuccessResponse({ status: 200, type: UserUpdateProfileResponse })
   @Patch('profile')
   async updateUserProfile(@Req() req: RequestWithUser, @Body() dto: UserUpdateProfileRequest) {
     const userId = req.user.id;
@@ -46,6 +56,10 @@ export class UserController {
     return UserUpdateProfileResponse.from(updatedUser);
   }
 
+  // ✅ 사용자 비밀번호 수정
+  @ApiOperation({ summary: '사용자 비밀번호 수정', description: '요청을 보낸 사용자의 비밀번호를 수정한다.' })
+  @ApiSuccessResponse({ status: 204 })
+  @ApiErrorResponse(ENDPOINTS.USER.UPDATE_PASSWORD)
   @Patch('password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateUserPassword(@Req() req: RequestWithUser, @Body() dto: UserUpdatePasswordRequest) {

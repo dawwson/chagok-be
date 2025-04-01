@@ -1,8 +1,8 @@
 {
-  "name": "budget-keeper-be",
+  "name": "chagok-be",
   "version": "0.0.1",
   "description": "차곡💰 RESTful API 서버",
-  "author": "",
+  "author": "@dawwson",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -10,8 +10,8 @@
     "build": "npm run prebuild && nest build",
     "start": "NODE_ENV=prod node dist/main",
     "start:dev": "npm run prebuild && NODE_ENV=dev nest start --watch",
-    "db:up": "docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d",
-    "db:down": "docker-compose -f docker-compose.dev.yml --env-file .env.dev down",
+    "db:up": "docker compose -f docker-compose.dev.yml --env-file .env.dev up -d",
+    "db:down": "docker compose -f docker-compose.dev.yml --env-file .env.dev down",
     "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/seeding/data-source.ts",
     "test": "NODE_ENV=test jest --config ./jest-e2e.json --runInBand",
     "test:cov": "jest --coverage"
